@@ -1,0 +1,526 @@
+{
+  "locale": {
+    "ru": "Русский",
+    "uz": "O'zbekcha"
+  },
+  "auth": {
+    "signin": "Kirish",
+    "signup": "Roʻyxatdan oʻtish",
+    "recover": "Parolni tiklash",
+    "activate": "Hisobni faollashtirish",
+    "noAccount": "Hisobingiz yoʻqmi?",
+    "register": "Roʻyxatdan oʻting",
+    "toStart": "boshlash uchun.",
+    "phoneNumber": "Telefon raqami",
+    "password": "Parol",
+    "forgotPassword": "Parolni unutdingizmi?",
+    "signIn": "Kirish",
+    "hasAccount": "Hisobingiz bormi?",
+    "login": "Tizimga kiring",
+    "agreeTerms": "Xizmat koʻrsatish shartlariga roziman",
+    "smsCode": "SMS kod",
+    "resendSms": "SMS kodni qayta yuborish",
+    "activateButton": "Faollashtirish",
+    "changePassword": "Parolni oʻzgartirish",
+    "sendSms": "SMS yuborish",
+    "confirmationCode": "Tasdiqlash kodi",
+    "smsSent": "{phone} raqamiga SMS kod yuborildi. Hisobingizni faollashtirish uchun SMS kodni kiriting."
+  },
+  "common": {
+    "back": "Orqaga",
+    "next": "Keyingi",
+    "or": "Yoki",
+    "required": "Majburiy",
+    "loading": "Yuklanmoqda...",
+    "error": "Xato",
+    "success": "Muvaffaqiyatli",
+    "currency": "soʻm"
+  },
+  "navigation": {
+    "home": "Bosh sahifa",
+    "profile": "Profil",
+    "policies": "Pulislar",
+    "calculators": "Kalkulyatorlar",
+    "notFound": "Sahifa topilmadi",
+    "backToHome": "Bosh sahifaga qaytish",
+    "notFoundMessage": "Kechirasiz, siz qidirayotgan sahifani topa olmadik."
+  },
+  "policy": {
+    "buy": "Elektron polis sotib olish",
+    "list": "Polislar roʻyxatiga qaytish",
+    "legalEntity": "Yuridik shaxs",
+    "individual": "Jismoniy shaxs",
+    "coverage": "Qoplash parametrlari",
+    "payment": "Toʻlov",
+    "acceptTerms": "Taklif qoidalarini qabul qilaman",
+    "update": "Yangilash",
+    "send": "Yuborish",
+    "osgo": {
+      "title": "TVEFJMSQ elektron polisini sotib olish",
+      "description": "Transport vositalari egalari fuqarolik javobgarligini majburiy sug‘urta qilish",
+      "owner": "Egasi",
+      "ownerIsApplicant": "Egasi arizachi hisoblanadi",
+      "applicant": "Arizachi",
+      "drivers": {
+        "title": "Haydovchilar",
+        "description": "Beshtagacha haydovchi qoʻshishingiz mumkin",
+        "add": "Haydovchi qoʻshish",
+        "ownerIsDriver": "Egasi haydovchi hisoblanadi",
+        "applicantIsDriver": "Arizachi haydovchi hisoblanadi",
+        "remove": "Oʻchirish",
+        "driverNumber": "Haydovchi №{number}"
+      },
+      "tabs": {
+        "coverage": "Qoplash parametrlari",
+        "vehicle": "Transport vositasi",
+        "owner": "Arizachi / Transport vositasi egasi",
+        "drivers": "Haydovchilar / Qarindoshlar",
+        "payment": "Toʻlov"
+      }
+    },
+    "osgop": {
+      "title": "TFJMSQ elektron polisini sotib olish",
+      "description": "Tashuvchining fuqarolik javobgarligini majburiy sug‘urta qilish",
+      "vehicle": {
+        "type": "Transport vositasi turi",
+        "govNumber": "Davlat raqami",
+        "model": "Model",
+        "seats": "Yoʻlovchilar sigʻimi",
+        "govNumberPlaceholder": "01 000 AAA"
+      },
+      "contract": {
+        "period": "Shartnoma muddati",
+        "startDate": "Sugʻurta davrining boshlanishi",
+        "endDate": "Sugʻurta davrining tugashi"
+      },
+      "tabs": {
+        "details": "Maʼlumotlar",
+        "contract": "Shartnoma"
+      }
+    },
+    "osgor": {
+      "title": "IBFJMS elektron polisini sotib olish",
+      "description": "Ish beruvchining fuqarolik javobgarligini majburiy sug‘urta qilish",
+      "salary": "Barcha xodimlarning yillik ish haqi miqdori, soʻm",
+      "contract": {
+        "startDate": "Sugʻurta davrining boshlanishi",
+        "endDate": "Sugʻurta davrining tugashi"
+      },
+      "tabs": {
+        "coverage": "Qoplash parametrlari",
+        "payment": "Toʻlov"
+      }
+    }
+  },
+  "osgor": {
+    "card": {
+      "title": "Ish beruvchining fuqarolik javobgarligini majburiy sug‘urta qilish",
+      "status": "Holat",
+      "insurancePeriod": "Sugʻurta davri",
+      "insurancePremium": "Sugʻurta mukofoti",
+      "daysUntilExpiry": "Polis tugashiga qadar",
+      "days": "kun",
+      "expired": "Amal qilish muddati tugagan",
+      "insuranceAmount": "Sugʻurta summasi",
+      "open": "Ochish",
+      "submitClaim": "Ariza berish",
+      "statusActive": "Amal qiladi",
+      "statusRevoked": "Bekor qilingan",
+      "statusPending": "Toʻlovni kutmoqda"
+    },
+    "details": {
+      "companyName": "Nomi",
+      "phone": "Telefon",
+      "region": "Viloyat",
+      "address": "Manzil",
+      "oked": "IFUT (OKED)",
+      "fullName": "F.I.O",
+      "annualSalary": "Barcha xodimlarning yillik ish haqi miqdori",
+      "insurancePremium": "Sugʻurta mukofoti"
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "profileData": "Profil maʼlumotlari",
+    "changePhone": "Telefon raqamini oʻzgartirish",
+    "changePassword": "Parolni oʻzgartirish",
+    "signOut": "Profildan chiqish",
+    "getMyPolicies": "Mening polislarimni olish"
+  },
+  "calculator": {
+    "ecclivo": {
+      "title": "TVEFJMSQ kalkulyatori",
+      "description": "Transport vositalari egalari fuqarolik javobgarligini majburiy sug‘urta qilish",
+      "vehicleType": {
+        "title": "Transport vositasi turi"
+      },
+      "period": {
+        "title": "Sugʻurta davri"
+      },
+      "region": {
+        "title": "Asosiy foydalanish hududi"
+      },
+      "drivers": {
+        "title": "Ruxsat etilgan haydovchilar soni"
+      },
+      "incidents": {
+        "title": "Oldingi sugʻurta davridagi holatlar mavjudligi"
+      },
+      "results": {
+        "title": "Hisoblash natijalari",
+        "premium": "Sugʻurta mukofoti",
+        "sum": "Sugʻurta summasi",
+        "healthCoverage": "Jarohatlanganning hayoti va sogʻligʻiga yetkazilgan zararni qoplash",
+        "propertyCoverage": "Jarohatlanganning mulkiga yetkazilgan zararni qoplash",
+        "currency": "soʻm"
+      }
+    }
+  },
+  "main": {
+    "buy": "Sotib olish",
+    "calculate": "Hisoblash",
+    "policies": {
+      "osgor": {
+        "title": "IBFJMS elektron polisini sotib olish",
+        "description": "Ish beruvchining fuqarolik javobgarligini majburiy sug‘urta qilish"
+      },
+      "osgo": {
+        "title": "TVEFJMSQ elektron polisini sotib olish",
+        "description": "Transport vositalari egalari fuqarolik javobgarligini majburiy sug‘urta qilish"
+      },
+      "osgop": {
+        "title": "TFJMSQ elektron polisini sotib olish",
+        "description": "Tashuvchining fuqarolik javobgarligini majburiy sug‘urta qilish"
+      },
+      "list": {
+        "title": "Mening sugʻurta polislarim"
+      }
+    },
+    "calculator": {
+      "osgo": {
+        "title": "TVEFJMSQ kalkulyatori",
+        "description": "Transport vositalari egalari fuqarolik javobgarligini majburiy sug‘urta qilish"
+      }
+    },
+    "claim": {
+      "title": "Sug'urta hodisasi bo'yicha ariza berish",
+      "osgor": {
+        "title": "IBFJMS arizasi",
+        "description": "Ish beruvchining majburiy fuqarolik javobgarligini sug'urta qilish"
+      },
+      "osgo": {
+        "title": "TVEFJMSQ arizasi",
+        "description": "Transport vositalari egalari fuqarolik javobgarligini majburiy sug‘urta qilish"
+      },
+      "osgop": {
+        "title": "TFJMSQ arizasi",
+        "description": "Tashuvchining fuqarolik javobgarligini majburiy sug‘urta qilish"
+      },
+      "others": {
+        "title": "Ixtiyoriy turlar arizasi",
+        "description": "IBFJMS, TVEFJMSQ, TFJMSQdan tashqari barcha sug'urta turlari"
+      }
+    }
+  },
+  "home": {
+    "sidebar": {
+      "close": "Yon panelni yopish",
+      "open": "Yon panelni ochish"
+    }
+  },
+  "constants": {
+    "vehicleTypes": {
+      "passenger": "Yengil avtomobillar",
+      "cargo": "Yuk avtomobillari",
+      "bus": "Avtobuslar va mikroavtobuslar",
+      "other": "Tramvaylar, motosikillar va motorollerlar, traktorlar, o`ziyurar yo`l-qurilish mashinalari va boshqa maxsus mashinalar"
+    },
+    "periods": {
+      "oneYear": "1 yil",
+      "sixMonths": "6 oy",
+      "registration": "Ro'yxatdan o'tish joyiga 20 kungacha"
+    },
+    "regions": {
+      "tashkent": "Toshkent va Toshkent viloyati",
+      "other": "Boshqa viloyatlar"
+    },
+    "limits": {
+      "unlimited": "Cheklanmagan",
+      "limited": "Cheklangan"
+    },
+    "incidents": {
+      "first": "Birinchi marta",
+      "oneCase": "Oldingi majburiy sug'urta shartnomasi davomida yuz bergan bitta sug'urta hodisasi",
+      "twoCases": "Oldingi majburiy sug'urta shartnomasi davomida yuz bergan bitta sug'urta hodisasi",
+      "threeOrMore": "Oldingi majburiy sug'urta shartnomasi davomida yuz bergan uchta yoki undan ko'p sug'urta hodisasi"
+    }
+  },
+  "filters": {
+    "gender": {
+      "male": "Erkak",
+      "female": "Ayol"
+    }
+  },
+  "errors": {
+    "unexpected": "Kutilmagan xatolik yuz berdi"
+  },
+  "claimCreate": {
+    "backToList": "Arizalar ro'yxatiga qaytish",
+    "createTitle": "Sug'urta hodisasi bo'yicha ariza berish",
+    "detailsTitle": "Sug'urta hodisasi arizasi tafsilotlari",
+    "sentMessage": "Sug'urta hodisasi bo'yicha arizangiz sug'urta kompaniyasiga yuborildi. Ariza holatini shaxsiy kabinetda,",
+    "myClaims": "Mening arizalarim",
+    "questions": "Agar savollaringiz bo'lsa, bizga quyidagi raqam orqali qo'ng'iroq qiling",
+    "policyStartDate": "Polis boshlanish sanasi",
+    "policyEndDate": "Polis tugash sanasi",
+    "eventExpense": "Zarar summasi",
+    "eventDate": "Hodisa sanasi",
+    "eventTime": "Hodisa vaqti",
+    "phone": "Telefon",
+    "region": "Hudud",
+    "eventAddress": "Hodisa manzili",
+    "eventCase": "Hodisa holati",
+    "createButton": "Yaratish",
+    "files": "Fayllar",
+    "uploadFile": "Fayl yuklash",
+    "noFiles": "Fayllar yo'q"
+  },
+  "claimsList": {
+    "title": "Mening arizalarim",
+    "status": "Holat",
+    "journalDate": "Ariza topshirilgan sana",
+    "daysOnReview": "Ko'rib chiqish kunlari soni",
+    "eventExpense": "Talab qilingan zarar summasi",
+    "sum": "so'm",
+    "policy": "Polis",
+    "open": "Ochish",
+    "statusApproved": "Maqbullangan",
+    "statusClosed": "Yopilgan",
+    "statusDraft": "Qoralama",
+    "statusDraftCheck": "Qoralama tekshiruvi",
+    "statusInProgress": "Jarayonda",
+    "statusNew": "Yangi",
+    "statusOnCheck": "Tekshiruvda",
+    "statusProtocol": "Protokol",
+    "statusRejected": "Rad etilgan"
+  },
+  "payment": {
+    "chooseMethod": "To'lov usulini tanlang",
+    "payWithPayme": "Payme orqali to'lash",
+    "sendSmsPayme": "Payme orqali to'lov uchun havolani SMS orqali yuborish",
+    "payWithClick": "Click orqali to'lash",
+    "sendSmsClick": "Click orqali to'lov uchun havolani SMS orqali yuborish",
+    "payWithUzum": "Uzum Bank orqali to'lash",
+    "checkStatus": "To'lov holatini tekshirish"
+  },
+  "fundData": {
+    "thankYou": "Xaridingiz uchun rahmat",
+    "series": "Seriya",
+    "number": "Raqam",
+    "checkPolicy": "Polisni tekshirish"
+  },
+  "individualForm": {
+    "passportSeries": "Pasport (seriya)*",
+    "passportNumber": "Pasport (raqam)*",
+    "birthDate": "Tug'ilgan sana*",
+    "find": "Topish",
+    "clear": "Tozalash",
+    "lastName": "Familiya",
+    "firstName": "Ism",
+    "middleName": "Otasining ismi",
+    "phone": "Telefon",
+    "address": "Manzil",
+    "bank": "Bank",
+    "accountNumber": "Hisob raqami",
+    "min20Chars": "kamida 20 ta belgi"
+  },
+  "companyForm": {
+    "inn": "STIR",
+    "find": "Topish",
+    "clear": "Tozalash",
+    "legalFormType": "Mulkiy shakli",
+    "name": "Tashkilot nomi",
+    "phone": "Telefon",
+    "address": "Manzil",
+    "oked": "IFUT (OKED)",
+    "class": "Sinf",
+    "bank": "Bank",
+    "accountNumber": "Hisob raqami",
+    "min20Chars": "kamida 20 ta belgi",
+    "chiefName": "Familiya, Ism, Ota ismi",
+    "position": "Lavozim"
+  },
+  "address": {
+    "country": "Mamlakat",
+    "region": "Viloyat",
+    "district": "Tuman"
+  },
+  "policySearch": {
+    "series": "Seriya",
+    "chooseSeries": "Seriyani tanlang",
+    "number": "Raqam",
+    "find": "Topish",
+    "clear": "Tozalash"
+  },
+  "sidebar": {
+    "viewProfile": "Profilni ko'rish",
+    "home": "Bosh sahifa",
+    "calculator": "Kalkulyator",
+    "myPolicies": "Mening polislarim",
+    "myClaims": "Mening arizalarim"
+  },
+  "profileForm": {
+    "lastName": "Familiya",
+    "firstName": "Ism",
+    "middleName": "Otasining ismi",
+    "phone": "Telefon raqami",
+    "confirmationCode": "Tasdiqlash kodi",
+    "usernameChanged": "Telefon raqami muvaffaqiyatli o'zgartirildi",
+    "changePhone": "Telefon raqamini o'zgartirish",
+    "oldPassword": "Eski parol",
+    "newPassword": "Yangi parol",
+    "passwordChanged": "Parol muvaffaqiyatli o'zgartirildi",
+    "changePassword": "Parolni o'zgartirish"
+  },
+  "ecclivo": {
+    "card": {
+      "title": "Transport vositalari egalari fuqarolik javobgarligini majburiy sug‘urta qilish",
+      "status": "Holat",
+      "insurancePeriod": "Sugʻurta davri",
+      "insurancePremium": "Sugʻurta mukofoti",
+      "daysUntilExpiry": "Polis tugashigacha",
+      "days": "kun",
+      "expired": "Amal qilish muddati tugagan",
+      "insuranceAmount": "Sugʻurta summasi",
+      "open": "Ochish",
+      "submitClaim": "Ariza berish",
+      "copy": "Nusxalash",
+      "statusActive": "Amal qiladi",
+      "statusRevoked": "Bekor qilingan",
+      "statusPending": "Toʻlovni kutmoqda"
+    },
+    "driver": {
+      "passportSeries": "Pasport (seriya)",
+      "passportNumber": "Pasport (raqam)",
+      "birthDate": "Tugʻilgan sana",
+      "find": "Topish",
+      "clear": "Tozalash",
+      "passportIssueDate": "Pasport berilgan sana",
+      "pinfl": " JSHSHIR (PINFL)",
+      "issuedBy": "Kim tomonidan berilgan",
+      "lastName": "Familiya",
+      "firstName": "Ism",
+      "middleName": "Otasining ismi",
+      "gender": "Jinsi",
+      "address": "Manzil",
+      "licenseSeries": "Haydovchilik guvohnomasi (seriya)",
+      "licenseNumber": "Haydovchilik guvohnomasi (raqam)",
+      "licenseDate": "Haydovchilik guvohnomasi berilgan sana",
+      "relationship": "Qarindoshlik darajasi",
+      "notFound": "Topilmadi"
+    },
+    "individual": {
+      "passportSeries": "Pasport (seriya)",
+      "passportNumber": "Pasport (raqam)",
+      "birthDate": "Tugʻilgan sana",
+      "find": "Topish",
+      "clear": "Tozalash",
+      "passportIssueDate": "Pasport berilgan sana",
+      "pinfl": " JSHSHIR (PINFL)",
+      "issuedBy": "Kim tomonidan berilgan",
+      "lastName": "Familiya",
+      "firstName": "Ism",
+      "middleName": "Otasining ismi",
+      "gender": "Jinsi",
+      "country": "Mamlakat",
+      "region": "Viloyat",
+      "district": "Tuman",
+      "street": "Koʻcha",
+      "notFound": "Topilmadi"
+    },
+    "params": {
+      "vehicleType": "Transport vositasi turi",
+      "insurancePeriod": "Sugʻurta davri",
+      "driversCount": "Ruxsat etilgan haydovchilar soni",
+      "unlimited": "Cheklanmagan",
+      "limited": "Cheklangan (5 nafargacha haydovchi)",
+      "incidentFrequency": "Oldingi sugʻurta davridagi holatlar mavjudligi",
+      "usageTerritory": "Asosiy foydalanish hududi",
+      "insurancePremium": "Sugʻurta mukofoti"
+    },
+    "vehicle": {
+      "findInDatabase": "Ma'lumotlar bazasida transport vositasi haqida ma'lumot topish",
+      "govNumber": "Davlat raqami",
+      "govNumberPlaceholder": "01 000 AAA",
+      "techPassportSeries": "Texpasport (seriya)",
+      "techPassportNumber": "Texpasport (raqam)",
+      "find": "Topish",
+      "clear": "Tozalash",
+      "techPassportIssueDate": "Texpasport berilgan sana",
+      "model": "Model",
+      "year": "Ishlab chiqarilgan yili",
+      "engineNumber": "Dvigatel raqami",
+      "bodyNumber": "Kuzov/shassi raqami"
+    },
+    "summary": {
+      "insuranceInfo": "Sugʻurta haqida ma'lumot",
+      "owner": "Egasi",
+      "ownerNotEntered": "Egasi ma'lumotlari kiritilmagan",
+      "applicant": "Arizachi",
+      "applicantNotEntered": "Arizachi ma'lumotlari kiritilmagan",
+      "vehicle": "Transport vositasi",
+      "vehicleNotEntered": "Transport vositasi ma'lumotlari kiritilmagan",
+      "insurancePeriod": "Sugʻurta davri",
+      "usageTerritory": "Asosiy foydalanish hududi",
+      "driversCount": "Ruxsat etilgan shaxslar soni",
+      "driversNotEntered": "Haydovchilar ma'lumotlari kiritilmagan",
+      "insuranceAmount": "Sugʻurta summasi",
+      "insurancePremium": "Sugʻurta mukofoti",
+      "policyStartDate": "Sugʻurta polisining boshlanish sanasi",
+      "policyEndDate": "Sugʻurta polisining tugash sanasi",
+      "applicantPhone": "Arizachi telefon raqami",
+      "update": "Yangilash",
+      "send": "Yuborish"
+    }
+  },
+  "osgop": {
+    "card": {
+      "title": "Tashuvchining fuqarolik javobgarligini majburiy sug‘urta qilish",
+      "status": "Holat",
+      "insurancePeriod": "Sugʻurta davri",
+      "insurancePremium": "Sugʻurta mukofoti",
+      "daysUntilExpiry": "Polis tugashigacha",
+      "days": "kun",
+      "expired": "Amal qilish muddati tugagan",
+      "insuranceAmount": "Sugʻurta summasi",
+      "open": "Ochish",
+      "submitClaim": "Ariza berish",
+      "statusActive": "Amal qiladi",
+      "statusRevoked": "Bekor qilingan",
+      "statusPending": "Toʻlovni kutmoqda"
+    },
+    "details": {
+      "name": "Nomi",
+      "phone": "Telefon",
+      "region": "Viloyat",
+      "address": "Manzil",
+      "fullName": "F.I.O",
+      "vehicle": "Transport vositasi",
+      "insurancePremium": "Sugʻurta mukofoti"
+    },
+    "vehicleForm": {
+      "govNumber": "Davlat raqami",
+      "govNumberPlaceholder": "01 000 AAA",
+      "techPassportSeries": "Texpasport (seriya)",
+      "techPassportNumber": "Texpasport (raqam)",
+      "find": "Topish",
+      "clear": "Tozalash",
+      "techPassportIssueDate": "Texpasport berilgan sana",
+      "model": "Model",
+      "year": "Ishlab chiqarilgan yili",
+      "engineNumber": "Dvigatel raqami",
+      "bodyNumber": "Kuzov/shassi raqami",
+      "numberOfSeats": "Yoʻlovchilar sigʻimi"
+    }
+  }
+}

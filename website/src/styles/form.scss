@@ -1,0 +1,74 @@
+@layer components {
+  .input {
+    @apply appearance-none;
+    @apply text-sm px-3 py-2 placeholder-gray-500;
+    @apply border border-gray-300 rounded-md shadow-sm;
+    @apply focus:border-primary-light focus:outline-none focus:ring-primary-light;
+
+    &[disabled] {
+      @apply bg-gray-200;
+      @apply opacity-100;
+    }
+  }
+
+  .btn {
+    @apply flex justify-center px-3 py-2;
+    @apply border border-transparent rounded-md;
+    @apply font-medium;
+
+    &:not([disabled]) {
+      @apply cursor-pointer;
+    }
+
+    &[disabled] {
+      @apply opacity-60;
+    }
+  }
+
+  .btn-sm {
+    @apply text-sm;
+    @apply px-2 py-1;
+  }
+
+  .btn-primary {
+    @apply text-white bg-primary shadow-sm;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-light focus:ring-offset-2;
+
+    &:not([disabled]) {
+      @apply hover:bg-primary-dark;
+    }
+  }
+
+  .btn-primary-outlined {
+    @apply text-primary bg-blue-100 border border-primary shadow-sm;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-light focus:ring-offset-2;
+
+    &:not([disabled]) {
+      @apply hover:text-white hover:bg-primary;
+    }
+  }
+
+  .btn-danger {
+    @apply text-white bg-red-600 shadow-sm;
+    @apply focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+
+    &:not([disabled]) {
+      @apply hover:bg-red-700;
+    }
+  }
+
+  .btn-danger-outlined {
+    @apply text-red-600 bg-red-100 border border-red-600 shadow-sm;
+    @apply focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+
+    &:not([disabled]) {
+      @apply hover:text-white hover:bg-red-600;
+    }
+  }
+
+  .checkbox {
+    @apply text-primary;
+    @apply h-4 w-4 border-gray-300 rounded;
+    @apply focus:ring-primary-light;
+  }
+}

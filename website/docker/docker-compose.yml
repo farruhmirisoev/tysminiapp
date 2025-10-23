@@ -1,0 +1,9 @@
+version: '3'
+services:
+  office:
+    image: localhost:5000/tyswebdemo:${TAG}
+    container_name: tyswebdemo
+    ports:
+      - 90:8080
+    expose:
+      - 8080

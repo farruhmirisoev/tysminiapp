@@ -1,0 +1,7 @@
+@layer base {
+  html,
+  body,
+  #app {
+    @apply h-screen m-0;
+  }
+}

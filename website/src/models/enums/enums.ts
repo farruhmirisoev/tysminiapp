@@ -1,0 +1,467 @@
+export enum AccountSubconto {
+  ORGANIZATION = "ORGANIZATION",
+  BANK_ACCOUNT = "BANK_ACCOUNT",
+  CONTRACT = "CONTRACT",
+  POLICY = "POLICY",
+  AGENT_AGREEMENT = "AGENT_AGREEMENT",
+  AGENT_ACT = "AGENT_ACT",
+  PARTY = "PARTY",
+  PERSON = "PERSON",
+  PAYMENT = "PAYMENT",
+  DEBTOR = "DEBTOR",
+}
+
+export enum AccountType {
+  ACTIVE = "ACTIVE",
+  PASSIVE = "PASSIVE",
+  COUNTER_ACTIVE = "COUNTER_ACTIVE",
+  COUNTER_PASSIVE = "COUNTER_PASSIVE",
+  TRANSIT = "TRANSIT",
+}
+
+export enum DebitCredit {
+  DEBIT = "DEBIT",
+  KREDIT = "KREDIT",
+}
+
+export enum PaymentExcelState {
+  NEW = "NEW",
+  ERROR = "ERROR",
+  EDITED = "EDITED",
+  IMPORTED = "IMPORTED",
+}
+
+export enum PaymentSource {
+  BANK = "BANK",
+  PAYMENT_SYSTEM = "PAYMENT_SYSTEM",
+  REFUND = "REFUND",
+  FROM_OLD = "FROM_OLD",
+}
+
+export enum PaymentState {
+  DRAFT = "DRAFT",
+  ACCEPTED = "ACCEPTED",
+}
+
+export enum PaymentType {
+  INCOME = "INCOME",
+  OUTCOME = "OUTCOME",
+}
+
+export enum AgentActState {
+  DRAFT = "DRAFT",
+  CONFIRM = "CONFIRM",
+  APPROVE = "APPROVE",
+  SIGN = "SIGN",
+}
+
+export enum ClaimDecision {
+  PAYMENT_DECISIONS = "PAYMENT_DECISIONS",
+  DECISIONS_TO_REFUSE = "DECISIONS_TO_REFUSE",
+}
+
+export enum ClaimProtocolState {
+  DRAFT = "DRAFT",
+  CONFIRM = "CONFIRM",
+  APPROVE = "APPROVE",
+  SIGN = "SIGN",
+}
+
+export enum ClaimStatus {
+  NEW = "NEW",
+  DRAFT = "DRAFT",
+  DRAFT_CHECK = "DRAFT_CHECK",
+  ON_CHECK = "ON_CHECK",
+  IN_PROGRESS = "IN_PROGRESS",
+  PROTOCOL = "PROTOCOL",
+  REJECTED = "REJECTED",
+  APPROVED = "APPROVED",
+  CLOSED = "CLOSED",
+}
+
+export enum ObjectType {
+  LIFE = "LIFE",
+  HEALTH = "HEALTH",
+  VEHICLE = "VEHICLE",
+  OTHER = "OTHER",
+}
+
+export enum uz_softclub_insurance_common_entity_ErrorCode {
+  ERROR1000 = "ERROR1000",
+  ERROR1001 = "ERROR1001",
+  ERROR1002 = "ERROR1002",
+  ERROR1003 = "ERROR1003",
+  ERROR1004 = "ERROR1004",
+  ERROR1005 = "ERROR1005",
+  ERROR1006 = "ERROR1006",
+  ERROR1007 = "ERROR1007",
+  ERROR1008 = "ERROR1008",
+  ERROR1009 = "ERROR1009",
+  ERROR1010 = "ERROR1010",
+  ERROR1011 = "ERROR1011",
+  ERROR1012 = "ERROR1012",
+  ERROR1013 = "ERROR1013",
+  ERROR1014 = "ERROR1014",
+  ERROR1015 = "ERROR1015",
+  ERROR1016 = "ERROR1016",
+  ERROR2001 = "ERROR2001",
+  ERROR2002 = "ERROR2002",
+  ERROR2003 = "ERROR2003",
+  ERROR2004 = "ERROR2004",
+  ERROR2005 = "ERROR2005",
+  ERROR2006 = "ERROR2006",
+  ERROR2007 = "ERROR2007",
+  ERROR2008 = "ERROR2008",
+  ERROR2009 = "ERROR2009",
+  ERROR2010 = "ERROR2010",
+  ERROR2011 = "ERROR2011",
+  ERROR2012 = "ERROR2012",
+  ERROR2013 = "ERROR2013",
+  ERROR2014 = "ERROR2014",
+  ERROR2015 = "ERROR2015",
+  ERROR2016 = "ERROR2016",
+  ERROR2017 = "ERROR2017",
+  ERROR2018 = "ERROR2018",
+  ERROR2019 = "ERROR2019",
+  ERROR2020 = "ERROR2020",
+  ERROR2021 = "ERROR2021",
+  ERROR2022 = "ERROR2022",
+  ERROR2023 = "ERROR2023",
+  ERROR2024 = "ERROR2024",
+  ERROR2025 = "ERROR2025",
+  ERROR2026 = "ERROR2026",
+  ERROR2027 = "ERROR2027",
+  ERROR2028 = "ERROR2028",
+  ERROR2029 = "ERROR2029",
+  ERROR3001 = "ERROR3001",
+  ERROR3002 = "ERROR3002",
+  ERROR4001 = "ERROR4001",
+  ERROR4002 = "ERROR4002",
+  ERROR4003 = "ERROR4003",
+  ERROR4004 = "ERROR4004",
+  ERROR4005 = "ERROR4005",
+  ERROR4006 = "ERROR4006",
+  ERROR4007 = "ERROR4007",
+  ERROR4008 = "ERROR4008",
+  ERROR4009 = "ERROR4009",
+  ERROR4010 = "ERROR4010",
+  ERROR5001 = "ERROR5001",
+  ERROR5002 = "ERROR5002",
+  ERROR5003 = "ERROR5003",
+  ERROR6001 = "ERROR6001",
+  ERROR6002 = "ERROR6002",
+  ERROR6003 = "ERROR6003",
+  ERROR6004 = "ERROR6004",
+  ERROR6005 = "ERROR6005",
+  ERROR6006 = "ERROR6006",
+  ERROR6007 = "ERROR6007",
+  ERROR6008 = "ERROR6008",
+  ERROR10001 = "ERROR10001",
+  ERROR10002 = "ERROR10002",
+  ERROR10003 = "ERROR10003",
+  ERROR10004 = "ERROR10004",
+  ERROR10005 = "ERROR10005",
+  ERROR10097 = "ERROR10097",
+  ERROR10098 = "ERROR10098",
+  ERROR10099 = "ERROR10099",
+  ERROR9999 = "ERROR9999",
+  NOT_ENOUGH_PRIVILEGES = "NOT_ENOUGH_PRIVILEGES",
+}
+
+export enum WorkType {
+  LOGIN = "LOGIN",
+  PAGE = "PAGE",
+  ERROR = "ERROR",
+}
+
+export enum AccountGroup {
+  FIRST = "FIRST",
+  SECOND = "SECOND",
+  THIRD = "THIRD",
+  FOURTH = "FOURTH",
+}
+
+export enum BaseContractStatus {
+  NEW = "NEW",
+  DRAFT = "DRAFT",
+  SIGNED = "SIGNED",
+  REVOKED = "REVOKED",
+  TERMINATE = "TERMINATE",
+  PERMISSION = "PERMISSION",
+  PERMISSION_ACCEPTED = "PERMISSION_ACCEPTED",
+  REJECTED_PERMISSION = "REJECTED_PERMISSION",
+}
+
+export enum ContractOpenMode {
+  NEW = "NEW",
+  EDIT = "EDIT",
+  COPY = "COPY",
+  TERMINATE = "TERMINATE",
+  REISSUANCE = "REISSUANCE",
+}
+
+export enum CurrencyCondition {
+  UZS = "UZS",
+  USD = "USD",
+  USDUZS = "USDUZS",
+  USDUSD = "USDUSD",
+}
+
+export enum CurrencyInsuredSum {
+  CONTRACT = "CONTRACT",
+  PREMIUM = "PREMIUM",
+  CLAIM = "CLAIM",
+  FIX = "FIX",
+}
+
+export enum CurrencyPremium {
+  CONTRACT = "CONTRACT",
+  PREMIUM = "PREMIUM",
+  FIX = "FIX",
+}
+
+export enum DamageCompensationTerm {
+  NEW_FOR_OLD = "NEW_FOR_OLD",
+  OLD_FOR_OLD = "OLD_FOR_OLD",
+}
+
+export enum DistributionMethod {
+  PERCENT = "PERCENT",
+  SUM = "SUM",
+}
+
+export enum EmpoweringDocument {
+  OWN = "OWN",
+  POWER_OF_ATTORNEY = "POWER_OF_ATTORNEY",
+  RENT = "RENT",
+  OTHER = "OTHER",
+}
+
+export enum FranchiseBase {
+  SUM = "SUM",
+  DAMAGE = "DAMAGE",
+}
+
+export enum FranchiseType {
+  DEDUCTABLE = "DEDUCTABLE",
+  CONDITIONAL = "CONDITIONAL",
+}
+
+export enum FranchiseUnit {
+  PERCENT = "PERCENT",
+  SUM = "SUM",
+}
+
+export enum InvoiceStatus {
+  DRAFT = "DRAFT",
+  APPROVED = "APPROVED",
+}
+
+export enum LimitOfLiability {
+  EVERY = "EVERY",
+  FIRST = "FIRST",
+  CONTRACT = "CONTRACT",
+}
+
+export enum MoneyPercent {
+  MONEY = "MONEY",
+  PERCENT = "PERCENT",
+}
+
+export enum NappObjectType {
+  PERSON = "PERSON",
+  ORGANIZATION = "ORGANIZATION",
+  VEHICLE = "VEHICLE",
+  REAL_ESTATE = "REAL_ESTATE",
+  AGRICULTURAL = "AGRICULTURAL",
+  OTHER = "OTHER",
+}
+
+export enum Operation {
+  ARRIVAL = "ARRIVAL",
+  ISSUANCE = "ISSUANCE",
+  RETURN = "RETURN",
+  CANCELLATION = "CANCELLATION",
+  TRANSFER = "TRANSFER",
+}
+
+export enum PaymentGraph {
+  ONE_TIME = "ONE_TIME",
+  ANNUALLY = "ANNUALLY",
+  QUARTERLY = "QUARTERLY",
+  MONTHLY = "MONTHLY",
+  ANY = "ANY",
+}
+
+export enum PolicyEditorOpenMode {
+  OSGOR = "OSGOR",
+  ESMR = "ESMR",
+  OSGOP = "OSGOP",
+  OPO = "OPO",
+}
+
+export enum ReissuanceType {
+  YEAR = "YEAR",
+  POLICY = "POLICY",
+}
+
+export enum ReportPeriodType {
+  CLOSED = "CLOSED",
+  ACTIVE = "ACTIVE",
+}
+
+export enum State {
+  ACTIVE = "ACTIVE",
+  IN_ACTIVE = "IN_ACTIVE",
+}
+
+export enum Status {
+  IN_STOCK = "IN_STOCK",
+  GIVEN = "GIVEN",
+  SOLD = "SOLD",
+  BROKEN = "BROKEN",
+  LOST = "LOST",
+  CANCELED = "CANCELED",
+}
+
+export enum TerminateCase {
+  PROHIBITION = "PROHIBITION",
+  UNSUITABLE = "UNSUITABLE",
+  CHANGE = "CHANGE",
+  OTHER = "OTHER",
+  ANNULMENT = "ANNULMENT",
+}
+
+export enum uz_softclub_insurance_insuranceprod_portfolio_contracts_osgo_PeriodType {
+  ONE_YEAR = "ONE_YEAR",
+  SEASON = "SEASON",
+  FOREIGN = "FOREIGN",
+  TILL_REGISTRATION = "TILL_REGISTRATION",
+}
+
+export enum SubjectType {
+  PHYSICAL = "PHYSICAL",
+  JURIDICAL = "JURIDICAL",
+}
+
+export enum uz_softclub_insurance_model_ErrorCode {
+  ERROR401 = "ERROR401",
+  ERROR422 = "ERROR422",
+  ERROR404 = "ERROR404",
+  ERROR409 = "ERROR409",
+  ERROR501 = "ERROR501",
+  ERROR502 = "ERROR502",
+  ERROR503 = "ERROR503",
+  ERROR504 = "ERROR504",
+  ERROR601 = "ERROR601",
+  ERROR602 = "ERROR602",
+  ERROR603 = "ERROR603",
+  ERROR604 = "ERROR604",
+  ERROR605 = "ERROR605",
+  ERROR1000 = "ERROR1000",
+  ERROR1001 = "ERROR1001",
+  ERROR1002 = "ERROR1002",
+  ERROR1003 = "ERROR1003",
+  ERROR1004 = "ERROR1004",
+  ERROR1005 = "ERROR1005",
+  ERROR1006 = "ERROR1006",
+  ERROR1007 = "ERROR1007",
+  ERROR1008 = "ERROR1008",
+  ERROR1009 = "ERROR1009",
+  ERROR1010 = "ERROR1010",
+  ERROR1011 = "ERROR1011",
+  ERROR1012 = "ERROR1012",
+  ERROR1013 = "ERROR1013",
+  ERROR9999 = "ERROR9999",
+}
+
+export enum PolicyStatus {
+  DRAFT = "DRAFT",
+  APPLIED = "APPLIED",
+  TERMINATED = "TERMINATED",
+  ANNULLED = "ANNULLED",
+}
+
+export enum IntentType {
+  AUTO = "AUTO",
+  STOCK = "STOCK",
+  DELAY = "DELAY",
+  LICENSE = "LICENSE",
+  BROKER = "BROKER",
+  COURIER = "COURIER",
+}
+
+export enum OsgoPeriodType {
+  ONE_YEAR = "ONE_YEAR",
+  SEASON = "SEASON",
+  FOREIGN = "FOREIGN",
+  TILL_REGISTRATION = "TILL_REGISTRATION",
+}
+
+export enum TravelRelative {
+  INSURANT = "INSURANT",
+  CHILD = "CHILD",
+  PARENT = "PARENT",
+}
+
+export enum TripTariffType {
+  SINGLE = "SINGLE",
+  MULTIPLE = "MULTIPLE",
+}
+
+export enum GrantStatus {
+  REVIEW = "REVIEW",
+  AGREED = "AGREED",
+  REJECTED = "REJECTED",
+}
+
+export enum Base {
+  MANUAL = "MANUAL",
+  FIX = "FIX",
+  PERIOD = "PERIOD",
+  GOODS = "GOODS",
+}
+
+export enum MinMaxType {
+  DAY = "DAY",
+  MONTH = "MONTH",
+  YEAR = "YEAR",
+}
+
+export enum PeriodInterval {
+  YEAR = "YEAR",
+  DAY = "DAY",
+}
+
+export enum uz_softclub_insurance_product_tariff_PeriodType {
+  YEAR = "YEAR",
+  PERIOD = "PERIOD",
+}
+
+export enum ReinsurancePartnerLocation {
+  LOCAL = "LOCAL",
+  FOREIGN = "FOREIGN",
+}
+
+export enum ReinsurancePartnerType {
+  REINSURER = "REINSURER",
+  BROKER = "BROKER",
+}
+
+export enum RestFilterOp {
+  CONTAINS = "CONTAINS",
+  EQUAL = "EQUAL",
+  IN = "IN",
+  NOT_IN = "NOT_IN",
+  NOT_EQUAL = "NOT_EQUAL",
+  GREATER = "GREATER",
+  GREATER_OR_EQUAL = "GREATER_OR_EQUAL",
+  LESSER = "LESSER",
+  LESSER_OR_EQUAL = "LESSER_OR_EQUAL",
+  DOES_NOT_CONTAIN = "DOES_NOT_CONTAIN",
+  NOT_EMPTY = "NOT_EMPTY",
+  STARTS_WITH = "STARTS_WITH",
+  DATE_INTERVAL = "DATE_INTERVAL",
+  ENDS_WITH = "ENDS_WITH",
+  IS_NULL = "IS_NULL",
+}
