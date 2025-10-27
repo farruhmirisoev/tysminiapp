@@ -1,0 +1,475 @@
+================================================================================
+    TELEGRAM MINI APP - ECCLIVO INSURANCE ARCHITECTURE DIAGRAM
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          TELEGRAM MINI APP (NUXT 3)                         │
+│                         Mobile-First Progressive Web App                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      │
+        ┌─────────────────────────────┼─────────────────────────────┐
+        │                             │                             │
+        ▼                             ▼                             ▼
+┌───────────────┐            ┌───────────────┐            ┌───────────────┐
+│   TELEGRAM    │            │  NUXT 3 APP   │            │   BACKEND     │
+│   PLATFORM    │            │   FRONTEND    │            │     API       │
+└───────────────┘            └───────────────┘            └───────────────┘
+        │                             │                             │
+        │                             │                             │
+        ├─ WebApp SDK                 ├─ Components                ├─ OsgoService
+        ├─ initData (auth)            ├─ Pages                     ├─ PartyService
+        ├─ themeParams                ├─ Stores (Pinia)            ├─ BillingService
+        └─ MainButton                 ├─ Composables               └─ REST API
+                                      └─ Utils
+
+
+================================================================================
+                            DETAILED COMPONENT FLOW
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              USER INTERFACE LAYOUT                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  │
+│  ┃  FIXED HEADER (60px)                                                  ┃  │
+│  ┃  ┌──────────┐  ┌────────────────────────┐                            ┃  │
+│  ┃  │   LOGO   │  │  OSGO Insurance Title  │                            ┃  │
+│  ┃  └──────────┘  └────────────────────────┘                            ┃  │
+│  ┃  ┌──────────────────────────────────────────────────────────────┐    ┃  │
+│  ┃  │  Progress: [●]──[●]──[○]──[○]──[○]                          │    ┃  │
+│  ┃  │  Steps:     1    2    3    4    5                            │    ┃  │
+│  ┃  └──────────────────────────────────────────────────────────────┘    ┃  │
+│  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────────────┐  │
+│  │                    MAIN CONTENT AREA (Scrollable)                     │  │
+│  │                                                                        │  │
+│  │  ┌──────────────────────────────────────────────────────────────┐    │  │
+│  │  │                      STEP COMPONENT                           │    │  │
+│  │  │  • Step 1: Policy Parameters (vehicle, period, territory)    │    │  │
+│  │  │  • Step 2: Vehicle Information (gov number, tech passport)   │    │  │
+│  │  │  • Step 3: Owner Information (passport, birth date)          │    │  │
+│  │  │  • Step 4: Driver Information (multiple drivers)             │    │  │
+│  │  │  • Step 5: Summary & Payment (review, pay)                   │    │  │
+│  │  └──────────────────────────────────────────────────────────────┘    │  │
+│  │                                                                        │  │
+│  └──────────────────────────────────────────────────────────────────────┘  │
+│                                                                              │
+│  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓  │
+│  ┃  FIXED FOOTER (70px)                                                  ┃  │
+│  ┃  ┌──────────────────┐           ┌──────────────────┐                 ┃  │
+│  ┃  │  ← Previous      │           │      Next →      │                 ┃  │
+│  ┃  └──────────────────┘           └──────────────────┘                 ┃  │
+│  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛  │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                           5-STEP USER FLOW DIAGRAM
+================================================================================
+
+    START
+      │
+      ▼
+┌─────────────────────────┐
+│   STEP 1: PARAMETERS    │
+│  ┌───────────────────┐  │
+│  │ • Vehicle Type    │  │◄─── Meta Data (cached)
+│  │ • Period          │  │
+│  │ • Driver Limit    │  │
+│  │ • Incident Freq   │  │
+│  │ • Territory       │  │
+│  │ ▼ Premium: 500K   │  │◄─── Real-time calculation
+│  └───────────────────┘  │
+└─────────────────────────┘
+      │ Next
+      ▼
+┌─────────────────────────┐
+│   STEP 2: VEHICLE       │
+│  ┌───────────────────┐  │
+│  │ • Gov Number      │  │
+│  │ • Tech Passport   │──┼──► API: OsgoService.getVehicle()
+│  │ • [Verify]        │  │           │
+│  │                   │  │           ▼
+│  │ ▼ Retrieved Data: │  │      ┌──────────────┐
+│  │   Model, Year...  │◄─┼──────│ Vehicle DB   │
+│  └───────────────────┘  │      └──────────────┘
+└─────────────────────────┘
+      │ Next
+      ▼
+┌─────────────────────────┐
+│   STEP 3: OWNER         │
+│  ┌───────────────────┐  │
+│  │ • Passport Info   │  │
+│  │ • Birth Date      │──┼──► API: PartyService.getIndividual()
+│  │ • [Verify]        │  │           │
+│  │                   │  │           ▼
+│  │ ☑ Owner = Applicant│ │      ┌──────────────┐
+│  │                   │  │      │ Individual DB│
+│  │ ▼ Retrieved Data: │◄─┼──────│              │
+│  │   Name, Address..  │ │      └──────────────┘
+│  └───────────────────┘  │
+│  ┌───────────────────┐  │  (Conditional)
+│  │  APPLICANT FORM   │  │  If Owner ≠ Applicant
+│  │  (if different)   │  │
+│  └───────────────────┘  │
+└─────────────────────────┘
+      │ Next
+      ▼
+┌─────────────────────────┐
+│   STEP 4: DRIVERS       │
+│  ┌───────────────────┐  │
+│  │ [+ Add Driver]    │  │
+│  │ [+ Owner as Drv]  │  │
+│  │ [+ Applicant Drv] │  │
+│  │                   │  │
+│  │ Driver 1:         │  │
+│  │ • Passport        │──┼──► API: OsgoService.getDriver()
+│  │ • Birth Date      │  │           │
+│  │ • [Verify]        │  │           ▼
+│  │ • [Remove]        │  │      ┌──────────────┐
+│  │                   │  │      │  Driver DB   │
+│  │ Driver 2:         │  │      └──────────────┘
+│  │ • Passport        │  │
+│  │ • ...             │  │
+│  └───────────────────┘  │
+└─────────────────────────┘
+      │ Next
+      ▼
+┌─────────────────────────┐
+│  STEP 5: SUMMARY        │
+│  ┌───────────────────┐  │
+│  │ Policy Details    │  │
+│  │ • Vehicle Info    │  │
+│  │ • Owner Info      │  │
+│  │ • Drivers List    │  │
+│  │                   │  │
+│  │ Contact:          │  │
+│  │ • Phone Number    │  │
+│  │ • Start Date      │  │
+│  │                   │  │
+│  │ Premium: 500,000  │  │
+│  │                   │  │
+│  │ [Pay via Payme]   │──┼──► API: BillingService
+│  │ [Pay via Click]   │──┼──► API: createOsgoApplication()
+│  │ [Pay via Uzum]    │──┼──►      updateOsgoApplication()
+│  └───────────────────┘  │
+└─────────────────────────┘
+      │ Payment Success
+      ▼
+┌─────────────────────────┐
+│   POLICY ISSUED         │
+│  ┌───────────────────┐  │
+│  │ Fund Policy Data  │◄─┼──── API: getFundPolicy()
+│  │ • Series: AA      │  │
+│  │ • Number: 1234567 │  │
+│  │ • QR Code         │  │
+│  └───────────────────┘  │
+└─────────────────────────┘
+      │
+    END
+
+
+================================================================================
+                         STATE MANAGEMENT ARCHITECTURE
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              PINIA STORES                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  OSGO STORE (stores/osgo.ts)                                       │    │
+│  │  ───────────────────────────────────────────────────────────────   │    │
+│  │  State:                                                             │    │
+│  │    • osgo: Osgo (main policy object)                               │    │
+│  │    • currentStep: number (1-5)                                     │    │
+│  │    • saving: boolean                                               │    │
+│  │    • errors: Record<string, string>                                │    │
+│  │                                                                     │    │
+│  │  Actions:                                                           │    │
+│  │    • createPolicy()                                                │    │
+│  │    • updatePolicy()                                                │    │
+│  │    • fetchPolicy(id)                                               │    │
+│  │    • calculatePremium()                                            │    │
+│  │    • saveToSession()                                               │    │
+│  │    • loadFromSession()                                             │    │
+│  │    • clearSession()                                                │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │  META STORE (stores/meta.ts)                                       │    │
+│  │  ───────────────────────────────────────────────────────────────   │    │
+│  │  State:                                                             │    │
+│  │    • carType: CarType[]                                            │    │
+│  │    • period: Period[]                                              │    │
+│  │    • incidentFrequency: IncidentFrequency[]                        │    │
+│  │    • drivedArea: DrivedArea[]                                      │    │
+│  │    • version: number                                               │    │
+│  │    • fetching: boolean                                             │    │
+│  │                                                                     │    │
+│  │  Actions:                                                           │    │
+│  │    • fetchMeta()        ───► OsgoService.getOsgoData()            │    │
+│  │    • checkVersion()     ───► OsgoService.getOsgoDataVersion()     │    │
+│  │    • cacheToLocalStorage()                                         │    │
+│  │    • loadFromCache()                                               │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                           API SERVICE LAYER
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          API SERVICES (composables/useApi.ts)                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌────────────────────┐       ┌────────────────────┐                       │
+│  │   OsgoService      │       │   PartyService     │                       │
+│  ├────────────────────┤       ├────────────────────┤                       │
+│  │ • getOsgoData()    │       │ • getIndividual()  │                       │
+│  │ • getVehicle()     │       │   ByPassport()     │                       │
+│  │ • getDriver()      │       └────────────────────┘                       │
+│  │ • createOsgo()     │                                                     │
+│  │ • updateOsgo()     │       ┌────────────────────┐                       │
+│  │ • getFundPolicy()  │       │  BillingService    │                       │
+│  └────────────────────┘       ├────────────────────┤                       │
+│                               │ • createPayme()    │                       │
+│                               │ • createClick()    │                       │
+│                               │ • createUzum()     │                       │
+│                               └────────────────────┘                       │
+│                                                                              │
+│  ┌──────────────────────────────────────────────────────────────────┐      │
+│  │  REST Client (axios)                                             │      │
+│  │  Base URL: https://api.ecclivo.uz/                               │      │
+│  │  Headers: { Authorization: Bearer <token> }                      │      │
+│  │  Interceptors: Handle 401, token refresh, error logging          │      │
+│  └──────────────────────────────────────────────────────────────────┘      │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+                         DATA PERSISTENCE FLOW
+================================================================================
+
+    User Fills Form
+         │
+         ▼
+    ┌─────────────────┐
+    │  Form Component │
+    │  (v-model)      │
+    └─────────────────┘
+         │
+         ▼
+    ┌─────────────────┐        watch() / onMounted()
+    │  Pinia Store    │◄──────────────────────────────┐
+    │  (reactive)     │                                │
+    └─────────────────┘                                │
+         │                                             │
+         │ Auto-save                                   │
+         ▼                                             │
+    ┌─────────────────┐                                │
+    │ Session Storage │                                │
+    │ Key: osgo-draft │                                │
+    └─────────────────┘                                │
+                                                        │
+    On Page Reload / Back Button                       │
+         │                                             │
+         └─────────────────────────────────────────────┘
+
+
+================================================================================
+                      COMPONENT HIERARCHY
+================================================================================
+
+App (layouts/default.vue)
+│
+├── AppHeader.vue
+│   ├── Logo
+│   ├── Title
+│   └── ProgressBar.vue
+│       └── StepIndicator (x5)
+│
+├── Main Content (pages/index.vue)
+│   │
+│   └── Step Components (v-show based on currentStep)
+│       │
+│       ├── Step1Params.vue
+│       │   ├── CheckButton.vue (vehicle types)
+│       │   ├── CheckButton.vue (periods)
+│       │   ├── CheckButton.vue (driver limit)
+│       │   ├── CheckButton.vue (incident freq)
+│       │   ├── Select (territory)
+│       │   └── PremiumDisplay.vue
+│       │
+│       ├── Step2Vehicle.vue
+│       │   ├── InputField.vue (gov number)
+│       │   ├── InputField.vue (tech passport)
+│       │   ├── Button (verify)
+│       │   └── VehicleData.vue (retrieved info)
+│       │
+│       ├── Step3Owner.vue
+│       │   ├── IndividualForm.vue (owner)
+│       │   │   ├── InputField.vue (passport)
+│       │   │   ├── InputField.vue (birth date)
+│       │   │   └── Button (verify)
+│       │   ├── Checkbox (owner = applicant)
+│       │   └── IndividualForm.vue (applicant, conditional)
+│       │
+│       ├── Step4Drivers.vue
+│       │   ├── Button (add driver)
+│       │   ├── Button (owner as driver)
+│       │   ├── Button (applicant as driver)
+│       │   └── DriverForm.vue (v-for)
+│       │       ├── InputField.vue (passport)
+│       │       ├── InputField.vue (birth date)
+│       │       ├── Button (verify)
+│       │       └── Button (remove)
+│       │
+│       └── Step5Summary.vue
+│           ├── PolicySummary.vue
+│           │   ├── VehicleSummary
+│           │   ├── OwnerSummary
+│           │   └── DriversSummary
+│           ├── ContactForm.vue
+│           │   ├── InputField.vue (phone)
+│           │   └── DatePicker (start date)
+│           ├── PremiumTotal.vue
+│           └── PaymentButtons.vue
+│               ├── Button (Payme)
+│               ├── Button (Click)
+│               └── Button (Uzum)
+│
+└── AppFooter.vue
+    ├── Button (Previous)
+    └── Button (Next)
+
+
+================================================================================
+                         VALIDATION RULES
+================================================================================
+
+Field Validations:
+  • Government Number:    Format: XX 123 XXX (regional pattern)
+  • Tech Passport:        Series: 2 letters, Number: digits
+  • Passport:             Series: 2 letters, Number: 7 digits
+  • Birth Date:           Format: YYYY-MM-DD, Age 18-100
+  • Phone:                Format: +998 XX XXX XX XX
+  • Start Date:           Min: Today, Max: +30 days
+
+Step Validations:
+  • Step 1: All parameters selected
+  • Step 2: Vehicle verified successfully
+  • Step 3: Owner verified, applicant verified (if different)
+  • Step 4: At least 1 driver added and verified (if limited)
+  • Step 5: Phone valid, start date selected
+
+
+================================================================================
+                        ERROR HANDLING STRATEGY
+================================================================================
+
+API Errors:
+  • 400 Bad Request     → Show field-level validation errors
+  • 401 Unauthorized    → Redirect to Telegram auth
+  • 404 Not Found       → "Data not found, check input"
+  • 500 Server Error    → "Service temporarily unavailable"
+  • Network Error       → "Check internet connection"
+
+User Feedback:
+  • Loading States      → Spinner/skeleton screens
+  • Success Messages    → Green toast notification
+  • Error Messages      → Red inline errors + toast
+  • Field Errors        → Red border + helper text
+
+
+================================================================================
+                         TELEGRAM INTEGRATION
+================================================================================
+
+Initialization:
+  const tg = window.Telegram.WebApp
+  tg.ready()
+  tg.expand()
+
+Theme Integration:
+  const theme = tg.themeParams
+  Apply colors to CSS variables:
+    --tg-bg: theme.bg_color
+    --tg-text: theme.text_color
+    --tg-button: theme.button_color
+
+Authentication:
+  const initData = tg.initData
+  Send to backend for validation
+  Receive auth token for API calls
+
+Navigation:
+  tg.BackButton.onClick(() => {
+    if (currentStep > 1) previousStep()
+    else tg.close()
+  })
+
+  tg.MainButton.setText("Next Step")
+  tg.MainButton.onClick(() => nextStep())
+
+
+================================================================================
+                      PERFORMANCE OPTIMIZATIONS
+================================================================================
+
+1. Code Splitting:
+   • Lazy load step components
+   • Dynamic imports for payment modules
+
+2. Caching:
+   • LocalStorage for metadata (version-based)
+   • SessionStorage for form draft
+
+3. Bundle Size:
+   • Tree-shaking unused code
+   • Minimal dependencies
+   • Compress assets
+
+4. Network:
+   • Debounce API calls (vehicle/passport lookup)
+   • Cache API responses (5min TTL)
+   • Retry failed requests (3 attempts)
+
+5. Rendering:
+   • v-show for step switching (keep mounted)
+   • Virtual scrolling for large driver lists
+   • Lazy load images
+
+
+================================================================================
+                          DEPLOYMENT CHECKLIST
+================================================================================
+
+Pre-Deploy:
+  ☐ Environment variables configured
+  ☐ API endpoints verified
+  ☐ Telegram bot created and configured
+  ☐ Payment gateway credentials added
+  ☐ Build optimization enabled
+  ☐ Error tracking setup (Sentry?)
+
+Post-Deploy:
+  ☐ Test in Telegram WebView
+  ☐ Verify API calls work
+  ☐ Test payment flow (sandbox)
+  ☐ Check mobile responsiveness
+  ☐ Verify both languages
+  ☐ Monitor error logs
+  ☐ Performance metrics tracked
+
+
+================================================================================
+                              END OF DIAGRAM
+================================================================================

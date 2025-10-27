@@ -1,0 +1,731 @@
+// OSGO Policy Store for ECCLIVO Telegram Mini App
+// Handles OSGO insurance policy creation and management
+
+import { defineStore } from 'pinia'
+import { ref, computed, watch } from 'vue'
+import dayjs from 'dayjs'
+import type { Osgo, Vehicle, Individual, Driver, EntriesJournal, FundData, BaseContractStatus, OsgoPeriodType } from '~/types/osgo'
+import { useMetaStore } from './meta'
+import { STORAGE_KEYS, COMPENSATION, DEFAULTS, STEPS } from '~/utils/constants'
+import { validateOsgoForm } from '~/utils/validation'
+
+export const useOsgoStore = defineStore('osgo', () => {
+  const metaStore = useMetaStore()
+  const api = useApi()
+
+  // State
+  const osgo = ref<Osgo>({
+    status: 'DRAFT' as BaseContractStatus,
+    vehicle: null,
+    party: null, // Applicant
+    beneficiary: null, // Owner
+    applicantIsOwner: true,
+    drivers: [],
+    driversLimited: false,
+    contractStartDate: dayjs().format('YYYY-MM-DD'),
+    premium: 0,
+  })
+
+  const owner = ref<Individual>({
+    passportSeries: '',
+    passportNumber: '',
+    birthDate: '',
+  })
+
+  const applicant = ref<Individual>({
+    passportSeries: '',
+    passportNumber: '',
+    birthDate: '',
+  })
+
+  const currentStep = ref(STEPS.PARAMS)
+  const saving = ref(false)
+  const saveError = ref<string | null>(null)
+  const fetching = ref(false)
+  const fetchError = ref<string | null>(null)
+  const fundData = ref<FundData | null>(null)
+  const fundError = ref<string | null>(null)
+  const fetchingFundData = ref(false)
+
+  // Verification states
+  const vehicleVerifying = ref(false)
+  const vehicleVerified = ref(false)
+  const vehicleVerifyError = ref<string | null>(null)
+
+  const ownerVerifying = ref(false)
+  const ownerVerified = ref(false)
+  const ownerVerifyError = ref<string | null>(null)
+
+  const applicantVerifying = ref(false)
+  const applicantVerified = ref(false)
+  const applicantVerifyError = ref<string | null>(null)
+
+  // Computed properties
+  const isEditable = computed(() => osgo.value.status === 'DRAFT')
+
+  const canProceedToNextStep = computed(() => {
+    const validation = validateStepData(currentStep.value)
+    return validation.valid
+  })
+
+  const totalSteps = computed(() => Object.keys(STEPS).length)
+
+  const progressPercentage = computed(() => {
+    return Math.round(((currentStep.value + 1) / totalSteps.value) * 100)
+  })
+
+  // Premium calculation
+  const calculatedPremium = computed(() => {
+    if (!osgo.value.vehicle?.carType || !osgo.value.period || !osgo.value.drivedArea) {
+      return 0
+    }
+
+    const baseCoefficient = osgo.value.vehicle.carType.tariffCompany || 0
+    const periodCoefficient = osgo.value.period.coefficient || 0
+    const areaCoefficient = osgo.value.drivedArea.coefficient || 0
+
+    let driverCoefficient = 3 // Default for unlimited drivers
+
+    if (osgo.value.driversLimited && osgo.value.incidentCoeff) {
+      driverCoefficient = osgo.value.incidentCoeff
+    }
+
+    const coefficient = baseCoefficient * periodCoefficient * driverCoefficient * areaCoefficient
+
+    // Calculate premium based on compensation amount
+    const premium = coefficient > 5 * baseCoefficient
+      ? COMPENSATION * 5 * baseCoefficient
+      : (COMPENSATION * coefficient) / 100
+
+    return Math.round(premium)
+  })
+
+  const amountPayable = computed(() => {
+    const entries = osgo.value.entriesJournalKt || []
+    const paid = entries.reduce((sum, entry) => sum + (entry.amount || 0), 0)
+    return osgo.value.premium - paid
+  })
+
+  /**
+   * Initialize OSGO with default values
+   */
+  const initialize = () => {
+    osgo.value = {
+      status: 'DRAFT' as BaseContractStatus,
+      vehicle: {
+        govNumber: '',
+        techPassportSeries: '',
+        techPassportNumber: '',
+      },
+      party: null,
+      beneficiary: null,
+      applicantIsOwner: true,
+      drivers: [],
+      driversLimited: false,
+      contractStartDate: dayjs().format('YYYY-MM-DD'),
+      premium: 0,
+    }
+
+    owner.value = {
+      passportSeries: '',
+      passportNumber: '',
+      birthDate: '',
+    }
+
+    applicant.value = {
+      passportSeries: '',
+      passportNumber: '',
+      birthDate: '',
+    }
+
+    currentStep.value = STEPS.PARAMS
+
+    // Set default discount type (coefficient = 1)
+    if (metaStore.isLoaded) {
+      osgo.value.discountType = metaStore.getDefaultDiscountType()
+    }
+  }
+
+  /**
+   * Update contract end date when start date or period changes
+   */
+  watch(
+    () => [osgo.value.contractStartDate, osgo.value.period],
+    () => {
+      if (!osgo.value.contractStartDate || !osgo.value.period) return
+
+      let endDate = dayjs(osgo.value.contractStartDate)
+
+      if (osgo.value.period.periodType === 'ONE_YEAR' || osgo.value.period.periodType === 'SEASON') {
+        endDate = endDate.add(osgo.value.period.months || 0, 'months')
+      } else if (osgo.value.period.periodType === 'TILL_REGISTRATION') {
+        endDate = endDate.add(osgo.value.period.days || 0, 'days')
+      }
+
+      osgo.value.contractEndDate = endDate.subtract(1, 'days').format('YYYY-MM-DD')
+    }
+  )
+
+  /**
+   * Update period type when period changes
+   */
+  watch(
+    () => osgo.value.period,
+    (period) => {
+      if (period) {
+        osgo.value.periodType = period.periodType
+      }
+    }
+  )
+
+  /**
+   * Update drived area based on vehicle gov number
+   */
+  watch(
+    () => osgo.value.vehicle?.govNumber,
+    (govNumber) => {
+      if (!govNumber || govNumber.length < 2) return
+
+      const regionCode = parseInt(govNumber.slice(0, 2))
+      const area = metaStore.findDrivedAreaByRegion(regionCode)
+
+      if (area) {
+        osgo.value.drivedArea = area
+      }
+    }
+  )
+
+  /**
+   * Update premium when calculation inputs change
+   */
+  watch(
+    () => [
+      osgo.value.vehicle?.carType,
+      osgo.value.period,
+      osgo.value.driversLimited,
+      osgo.value.incidentCoeff,
+      osgo.value.drivedArea,
+    ],
+    () => {
+      osgo.value.premium = calculatedPremium.value
+    },
+    { deep: true }
+  )
+
+  /**
+   * Clear incident coeff when drivers become unlimited
+   */
+  watch(
+    () => osgo.value.driversLimited,
+    (limited) => {
+      if (!limited) {
+        osgo.value.incidentCoeff = undefined
+      }
+    }
+  )
+
+  /**
+   * Verify vehicle information
+   */
+  const verifyVehicle = async () => {
+    if (!osgo.value.vehicle) return
+
+    vehicleVerifying.value = true
+    vehicleVerifyError.value = null
+    vehicleVerified.value = false
+
+    try {
+      const result = await api.getVehicle({
+        govNumber: osgo.value.vehicle.govNumber,
+        techPassportSeries: osgo.value.vehicle.techPassportSeries,
+        techPassportNumber: osgo.value.vehicle.techPassportNumber,
+      })
+
+      // Merge retrieved data with existing vehicle data
+      Object.assign(osgo.value.vehicle, result)
+
+      // Update car type from metadata
+      if (result.carType && metaStore.isLoaded) {
+        osgo.value.vehicle.carType = metaStore.findCarType(result.carType.id)
+      }
+
+      vehicleVerified.value = true
+      console.log('[OsgoStore] Vehicle verified:', result)
+    } catch (error: any) {
+      vehicleVerifyError.value = error.message || 'Failed to verify vehicle'
+      console.error('[OsgoStore] Vehicle verification failed:', error)
+      throw error
+    } finally {
+      vehicleVerifying.value = false
+    }
+  }
+
+  /**
+   * Verify owner information
+   */
+  const verifyOwner = async () => {
+    ownerVerifying.value = true
+    ownerVerifyError.value = null
+    ownerVerified.value = false
+
+    try {
+      const result = await api.getIndividualByPassport({
+        passportSeries: owner.value.passportSeries,
+        passportNumber: owner.value.passportNumber,
+        birthDate: owner.value.birthDate,
+      })
+
+      // Merge retrieved data
+      Object.assign(owner.value, result)
+      osgo.value.beneficiary = { ...owner.value }
+
+      ownerVerified.value = true
+      console.log('[OsgoStore] Owner verified:', result)
+    } catch (error: any) {
+      ownerVerifyError.value = error.message || 'Failed to verify owner'
+      console.error('[OsgoStore] Owner verification failed:', error)
+      throw error
+    } finally {
+      ownerVerifying.value = false
+    }
+  }
+
+  /**
+   * Verify applicant information
+   */
+  const verifyApplicant = async () => {
+    applicantVerifying.value = true
+    applicantVerifyError.value = null
+    applicantVerified.value = false
+
+    try {
+      const result = await api.getIndividualByPassport({
+        passportSeries: applicant.value.passportSeries,
+        passportNumber: applicant.value.passportNumber,
+        birthDate: applicant.value.birthDate,
+      })
+
+      // Merge retrieved data
+      Object.assign(applicant.value, result)
+      osgo.value.party = { ...applicant.value }
+
+      applicantVerified.value = true
+      console.log('[OsgoStore] Applicant verified:', result)
+    } catch (error: any) {
+      applicantVerifyError.value = error.message || 'Failed to verify applicant'
+      console.error('[OsgoStore] Applicant verification failed:', error)
+      throw error
+    } finally {
+      applicantVerifying.value = false
+    }
+  }
+
+  /**
+   * Verify driver information
+   */
+  const verifyDriver = async (driver: Driver): Promise<Driver> => {
+    try {
+      const result = await api.getDriver({
+        passportSeries: driver.passportSeries,
+        passportNumber: driver.passportNumber,
+        birthDate: driver.birthDate,
+      })
+
+      return { ...driver, ...result }
+    } catch (error: any) {
+      console.error('[OsgoStore] Driver verification failed:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Add a new driver
+   */
+  const addDriver = (prefill?: Partial<Driver>) => {
+    const newDriver: Driver = {
+      passportSeries: prefill?.passportSeries || '',
+      passportNumber: prefill?.passportNumber || '',
+      birthDate: prefill?.birthDate || '',
+    }
+
+    osgo.value.drivers.push(newDriver)
+  }
+
+  /**
+   * Update driver at index
+   */
+  const updateDriver = (index: number, driver: Driver) => {
+    if (osgo.value.drivers[index]) {
+      osgo.value.drivers[index] = driver
+    }
+  }
+
+  /**
+   * Remove driver at index
+   */
+  const removeDriver = (index: number) => {
+    osgo.value.drivers.splice(index, 1)
+  }
+
+  /**
+   * Check if driver with same credentials exists
+   */
+  const hasDriver = (passportSeries: string, passportNumber: string, birthDate: string): boolean => {
+    return osgo.value.drivers.some(
+      d => d.passportSeries === passportSeries &&
+           d.passportNumber === passportNumber &&
+           d.birthDate === birthDate
+    )
+  }
+
+  /**
+   * Add owner as driver
+   */
+  const addOwnerAsDriver = () => {
+    if (!hasDriver(owner.value.passportSeries, owner.value.passportNumber, owner.value.birthDate)) {
+      addDriver({
+        passportSeries: owner.value.passportSeries,
+        passportNumber: owner.value.passportNumber,
+        birthDate: owner.value.birthDate,
+      })
+    }
+  }
+
+  /**
+   * Add applicant as driver
+   */
+  const addApplicantAsDriver = () => {
+    if (!hasDriver(applicant.value.passportSeries, applicant.value.passportNumber, applicant.value.birthDate)) {
+      addDriver({
+        passportSeries: applicant.value.passportSeries,
+        passportNumber: applicant.value.passportNumber,
+        birthDate: applicant.value.birthDate,
+      })
+    }
+  }
+
+  /**
+   * Validate current step data
+   */
+  const validateStepData = (step: number): { valid: boolean; errors?: any } => {
+    // Simplified validation per step
+    switch (step) {
+      case STEPS.PARAMS:
+        return {
+          valid: !!(
+            osgo.value.vehicle?.carType &&
+            osgo.value.period &&
+            osgo.value.drivedArea &&
+            (!osgo.value.driversLimited || osgo.value.incidentCoeff)
+          )
+        }
+      case STEPS.VEHICLE:
+        return {
+          valid: vehicleVerified.value
+        }
+      case STEPS.OWNER:
+        return {
+          valid: ownerVerified.value && (osgo.value.applicantIsOwner || applicantVerified.value)
+        }
+      case STEPS.DRIVERS:
+        return {
+          valid: !osgo.value.driversLimited || osgo.value.drivers.length > 0
+        }
+      case STEPS.SUMMARY:
+        return {
+          valid: !!(osgo.value.party?.phone && osgo.value.contractStartDate)
+        }
+      default:
+        return { valid: false }
+    }
+  }
+
+  /**
+   * Go to next step
+   */
+  const nextStep = () => {
+    if (currentStep.value < totalSteps.value - 1) {
+      currentStep.value++
+    }
+  }
+
+  /**
+   * Go to previous step
+   */
+  const previousStep = () => {
+    if (currentStep.value > 0) {
+      currentStep.value--
+    }
+  }
+
+  /**
+   * Go to specific step
+   */
+  const goToStep = (step: number) => {
+    if (step >= 0 && step < totalSteps.value) {
+      currentStep.value = step
+    }
+  }
+
+  /**
+   * Create OSGO policy
+   */
+  const createPolicy = async () => {
+    saving.value = true
+    saveError.value = null
+
+    try {
+      // Prepare data for submission
+      const data = {
+        ...osgo.value,
+        party: osgo.value.applicantIsOwner ? owner.value : applicant.value,
+        beneficiary: owner.value,
+      }
+
+      const policyId = await api.createOsgoApplication(data)
+      osgo.value.id = policyId
+
+      console.log('[OsgoStore] Policy created:', policyId)
+      return policyId
+    } catch (error: any) {
+      saveError.value = error.message || 'Failed to create policy'
+      console.error('[OsgoStore] Policy creation failed:', error)
+      throw error
+    } finally {
+      saving.value = false
+    }
+  }
+
+  /**
+   * Update OSGO policy
+   */
+  const updatePolicy = async () => {
+    if (!osgo.value.id) {
+      throw new Error('Policy ID is required for update')
+    }
+
+    saving.value = true
+    saveError.value = null
+
+    try {
+      const data = {
+        ...osgo.value,
+        party: osgo.value.applicantIsOwner ? owner.value : applicant.value,
+        beneficiary: owner.value,
+      }
+
+      await api.updateOsgoApplication(data)
+      console.log('[OsgoStore] Policy updated')
+    } catch (error: any) {
+      saveError.value = error.message || 'Failed to update policy'
+      console.error('[OsgoStore] Policy update failed:', error)
+      throw error
+    } finally {
+      saving.value = false
+    }
+  }
+
+  /**
+   * Fetch OSGO policy by ID
+   */
+  const fetchPolicy = async (id: string) => {
+    fetching.value = true
+    fetchError.value = null
+
+    try {
+      const data = await api.fetchOsgoEntity(id)
+      osgo.value = data
+
+      // Fetch party and beneficiary details
+      if (data.party?.id) {
+        const partyData = await api.fetchIndividualEntity(data.party.id)
+        applicant.value = partyData
+        osgo.value.party = partyData
+      }
+
+      if (data.beneficiary?.id) {
+        const beneficiaryData = await api.fetchIndividualEntity(data.beneficiary.id)
+        owner.value = beneficiaryData
+        osgo.value.beneficiary = beneficiaryData
+      }
+
+      // Update references from metadata
+      if (metaStore.isLoaded && osgo.value.vehicle?.carType) {
+        osgo.value.vehicle.carType = metaStore.findCarType(osgo.value.vehicle.carType.id)
+      }
+
+      if (metaStore.isLoaded && osgo.value.period) {
+        osgo.value.period = metaStore.findPeriod(osgo.value.period.id)
+      }
+
+      if (metaStore.isLoaded && osgo.value.drivedArea) {
+        osgo.value.drivedArea = metaStore.findDrivedArea(osgo.value.drivedArea.id)
+      }
+
+      // Calculate incident coefficient from drivers
+      if (osgo.value.driversLimited && osgo.value.drivers.length > 0) {
+        const maxCoeff = Math.max(
+          ...osgo.value.drivers
+            .map(d => d.incidentFrequency?.coefficient || 0)
+        )
+        osgo.value.incidentCoeff = maxCoeff
+      }
+
+      console.log('[OsgoStore] Policy fetched:', id)
+    } catch (error: any) {
+      fetchError.value = error.message || 'Failed to fetch policy'
+      console.error('[OsgoStore] Policy fetch failed:', error)
+      throw error
+    } finally {
+      fetching.value = false
+    }
+  }
+
+  /**
+   * Fetch fund policy data
+   */
+  const fetchFundData = async () => {
+    if (!osgo.value.id) return
+
+    fetchingFundData.value = true
+    fundError.value = null
+
+    try {
+      const result = await api.getFundPolicy(osgo.value.id)
+      fundData.value = result || null
+      console.log('[OsgoStore] Fund data fetched:', result)
+    } catch (error: any) {
+      fundError.value = error.message || 'Failed to fetch fund data'
+      console.error('[OsgoStore] Fund data fetch failed:', error)
+    } finally {
+      fetchingFundData.value = false
+    }
+  }
+
+  /**
+   * Save form data to session storage
+   */
+  const saveToSession = () => {
+    if (typeof window === 'undefined') return
+
+    try {
+      const data = {
+        osgo: osgo.value,
+        owner: owner.value,
+        applicant: applicant.value,
+        currentStep: currentStep.value,
+      }
+
+      sessionStorage.setItem(STORAGE_KEYS.OSGO_DRAFT, JSON.stringify(data))
+      console.log('[OsgoStore] Saved to session')
+    } catch (error) {
+      console.error('[OsgoStore] Error saving to session:', error)
+    }
+  }
+
+  /**
+   * Load form data from session storage
+   */
+  const loadFromSession = (): boolean => {
+    if (typeof window === 'undefined') return false
+
+    try {
+      const json = sessionStorage.getItem(STORAGE_KEYS.OSGO_DRAFT)
+      if (!json) return false
+
+      const data = JSON.parse(json)
+      osgo.value = data.osgo
+      owner.value = data.owner
+      applicant.value = data.applicant
+      currentStep.value = data.currentStep || 0
+
+      console.log('[OsgoStore] Loaded from session')
+      return true
+    } catch (error) {
+      console.error('[OsgoStore] Error loading from session:', error)
+      return false
+    }
+  }
+
+  /**
+   * Clear session storage
+   */
+  const clearSession = () => {
+    if (typeof window === 'undefined') return
+
+    sessionStorage.removeItem(STORAGE_KEYS.OSGO_DRAFT)
+    console.log('[OsgoStore] Session cleared')
+  }
+
+  /**
+   * Reset store to initial state
+   */
+  const reset = () => {
+    initialize()
+    vehicleVerified.value = false
+    ownerVerified.value = false
+    applicantVerified.value = false
+    fundData.value = null
+    saveError.value = null
+    fetchError.value = null
+  }
+
+  return {
+    // State
+    osgo,
+    owner,
+    applicant,
+    currentStep,
+    saving,
+    saveError,
+    fetching,
+    fetchError,
+    fundData,
+    fundError,
+    fetchingFundData,
+
+    // Verification
+    vehicleVerifying,
+    vehicleVerified,
+    vehicleVerifyError,
+    ownerVerifying,
+    ownerVerified,
+    ownerVerifyError,
+    applicantVerifying,
+    applicantVerified,
+    applicantVerifyError,
+
+    // Computed
+    isEditable,
+    canProceedToNextStep,
+    totalSteps,
+    progressPercentage,
+    calculatedPremium,
+    amountPayable,
+
+    // Actions
+    initialize,
+    verifyVehicle,
+    verifyOwner,
+    verifyApplicant,
+    verifyDriver,
+    addDriver,
+    updateDriver,
+    removeDriver,
+    hasDriver,
+    addOwnerAsDriver,
+    addApplicantAsDriver,
+    validateStepData,
+    nextStep,
+    previousStep,
+    goToStep,
+    createPolicy,
+    updatePolicy,
+    fetchPolicy,
+    fetchFundData,
+    saveToSession,
+    loadFromSession,
+    clearSession,
+    reset,
+  }
+})
