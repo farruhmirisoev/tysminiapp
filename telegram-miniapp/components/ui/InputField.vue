@@ -89,6 +89,7 @@ interface Props {
   inputMode?: 'text' | 'tel' | 'email' | 'numeric' | 'decimal' | 'search' | 'url'
   mask?: string
   autofocus?: boolean
+  uppercase?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -109,6 +110,7 @@ const props = withDefaults(defineProps<Props>(), {
   inputMode: 'text',
   mask: '',
   autofocus: false,
+  uppercase: false,
 })
 
 const emit = defineEmits<{
@@ -127,6 +129,10 @@ const inputId = computed(() => `input-${Math.random().toString(36).substr(2, 9)}
 const inputValue = computed({
   get: () => String(props.modelValue || ''),
   set: (value: string) => {
+    // Convert to uppercase if uppercase prop is enabled
+    if (props.uppercase) {
+      value = value.toUpperCase()
+    }
     emit('update:modelValue', value)
   },
 })
@@ -135,6 +141,15 @@ const inputValue = computed({
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement
   let value = target.value
+
+  // Convert to uppercase if uppercase prop is enabled
+  if (props.uppercase) {
+    value = value.toUpperCase()
+    // Update the input value immediately to show uppercase as user types
+    if (target.value !== value) {
+      target.value = value
+    }
+  }
 
   // Apply mask if provided
   if (props.mask) {

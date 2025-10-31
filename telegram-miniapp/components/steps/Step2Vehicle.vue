@@ -18,6 +18,7 @@
           :error="errors.govNumber"
           icon="bx bx-car"
           required
+          uppercase
           @blur="validateField('govNumber')"
         />
       </div>
@@ -32,6 +33,7 @@
           :error="errors.techPassportSeries"
           :max-length="3"
           required
+          uppercase
           @blur="validateField('techPassportSeries')"
         />
       </div>
@@ -80,25 +82,27 @@
             <span>Транспорт найден</span>
           </div>
           <div class="card-content">
-            <div class="info-row" v-if="osgo.vehicle.model">
-              <span class="info-label">Модель:</span>
-              <span class="info-value">{{ osgo.vehicle.model }}</span>
-            </div>
-            <div class="info-row" v-if="osgo.vehicle.year">
-              <span class="info-label">Год выпуска:</span>
-              <span class="info-value">{{ osgo.vehicle.year }}</span>
-            </div>
-            <div class="info-row" v-if="osgo.vehicle.color">
-              <span class="info-label">Цвет:</span>
-              <span class="info-value">{{ osgo.vehicle.color }}</span>
-            </div>
-            <div class="info-row" v-if="osgo.vehicle.engineNumber">
-              <span class="info-label">Номер двигателя:</span>
-              <span class="info-value">{{ osgo.vehicle.engineNumber }}</span>
-            </div>
-            <div class="info-row" v-if="osgo.vehicle.carType">
-              <span class="info-label">Тип:</span>
-              <span class="info-value">{{ metaStore.getLocalizedName(osgo.vehicle.carType) }}</span>
+            <div class="vehicle-info-grid">
+              <div class="vehicle-info-item" v-if="osgo.vehicle.techPassportIssueDate">
+                <div class="vehicle-info-label">Дата выдачи техпаспорта</div>
+                <div class="vehicle-info-value">{{ formatDisplayDate(osgo.vehicle.techPassportIssueDate) }}</div>
+              </div>
+              <div class="vehicle-info-item" v-if="osgo.vehicle.modelName || osgo.vehicle.model">
+                <div class="vehicle-info-label">Модель</div>
+                <div class="vehicle-info-value">{{ osgo.vehicle.modelName || osgo.vehicle.model }}</div>
+              </div>
+              <div class="vehicle-info-item" v-if="osgo.vehicle.createdYear || osgo.vehicle.year">
+                <div class="vehicle-info-label">Год выпуска</div>
+                <div class="vehicle-info-value">{{ osgo.vehicle.createdYear || osgo.vehicle.year }}</div>
+              </div>
+              <div class="vehicle-info-item" v-if="osgo.vehicle.engineNumber">
+                <div class="vehicle-info-label">Номер двигателя</div>
+                <div class="vehicle-info-value">{{ osgo.vehicle.engineNumber }}</div>
+              </div>
+              <div class="vehicle-info-item" v-if="osgo.vehicle.bodyNumber">
+                <div class="vehicle-info-label">Номер кузова/шасси</div>
+                <div class="vehicle-info-value">{{ osgo.vehicle.bodyNumber }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -116,6 +120,7 @@ import {
   validateTechPassportSeries,
   validateTechPassportNumber,
 } from '~/utils/validation'
+import { formatDisplayDate } from '~/utils/formatting'
 
 const osgoStore = useOsgoStore()
 const metaStore = useMetaStore()
@@ -280,34 +285,37 @@ const handleVerify = async () => {
 
 .card-content {
   padding: 16px;
+}
+
+.vehicle-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 1024px) {
+  .vehicle-info-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.vehicle-info-item {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
 }
 
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #F3F4F6;
-}
-
-.info-row:last-child {
-  border-bottom: none;
-}
-
-.info-label {
+.vehicle-info-label {
   font-size: 14px;
   color: #6B7280;
-  font-weight: 500;
+  line-height: 1.4;
 }
 
-.info-value {
+.vehicle-info-value {
   font-size: 14px;
   color: #1F2937;
-  font-weight: 600;
-  text-align: right;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 /* Spinner */
@@ -354,14 +362,9 @@ const handleVerify = async () => {
     font-size: 14px;
   }
 
-  .info-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .info-value {
-    text-align: left;
+  .vehicle-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 </style>
