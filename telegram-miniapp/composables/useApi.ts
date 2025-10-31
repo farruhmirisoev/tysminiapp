@@ -243,12 +243,27 @@ export const useApi = () => {
       });
 
       // Handle response format
-      if (response && typeof response === "object" && "data" in response) {
-        const data = (response as any).data;
+      if (response && typeof response === "object") {
+        // If response has 'data' property, extract it
+        const data = (response as any).data || response;
+        
+        // If data has 'error' property, throw error
         if (data.error) {
           throw new Error(data.error.message || "Vehicle verification failed");
         }
-        return data.result || data;
+        
+        // Return result if nested, otherwise return the whole data object
+        // The result might be at data.result or directly in the response
+        if (data.result) {
+          return { result: data.result, error: data.error };
+        }
+        
+        // If response itself has result/error structure, return it
+        if ((response as any).result || (response as any).error) {
+          return response;
+        }
+        
+        return data;
       }
       return response;
     } catch (error) {

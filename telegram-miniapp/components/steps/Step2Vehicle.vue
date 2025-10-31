@@ -82,27 +82,41 @@
             <span>Транспорт найден</span>
           </div>
           <div class="card-content">
+            <!-- Debug: Show vehicle object (temporary - remove after debugging) -->
+            <!-- Change v-if to false to disable debug view -->
+            <div v-if="false" style="font-size: 11px; color: #666; margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 4px; max-height: 200px; overflow-y: auto;">
+              <strong>Debug Vehicle Data:</strong><br>
+              <strong>Keys:</strong> {{ Object.keys(osgo.vehicle || {}).join(', ') }}<br>
+              <strong>Full object:</strong><br>
+              <pre style="font-size: 10px; margin-top: 5px;">{{ JSON.stringify(osgo.vehicle, null, 2) }}</pre>
+            </div>
+            
             <div class="vehicle-info-grid">
-              <div class="vehicle-info-item" v-if="osgo.vehicle.techPassportIssueDate">
+              <div class="vehicle-info-item" v-if="osgo.vehicle?.techPassportIssueDate">
                 <div class="vehicle-info-label">Дата выдачи техпаспорта</div>
                 <div class="vehicle-info-value">{{ formatDisplayDate(osgo.vehicle.techPassportIssueDate) }}</div>
               </div>
-              <div class="vehicle-info-item" v-if="osgo.vehicle.modelName || osgo.vehicle.model">
+              <div class="vehicle-info-item" v-if="osgo.vehicle?.modelName || osgo.vehicle?.model">
                 <div class="vehicle-info-label">Модель</div>
-                <div class="vehicle-info-value">{{ osgo.vehicle.modelName || osgo.vehicle.model }}</div>
+                <div class="vehicle-info-value">{{ osgo.vehicle?.modelName || osgo.vehicle?.model || '-' }}</div>
               </div>
-              <div class="vehicle-info-item" v-if="osgo.vehicle.createdYear || osgo.vehicle.year">
+              <div class="vehicle-info-item" v-if="osgo.vehicle?.createdYear || osgo.vehicle?.year">
                 <div class="vehicle-info-label">Год выпуска</div>
-                <div class="vehicle-info-value">{{ osgo.vehicle.createdYear || osgo.vehicle.year }}</div>
+                <div class="vehicle-info-value">{{ osgo.vehicle?.createdYear || osgo.vehicle?.year || '-' }}</div>
               </div>
-              <div class="vehicle-info-item" v-if="osgo.vehicle.engineNumber">
+              <div class="vehicle-info-item" v-if="osgo.vehicle?.engineNumber">
                 <div class="vehicle-info-label">Номер двигателя</div>
                 <div class="vehicle-info-value">{{ osgo.vehicle.engineNumber }}</div>
               </div>
-              <div class="vehicle-info-item" v-if="osgo.vehicle.bodyNumber">
+              <div class="vehicle-info-item" v-if="osgo.vehicle?.bodyNumber">
                 <div class="vehicle-info-label">Номер кузова/шасси</div>
                 <div class="vehicle-info-value">{{ osgo.vehicle.bodyNumber }}</div>
               </div>
+            </div>
+            
+            <!-- Fallback: Show if no fields match -->
+            <div v-if="vehicleInfoCount === 0" class="vehicle-info-empty">
+              Нет данных о транспортном средстве
             </div>
           </div>
         </div>
@@ -139,6 +153,19 @@ const canVerify = computed(() => {
     osgo.value.vehicle?.techPassportNumber &&
     Object.keys(errors.value).length === 0
   )
+})
+
+// Count how many vehicle info fields are available
+const vehicleInfoCount = computed(() => {
+  if (!osgo.value.vehicle) return 0
+  const vehicle = osgo.value.vehicle
+  let count = 0
+  if (vehicle.techPassportIssueDate) count++
+  if (vehicle.modelName || vehicle.model) count++
+  if (vehicle.createdYear || vehicle.year) count++
+  if (vehicle.engineNumber) count++
+  if (vehicle.bodyNumber) count++
+  return count
 })
 
 // Validate single field
@@ -181,6 +208,10 @@ const handleVerify = async () => {
 
   try {
     await osgoStore.verifyVehicle()
+    
+    // Debug: Log vehicle data after verification
+    console.log('[Step2Vehicle] Vehicle after verification:', osgo.value.vehicle)
+    console.log('[Step2Vehicle] Vehicle keys:', Object.keys(osgo.value.vehicle || {}))
 
     if (tg.isTelegramWebApp.value) {
       tg.hapticNotification('success')
@@ -316,6 +347,13 @@ const handleVerify = async () => {
   color: #1F2937;
   font-weight: 700;
   line-height: 1.4;
+}
+
+.vehicle-info-empty {
+  padding: 16px;
+  text-align: center;
+  color: #6B7280;
+  font-size: 14px;
 }
 
 /* Spinner */

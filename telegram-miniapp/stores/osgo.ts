@@ -235,22 +235,35 @@ export const useOsgoStore = defineStore('osgo', () => {
     vehicleVerified.value = false
 
     try {
-      const result = await api.getVehicle({
+      const response = await api.getVehicle({
         govNumber: osgo.value.vehicle.govNumber,
         techPassportSeries: osgo.value.vehicle.techPassportSeries,
         techPassportNumber: osgo.value.vehicle.techPassportNumber,
       })
 
+      // Extract vehicle data from result if nested
+      const vehicleData = response?.result || response
+
+      // Check for errors in response (but only throw if no result exists)
+      if (response?.error && !vehicleData) {
+        throw new Error(response.error.message || 'Failed to verify vehicle')
+      }
+      
+      // If we have both error and result, log warning but proceed with result
+      if (response?.error && vehicleData) {
+        console.warn('[OsgoStore] Vehicle verification returned error but also has result:', response.error)
+      }
+
       // Merge retrieved data with existing vehicle data
-      Object.assign(osgo.value.vehicle, result)
+      Object.assign(osgo.value.vehicle, vehicleData)
 
       // Update car type from metadata
-      if (result.carType && metaStore.isLoaded) {
-        osgo.value.vehicle.carType = metaStore.findCarType(result.carType.id)
+      if (vehicleData?.carType && metaStore.isLoaded) {
+        osgo.value.vehicle.carType = metaStore.findCarType(vehicleData.carType.id)
       }
 
       vehicleVerified.value = true
-      console.log('[OsgoStore] Vehicle verified:', result)
+      console.log('[OsgoStore] Vehicle verified:', vehicleData)
     } catch (error: any) {
       vehicleVerifyError.value = error.message || 'Failed to verify vehicle'
       console.error('[OsgoStore] Vehicle verification failed:', error)
