@@ -283,17 +283,29 @@ export const useOsgoStore = defineStore('osgo', () => {
 
     try {
       const result = await api.getIndividualByPassport({
-        passportSeries: owner.value.passportSeries,
+        passportSeries: owner.value.passportSeries?.toUpperCase() || '',
         passportNumber: owner.value.passportNumber,
         birthDate: owner.value.birthDate,
       })
 
-      // Merge retrieved data
-      Object.assign(owner.value, result)
-      osgo.value.beneficiary = { ...owner.value }
+      console.log('[OsgoStore] API result:', result)
+      console.log('[OsgoStore] Result has id?', !!result?.id)
+
+      // Assign the entire result to ensure reactivity
+      if (result) {
+        // Keep the original input fields and merge with result
+        owner.value = {
+          passportSeries: owner.value.passportSeries,
+          passportNumber: owner.value.passportNumber,
+          birthDate: owner.value.birthDate,
+          ...result,
+        }
+        osgo.value.beneficiary = { ...owner.value }
+      }
 
       ownerVerified.value = true
-      console.log('[OsgoStore] Owner verified:', result)
+      console.log('[OsgoStore] Owner after assignment:', owner.value)
+      console.log('[OsgoStore] Owner has id?', !!owner.value.id)
     } catch (error: any) {
       ownerVerifyError.value = error.message || 'Failed to verify owner'
       console.error('[OsgoStore] Owner verification failed:', error)
@@ -313,17 +325,27 @@ export const useOsgoStore = defineStore('osgo', () => {
 
     try {
       const result = await api.getIndividualByPassport({
-        passportSeries: applicant.value.passportSeries,
+        passportSeries: applicant.value.passportSeries?.toUpperCase() || '',
         passportNumber: applicant.value.passportNumber,
         birthDate: applicant.value.birthDate,
       })
 
-      // Merge retrieved data
-      Object.assign(applicant.value, result)
-      osgo.value.party = { ...applicant.value }
+      console.log('[OsgoStore] API result for applicant:', result)
+      
+      // Assign the entire result to ensure reactivity
+      if (result) {
+        // Keep the original input fields and merge with result
+        applicant.value = {
+          passportSeries: applicant.value.passportSeries,
+          passportNumber: applicant.value.passportNumber,
+          birthDate: applicant.value.birthDate,
+          ...result,
+        }
+        osgo.value.party = { ...applicant.value }
+      }
 
       applicantVerified.value = true
-      console.log('[OsgoStore] Applicant verified:', result)
+      console.log('[OsgoStore] Applicant after assignment:', applicant.value)
     } catch (error: any) {
       applicantVerifyError.value = error.message || 'Failed to verify applicant'
       console.error('[OsgoStore] Applicant verification failed:', error)
@@ -339,7 +361,7 @@ export const useOsgoStore = defineStore('osgo', () => {
   const verifyDriver = async (driver: Driver): Promise<Driver> => {
     try {
       const result = await api.getDriver({
-        passportSeries: driver.passportSeries,
+        passportSeries: driver.passportSeries?.toUpperCase() || '',
         passportNumber: driver.passportNumber,
         birthDate: driver.birthDate,
       })

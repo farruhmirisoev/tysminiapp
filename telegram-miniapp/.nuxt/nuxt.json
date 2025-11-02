@@ -1,9 +1,9 @@
 {
-  "_hash": "42fTJeKQNJLfUhDR8EOSpwjbJzlBaBDdJkoQlml86w8",
+  "_hash": "uukSx4I0dsVhT_7HhNHkCDjcnA14tpRpx686iXZ15w8",
   "project": {
-    "rootDir": "C:/My projects/miniapp_z/telegram-miniapp"
+    "rootDir": "/Users/farrukhmirisoyev/Myprojects/tysminiapp/telegram-miniapp"
   },
   "versions": {
-    "nuxt": "3.17.7"
+    "nuxt": "3.20.0"
   }
 }

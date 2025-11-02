@@ -91,6 +91,7 @@
                 placeholder="AA"
                 :disabled="!osgoStore.isEditable"
                 :max-length="2"
+                uppercase
                 required
               />
 

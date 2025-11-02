@@ -277,6 +277,25 @@ export function formatValidationErrors(errors: Record<string, string>): string {
 }
 
 /**
+ * Format gender value to display text
+ * @param gender - Gender value ('male' or 'female')
+ * @param locale - Current locale ('ru' or 'uz')
+ * @returns Formatted gender string
+ */
+export function formatGender(gender?: string | null, locale: string = 'ru'): string {
+  if (!gender) return ''
+  
+  const genderLower = String(gender).toLowerCase()
+  if (genderLower === 'male' || genderLower === 'мужской' || genderLower === 'erkak') {
+    return locale === 'uz' ? 'Erkak' : 'Мужской'
+  }
+  if (genderLower === 'female' || genderLower === 'женский' || genderLower === 'ayol') {
+    return locale === 'uz' ? 'Ayol' : 'Женский'
+  }
+  return String(gender)
+}
+
+/**
  * Format time ago (e.g., "2 hours ago")
  * @param date - Date to compare
  * @returns Time ago string

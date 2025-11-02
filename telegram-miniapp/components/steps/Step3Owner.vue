@@ -1,25 +1,26 @@
 <template>
   <div class="step-container">
     <div class="step-header">
-      <h2 class="step-title">Информация о владельце</h2>
+      <h2 class="step-title">{{ t('step3.title') }}</h2>
       <p class="step-description">
-        Введите данные владельца транспортного средства
+        {{ t('step3.description') }}
       </p>
     </div>
 
     <div class="step-content">
       <!-- Owner Section -->
       <div class="subsection">
-        <h3 class="subsection-title">Владелец</h3>
+        <h3 class="subsection-title">{{ t('step3.owner') }}</h3>
 
         <!-- Passport Series -->
         <div class="form-section">
           <InputField
             v-model="owner.passportSeries"
-            label="Серия паспорта"
-            placeholder="AA"
+            :label="t('step3.passportSeries')"
+            :placeholder="t('step3.passportSeriesPlaceholder')"
             :disabled="!osgoStore.isEditable"
             :max-length="2"
+            uppercase
             required
           />
         </div>
@@ -28,8 +29,8 @@
         <div class="form-section">
           <InputField
             v-model="owner.passportNumber"
-            label="Номер паспорта"
-            placeholder="1234567"
+            :label="t('step3.passportNumber')"
+            :placeholder="t('step3.passportNumberPlaceholder')"
             :disabled="!osgoStore.isEditable"
             input-mode="numeric"
             :max-length="7"
@@ -41,7 +42,7 @@
         <div class="form-section">
           <InputField
             v-model="owner.birthDate"
-            label="Дата рождения"
+            :label="t('step3.birthDate')"
             type="date"
             :disabled="!osgoStore.isEditable"
             required
@@ -59,26 +60,64 @@
             <span v-if="osgoStore.ownerVerifying" class="spinner"></span>
             <template v-else>
               <i class="bx bx-check-circle"></i>
-              <span>{{ osgoStore.ownerVerified ? 'Проверено' : 'Проверить владельца' }}</span>
+              <span>{{ osgoStore.ownerVerified ? t('step3.verified') : t('step3.verifyOwner') }}</span>
             </template>
           </button>
         </div>
 
         <!-- Owner Verified Info -->
         <Transition name="fade">
-          <div v-if="osgoStore.ownerVerified && owner.name" class="info-card success">
+          <div v-if="osgoStore.ownerVerified && owner.id" class="info-card success">
             <div class="card-header">
               <i class="bx bx-check-circle"></i>
-              <span>Владелец найден</span>
+              <span>{{ t('step3.ownerFound') }}</span>
             </div>
             <div class="card-content">
-              <div class="info-row">
-                <span class="info-label">ФИО:</span>
-                <span class="info-value">{{ owner.name }}</span>
-              </div>
-              <div class="info-row" v-if="owner.address">
-                <span class="info-label">Адрес:</span>
-                <span class="info-value">{{ owner.address }}</span>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.passportIssueDate') }}</div>
+                  <div class="info-value">{{ owner.passportIssueDate ? formatDisplayDate(owner.passportIssueDate) : '-' }}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.pinfl') }}</div>
+                  <div class="info-value">{{ owner.nationalIdentifier || '-' }}</div>
+                </div>
+                <div class="info-item info-item-wide">
+                  <div class="info-label">{{ t('step3.issuedBy') }}</div>
+                  <div class="info-value">{{ owner.passportIssuedBy || '-' }}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.lastName') }}</div>
+                  <div class="info-value">{{ owner.lastName || '-' }}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.firstName') }}</div>
+                  <div class="info-value">{{ owner.firstName || '-' }}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.middleName') }}</div>
+                  <div class="info-value">{{ owner.middleName || '-' }}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.gender') }}</div>
+                  <div class="info-value">{{ owner.gender ? formatGender(owner.gender, locale.value) : '-' }}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.country') }}</div>
+                  <div class="info-value">{{ owner.country?.langValue1 || '-' }}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.region') }}</div>
+                  <div class="info-value">{{ owner.region?.langValue1 || '-' }}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.district') }}</div>
+                  <div class="info-value">{{ owner.district?.langValue1 || '-' }}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">{{ t('step3.street') }}</div>
+                  <div class="info-value">{{ owner.street || '-' }}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -94,23 +133,24 @@
             class="checkbox"
             :disabled="!osgoStore.isEditable"
           />
-          <span>Владелец является страхователем</span>
+          <span>{{ t('step3.ownerIsApplicant') }}</span>
         </label>
       </div>
 
       <!-- Applicant Section (if different from owner) -->
       <Transition name="slide-down">
         <div v-if="!osgo.applicantIsOwner" class="subsection">
-          <h3 class="subsection-title">Страхователь</h3>
+          <h3 class="subsection-title">{{ t('step3.applicant') }}</h3>
 
           <!-- Passport Series -->
           <div class="form-section">
             <InputField
               v-model="applicant.passportSeries"
-              label="Серия паспорта"
-              placeholder="AA"
+              :label="t('step3.passportSeries')"
+              :placeholder="t('step3.passportSeriesPlaceholder')"
               :disabled="!osgoStore.isEditable"
               :max-length="2"
+              uppercase
               required
             />
           </div>
@@ -119,8 +159,8 @@
           <div class="form-section">
             <InputField
               v-model="applicant.passportNumber"
-              label="Номер паспорта"
-              placeholder="1234567"
+              :label="t('step3.passportNumber')"
+              :placeholder="t('step3.passportNumberPlaceholder')"
               :disabled="!osgoStore.isEditable"
               input-mode="numeric"
               :max-length="7"
@@ -132,7 +172,7 @@
           <div class="form-section">
             <InputField
               v-model="applicant.birthDate"
-              label="Дата рождения"
+              :label="t('step3.birthDate')"
               type="date"
               :disabled="!osgoStore.isEditable"
               required
@@ -150,26 +190,64 @@
               <span v-if="osgoStore.applicantVerifying" class="spinner"></span>
               <template v-else>
                 <i class="bx bx-check-circle"></i>
-                <span>{{ osgoStore.applicantVerified ? 'Проверено' : 'Проверить страхователя' }}</span>
+                <span>{{ osgoStore.applicantVerified ? t('step3.verified') : t('step3.verifyApplicant') }}</span>
               </template>
             </button>
           </div>
 
           <!-- Applicant Verified Info -->
           <Transition name="fade">
-            <div v-if="osgoStore.applicantVerified && applicant.name" class="info-card success">
+            <div v-if="osgoStore.applicantVerified && applicant.id" class="info-card success">
               <div class="card-header">
                 <i class="bx bx-check-circle"></i>
-                <span>Страхователь найден</span>
+                <span>{{ t('step3.applicantFound') }}</span>
               </div>
               <div class="card-content">
-                <div class="info-row">
-                  <span class="info-label">ФИО:</span>
-                  <span class="info-value">{{ applicant.name }}</span>
-                </div>
-                <div class="info-row" v-if="applicant.address">
-                  <span class="info-label">Адрес:</span>
-                  <span class="info-value">{{ applicant.address }}</span>
+                <div class="info-grid">
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.passportIssueDate') }}</div>
+                    <div class="info-value">{{ applicant.passportIssueDate ? formatDisplayDate(applicant.passportIssueDate) : '-' }}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.pinfl') }}</div>
+                    <div class="info-value">{{ applicant.nationalIdentifier || '-' }}</div>
+                  </div>
+                  <div class="info-item info-item-wide">
+                    <div class="info-label">{{ t('step3.issuedBy') }}</div>
+                    <div class="info-value">{{ applicant.passportIssuedBy || '-' }}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.lastName') }}</div>
+                    <div class="info-value">{{ applicant.lastName || '-' }}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.firstName') }}</div>
+                    <div class="info-value">{{ applicant.firstName || '-' }}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.middleName') }}</div>
+                    <div class="info-value">{{ applicant.middleName || '-' }}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.gender') }}</div>
+                    <div class="info-value">{{ applicant.gender ? formatGender(applicant.gender, locale.value) : '-' }}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.country') }}</div>
+                    <div class="info-value">{{ applicant.country?.langValue1 || '-' }}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.region') }}</div>
+                    <div class="info-value">{{ applicant.region?.langValue1 || '-' }}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.district') }}</div>
+                    <div class="info-value">{{ applicant.district?.langValue1 || '-' }}</div>
+                  </div>
+                  <div class="info-item">
+                    <div class="info-label">{{ t('step3.street') }}</div>
+                    <div class="info-value">{{ applicant.street || '-' }}</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -183,9 +261,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useOsgoStore } from '~/stores/osgo'
+import { formatDisplayDate, formatGender } from '~/utils/formatting'
 
 const osgoStore = useOsgoStore()
 const tg = useTelegramWebApp()
+const { locale, t } = useI18n()
 
 const osgo = computed(() => osgoStore.osgo)
 const owner = computed(() => osgoStore.owner)
@@ -328,6 +408,36 @@ const verifyApplicant = async () => {
   gap: 12px;
 }
 
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-item-wide {
+  grid-column: 1 / -1;
+}
+
+.info-label {
+  font-size: 13px;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #1F2937;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+/* Legacy info-row styles for backward compatibility */
 .info-row {
   display: flex;
   justify-content: space-between;
@@ -338,19 +448,6 @@ const verifyApplicant = async () => {
 
 .info-row:last-child {
   border-bottom: none;
-}
-
-.info-label {
-  font-size: 14px;
-  color: #6B7280;
-  font-weight: 500;
-}
-
-.info-value {
-  font-size: 14px;
-  color: #1F2937;
-  font-weight: 600;
-  text-align: right;
 }
 
 .spinner {
@@ -404,6 +501,15 @@ const verifyApplicant = async () => {
 
   .subsection {
     padding: 16px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .info-item-wide {
+    grid-column: 1;
   }
 
   .info-row {

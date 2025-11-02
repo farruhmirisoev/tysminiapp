@@ -294,15 +294,28 @@ export const useApi = () => {
         },
       );
 
-      // Handle response format
-      if (response && typeof response === "object" && "data" in response) {
-        const data = (response as any).data;
-        if (data.error) {
-          throw new Error(
-            data.error.message || "Individual verification failed",
-          );
+      // Handle response format - API returns { result: {...} } or { data: { result: {...} } }
+      if (response && typeof response === "object") {
+        // Check if response has nested data structure
+        if ("data" in response) {
+          const data = (response as any).data;
+          if (data.error) {
+            throw new Error(
+              data.error.message || "Individual verification failed",
+            );
+          }
+          return data.result || data;
         }
-        return data.result || data;
+        // Check if response has result directly
+        if ("result" in response) {
+          const result = (response as any).result;
+          if (result && typeof result === "object" && "error" in result) {
+            throw new Error(
+              result.error?.message || "Individual verification failed",
+            );
+          }
+          return result;
+        }
       }
       return response;
     } catch (error) {

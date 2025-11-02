@@ -1,18 +1,1 @@
-export default {
-  "@vite/client": {
-    "prefetch": true,
-    "isEntry": true,
-    "file": "@vite/client",
-    "css": [],
-    "module": true,
-    "resourceType": "script"
-  },
-  "C:/My projects/miniapp_z/telegram-miniapp/node_modules/nuxt/dist/app/entry.js": {
-    "resourceType": "script",
-    "module": true,
-    "prefetch": true,
-    "preload": true,
-    "isEntry": true,
-    "file": "C:/My projects/miniapp_z/telegram-miniapp/node_modules/nuxt/dist/app/entry.js"
-  }
-}
+export default ({"@vite/client":{prefetch:!0,isEntry:!0,file:"@vite/client",css:[],module:!0,resourceType:"script",dynamicImports:void 0},"/Users/farrukhmirisoyev/Myprojects/tysminiapp/telegram-miniapp/node_modules/nuxt/dist/app/entry.js":{resourceType:"script",module:!0,prefetch:!0,preload:!0,isEntry:!0,file:"/Users/farrukhmirisoyev/Myprojects/tysminiapp/telegram-miniapp/node_modules/nuxt/dist/app/entry.js",dynamicImports:void 0}})
