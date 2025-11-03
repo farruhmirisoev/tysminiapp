@@ -12,62 +12,71 @@
       <div class="summary-section">
         <h3 class="section-title">
           <i class="bx bx-file-blank"></i>
-          <span>Данные полиса</span>
+          <span>Информация о страховке</span>
         </h3>
+
+        <!-- Owner Info -->
+        <div class="summary-card">
+          <div class="card-title">Собственник</div>
+          <div class="card-content">
+            <div class="info-row">
+              <span class="info-value-full">
+                {{ owner.name || '-' }}{{ owner.birthDate ? ` (${owner.birthDate})` : '' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Applicant Info -->
+        <div class="summary-card">
+          <div class="card-title">Заявитель</div>
+          <div class="card-content">
+            <div class="info-row">
+              <span class="info-value-full">
+                {{ (osgo.applicantIsOwner ? owner : applicant).name || '-' }}{{ (osgo.applicantIsOwner ? owner : applicant).birthDate ? ` (${(osgo.applicantIsOwner ? owner : applicant).birthDate})` : '' }}
+              </span>
+            </div>
+          </div>
+        </div>
 
         <!-- Vehicle Info -->
         <div class="summary-card">
           <div class="card-title">Транспортное средство</div>
           <div class="card-content">
             <div class="info-row">
-              <span class="info-label">Гос. номер:</span>
-              <span class="info-value">{{ osgo.vehicle?.govNumber || '-' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Тип ТС:</span>
-              <span class="info-value">{{ getCarTypeName() }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Модель:</span>
-              <span class="info-value">{{ osgo.vehicle?.model || '-' }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Owner Info -->
-        <div class="summary-card">
-          <div class="card-title">Владелец</div>
-          <div class="card-content">
-            <div class="info-row">
-              <span class="info-label">ФИО:</span>
-              <span class="info-value">{{ owner.name || '-' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Паспорт:</span>
-              <span class="info-value">
-                {{ formatPassport(owner.passportSeries, owner.passportNumber) }}
+              <span class="info-value-full">
+                {{ osgo.vehicle?.modelName || osgo.vehicle?.model || '-' }}
+                {{ osgo.vehicle?.govNumber ? ` (${osgo.vehicle.govNumber})` : '' }}
               </span>
             </div>
           </div>
         </div>
+
 
         <!-- Period & Territory -->
         <div class="summary-card">
           <div class="card-title">Условия страхования</div>
           <div class="card-content">
             <div class="info-row">
-              <span class="info-label">Период:</span>
-              <span class="info-value">{{ getPeriodName() }}</span>
+              <span class="info-value-full">{{ getPeriodName() }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Территория:</span>
-              <span class="info-value">{{ getAreaName() }}</span>
+              <span class="info-value-full">{{ getAreaName() }}</span>
             </div>
             <div class="info-row">
-              <span class="info-label">Водители:</span>
-              <span class="info-value">
-                {{ osgo.driversLimited ? `Ограниченно (${osgo.drivers.length})` : 'Без ограничений' }}
+              <span class="info-value-full">
+                {{ osgo.driversLimited ? `Ограниченно (${osgo.drivers?.length || 0})` : 'Не ограничено' }}
               </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Insurance Amount -->
+        <div class="summary-card">
+          <div class="card-title">Страховая сумма</div>
+          <div class="card-content">
+            <div class="info-row">
+              <span class="info-value-full">{{ formatPrice(COMPENSATION) }} сум</span>
             </div>
           </div>
         </div>
@@ -103,6 +112,16 @@
             required
           />
         </div>
+
+        <div v-if="osgo.contractEndDate" class="form-section">
+          <InputField
+            :model-value="osgo.contractEndDate"
+            label="Дата окончания действия полиса"
+            type="date"
+            icon="bx bx-calendar"
+            disabled
+          />
+        </div>
       </div>
 
       <!-- Premium Display -->
@@ -110,13 +129,10 @@
         <div class="premium-card-large">
           <div class="premium-header">
             <i class="bx bx-shield-alt-2"></i>
-            <span>Итоговая сумма</span>
+            <span>Страховая премия</span>
           </div>
           <div class="premium-amount-large">
-            {{ formatPrice(osgoStore.calculatedPremium) }}
-          </div>
-          <div class="premium-details-text">
-            Страховая премия за выбранный период
+            {{ formatPrice(osgoStore.calculatedPremium) }} сум
           </div>
         </div>
       </div>
@@ -192,6 +208,7 @@ import { computed, ref } from 'vue'
 import { useOsgoStore } from '~/stores/osgo'
 import { useMetaStore } from '~/stores/meta'
 import { formatPrice, formatPassport } from '~/utils/formatting'
+import { COMPENSATION } from '~/utils/constants'
 
 const osgoStore = useOsgoStore()
 const metaStore = useMetaStore()
@@ -409,6 +426,13 @@ const handlePayment = async (method: 'payme' | 'click' | 'uzum') => {
   color: #1F2937;
   font-weight: 600;
   text-align: right;
+}
+
+.info-value-full {
+  color: #1F2937;
+  font-weight: 600;
+  text-align: left;
+  width: 100%;
 }
 
 .form-section {
