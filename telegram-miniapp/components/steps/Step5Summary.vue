@@ -196,6 +196,7 @@ import { formatPrice, formatPassport } from '~/utils/formatting'
 const osgoStore = useOsgoStore()
 const metaStore = useMetaStore()
 const tg = useTelegramWebApp()
+const api = useApi()
 
 const osgo = computed(() => osgoStore.osgo)
 const owner = computed(() => osgoStore.owner)
@@ -240,6 +241,15 @@ const getAreaName = (): string => {
 const handlePayment = async (method: 'payme' | 'click' | 'uzum') => {
   if (saving.value) return
 
+  // Validate phone number
+  if (!phone.value || phone.value.trim() === '') {
+    if (tg.isTelegramWebApp.value) {
+      tg.hapticNotification('error')
+      await tg.showAlert('Пожалуйста, введите номер телефона')
+    }
+    return
+  }
+
   try {
     saving.value = true
 
@@ -248,26 +258,49 @@ const handlePayment = async (method: 'payme' | 'click' | 'uzum') => {
       tg.hapticImpact('medium')
     }
 
-    // Create policy
-    const policyId = await osgoStore.createPolicy()
-    console.log('[Step5Summary] Policy created:', policyId)
-
-    // In real implementation, redirect to payment gateway
-    // For now, show success message
-    if (tg.isTelegramWebApp.value) {
-      tg.hapticNotification('success')
-      await tg.showAlert('Полис создан! Перенаправление на оплату...')
+    // Ensure policy exists - create if doesn't exist
+    let policyId = osgo.value.id
+    if (!policyId) {
+      policyId = await osgoStore.createPolicy()
+      console.log('[Step5Summary] Policy created:', policyId)
     }
 
-    // TODO: Integrate with payment gateway
-    // await api.sendPaymentLink(method, policyId, phone.value, osgoStore.calculatedPremium)
+    // Map payment method to API method name
+    const apiMethod = method === 'payme' 
+      ? 'sendSmsPayme' 
+      : method === 'click' 
+      ? 'sendSmsClick' 
+      : 'sendSmsUzum'
+
+    // Send payment link via SMS
+    await api.sendPaymentLink(
+      apiMethod as 'sendSmsPayme' | 'sendSmsClick' | 'sendSmsUzum',
+      policyId,
+      phone.value,
+      osgoStore.calculatedPremium
+    )
+
+    console.log('[Step5Summary] Payment link sent via', apiMethod)
+
+    // Show success message
+    if (tg.isTelegramWebApp.value) {
+      tg.hapticNotification('success')
+      await tg.showAlert(
+        `Ссылка на оплату отправлена на номер ${phone.value}. Проверьте SMS.`
+      )
+    }
+
+    // Refresh fund data to check payment status
+    await osgoStore.fetchFundData()
 
   } catch (error: any) {
     console.error('[Step5Summary] Payment error:', error)
 
     if (tg.isTelegramWebApp.value) {
       tg.hapticNotification('error')
-      await tg.showAlert(error.message || 'Ошибка при создании полиса')
+      await tg.showAlert(
+        error.message || 'Ошибка при отправке ссылки на оплату'
+      )
     }
   } finally {
     saving.value = false

@@ -71,16 +71,26 @@ export const useApi = () => {
     options?: {
       method?: string;
       body?: any;
+      data?: any;
       params?: any;
     },
   ) => {
     try {
+      // Use body if provided, otherwise use data (for compatibility with website)
+      const requestBody = options?.body || options?.data;
+      
+      // Build headers - ensure Content-Type is set for POST with body
+      const headers: Record<string, string> = { ...authHeader() }
+      if (requestBody && (options?.method === 'POST' || options?.method === 'PUT' || options?.method === 'PATCH')) {
+        headers['Content-Type'] = 'application/json'
+      }
+      
       const response = await $fetch(
         `${API_BASE_URL}services/${service}/${method}`,
         {
           method: options?.method || "GET",
-          headers: authHeader(),
-          body: options?.body,
+          headers,
+          body: requestBody,
           params: options?.params,
         },
       );
@@ -176,6 +186,18 @@ export const useApi = () => {
         body: params,
       });
     } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const fetchUserInfo = async () => {
+    try {
+      const response = await $fetch(`${API_BASE_URL}userInfo/`, {
+        headers: authHeader(),
+      });
+      return response;
+    } catch (error) {
+      console.error("[useApi] fetchUserInfo error:", error);
       handleError(error);
     }
   };
@@ -364,17 +386,36 @@ export const useApi = () => {
         "createOsgoApplication",
         {
           method: "POST",
-          body: params,
+          data: params,
         },
       );
 
-      // Handle response format
-      if (response && typeof response === "object" && "data" in response) {
-        const data = (response as any).data;
-        if (data.error) {
-          throw new Error(data.error.message || "Failed to create application");
+      // Handle response format - API returns { data: { result: { id } } } or { result: { id } }
+      // If response is a string, it's likely the ID directly
+      if (typeof response === "string") {
+        return response;
+      }
+
+      if (response && typeof response === "object") {
+        // Check if response has nested data structure
+        if ("data" in response) {
+          const data = (response as any).data;
+          if (data.error) {
+            throw new Error(data.error.message || "Failed to create application");
+          }
+          return data.result?.id || data.id;
         }
-        return data.result?.id || data.id;
+        // Check if response has result directly
+        if ("result" in response) {
+          const result = (response as any).result;
+          if (result && typeof result === "object") {
+            if ("error" in result) {
+              throw new Error(result.error?.message || "Failed to create application");
+            }
+            return result.id;
+          }
+          return result;
+        }
       }
       return response;
     } catch (error) {
@@ -390,7 +431,7 @@ export const useApi = () => {
         "updateOsgoApplication",
         {
           method: "POST",
-          body: params,
+          data: params,
         },
       );
 
@@ -413,7 +454,7 @@ export const useApi = () => {
     try {
       const response = await invokeService("OsgoService", "getFundPolicy", {
         method: "POST",
-        body: { id },
+        data: { id },
       });
 
       // Handle response format
@@ -431,14 +472,51 @@ export const useApi = () => {
     }
   };
 
+  const sendPaymentLink = async (
+    method: "sendSmsPayme" | "sendSmsClick" | "sendSmsUzum",
+    contractId: string,
+    phone: string,
+    amount: number
+  ) => {
+    try {
+      const response = await invokeService("BillingService", method, {
+        method: "POST",
+        body: {
+          object: {
+            phone: phone.replace(/[+()-]/g, ""),
+            contractId: contractId,
+            amount: amount,
+          },
+        },
+      });
+
+      // Handle response format
+      if (response && typeof response === "object" && "data" in response) {
+        const data = (response as any).data;
+        if (data.error) {
+          throw new Error(
+            data.error.message || "Failed to send payment link"
+          );
+        }
+        return data.result || data;
+      }
+      return response;
+    } catch (error) {
+      console.error("[useApi] sendPaymentLink error:", error);
+      throw error;
+    }
+  };
+
   return {
     invokeService,
     invokeQuery,
     fetchEntity,
     fetchEntities,
     createEntity,
+    sendPaymentLink,
     searchEntities,
     signIn,
+    fetchUserInfo,
     uploadFile,
     getToken,
     setToken,

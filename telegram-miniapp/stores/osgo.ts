@@ -510,15 +510,93 @@ export const useOsgoStore = defineStore('osgo', () => {
     saveError.value = null
 
     try {
-      // Prepare data for submission
-      const data = {
-        ...osgo.value,
-        party: osgo.value.applicantIsOwner ? owner.value : applicant.value,
-        beneficiary: owner.value,
+      // Fetch user info first - API requires full user object
+      let userInfo: any = null
+      try {
+        userInfo = await api.fetchUserInfo()
+        console.log('[OsgoStore] User info fetched:', userInfo)
+      } catch (error) {
+        console.warn('[OsgoStore] Failed to fetch user info, using minimal user object:', error)
+        // Fallback: construct minimal user object matching API structure
+        userInfo = {
+          id: undefined,
+          login: undefined,
+          name: null,
+          firstName: null,
+          middleName: null,
+          lastName: null,
+          position: null,
+          email: null,
+          timeZone: 'Asia/Tashkent',
+          language: 'ru',
+          locale: 'ru',
+          _instanceName: '',
+        }
       }
+
+      // Prepare party data with cleaned phone number (only for party, not beneficiary)
+      const party = osgo.value.applicantIsOwner ? { ...owner.value } : { ...applicant.value }
+      if (party.phone) {
+        party.phone = party.phone.replace(/[+()-]/g, '')
+      }
+
+      // Beneficiary keeps original phone format
+      const beneficiary = { ...owner.value }
+
+      // Ensure discountType is set (required by API)
+      const discountType = osgo.value.discountType || metaStore.meta?.beneficiary?.find(
+        ({ coefficient }) => coefficient === 1
+      )
+
+      // Prepare osgo payload - ensure all nested objects are included
+      // The API expects full objects with all properties, not just IDs
+      const osgoPayload = {
+        party: party, // Full Individual object (already has country, district, region from verification)
+        beneficiary: beneficiary, // Full Individual object
+        vehicle: osgo.value.vehicle, // Full Vehicle object (already has carType from verification)
+        period: osgo.value.period, // Full period object
+        drivedArea: osgo.value.drivedArea, // Full drivedArea object
+        discountType: discountType, // Full discountType object
+        drivers: osgo.value.drivers || [], // Array of Driver objects
+        contractStartDate: osgo.value.contractStartDate,
+        contractEndDate: osgo.value.contractEndDate,
+        status: osgo.value.status || 'DRAFT',
+        applicantIsOwner: osgo.value.applicantIsOwner ?? true,
+        periodType: osgo.value.periodType || osgo.value.period?.periodType || 'ONE_YEAR',
+        premium: osgo.value.premium || 0,
+        driversLimited: osgo.value.driversLimited ?? false,
+        incidentCoeff: osgo.value.incidentCoeff,
+      }
+
+      // Prepare data for submission - API expects { user: {...}, osgo: {...} }
+      const data = {
+        user: userInfo, // Full user object
+        osgo: osgoPayload,
+      }
+
+      console.log('[OsgoStore] Creating policy with payload structure:', {
+        user: { id: userInfo?.id, login: userInfo?.login },
+        osgo: {
+          party: { id: party.id, name: party.name },
+          beneficiary: { id: beneficiary.id, name: beneficiary.name },
+          vehicle: { id: osgo.value.vehicle?.id, govNumber: osgo.value.vehicle?.govNumber },
+          period: { id: osgo.value.period?.id },
+          drivedArea: { id: osgo.value.drivedArea?.id },
+          discountType: { id: discountType?.id },
+        },
+      })
 
       const policyId = await api.createOsgoApplication(data)
       osgo.value.id = policyId
+
+      // Update party reference with cleaned phone
+      if (osgo.value.applicantIsOwner) {
+        owner.value.phone = party.phone
+        osgo.value.party = owner.value
+      } else {
+        applicant.value.phone = party.phone
+        osgo.value.party = applicant.value
+      }
 
       console.log('[OsgoStore] Policy created:', policyId)
       return policyId
