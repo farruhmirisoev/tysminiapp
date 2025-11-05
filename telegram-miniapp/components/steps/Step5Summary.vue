@@ -76,7 +76,7 @@
           <div class="card-title">Страховая сумма</div>
           <div class="card-content">
             <div class="info-row">
-              <span class="info-value-full">{{ formatPrice(COMPENSATION) }} сум</span>
+              <span class="info-value-full">{{ formatPriceNumber(COMPENSATION) }} сум</span>
             </div>
           </div>
         </div>
@@ -106,7 +106,9 @@
           <InputField
             v-model="osgo.contractStartDate"
             label="Дата начала действия полиса"
-            type="date"
+            type="text"
+            date-mask
+            placeholder="DD-MM-YYYY"
             icon="bx bx-calendar"
             :disabled="!osgoStore.isEditable"
             required
@@ -117,7 +119,9 @@
           <InputField
             :model-value="osgo.contractEndDate"
             label="Дата окончания действия полиса"
-            type="date"
+            type="text"
+            date-mask
+            placeholder="DD-MM-YYYY"
             icon="bx bx-calendar"
             disabled
           />
@@ -209,6 +213,11 @@ import { useOsgoStore } from '~/stores/osgo'
 import { useMetaStore } from '~/stores/meta'
 import { formatPrice, formatPassport } from '~/utils/formatting'
 import { COMPENSATION } from '~/utils/constants'
+
+// Format number with thousand separators (like website's formatPirce)
+const formatPriceNumber = (value: number): string => {
+  return value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1 ')
+}
 
 const osgoStore = useOsgoStore()
 const metaStore = useMetaStore()

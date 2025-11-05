@@ -1,16 +1,22 @@
 <template>
-  <div id="app" class="min-h-screen bg-background">
+  <div id="app" class="min-h-screen bg-background" :lang="localeLang">
     <NuxtPage />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
 
 // Initialize Telegram WebApp
 const tg = useTelegramWebApp()
 const metaStore = useMetaStore()
 const api = useApi()
+const { locale } = useI18n()
+
+// Get locale for lang attribute (use ru-RU or uz-UZ format)
+const localeLang = computed(() => {
+  return locale.value === 'uz' ? 'uz-UZ' : 'ru-RU'
+})
 
 // Initialize app
 onMounted(async () => {

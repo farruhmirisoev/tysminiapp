@@ -18,13 +18,14 @@
         :id="inputId"
         ref="inputRef"
         v-model="inputValue"
-        :type="type"
-        :placeholder="placeholder"
+        :type="dateMask ? 'text' : type"
+        :placeholder="dateMask ? (placeholder || 'DD-MM-YYYY') : placeholder"
         :disabled="disabled"
         :readonly="readonly"
-        :maxlength="maxLength"
+        :maxlength="dateMask ? 10 : maxLength"
         :autocomplete="autocomplete"
-        :inputmode="inputMode"
+        :inputmode="dateMask ? 'numeric' : inputMode"
+        :lang="inputLocale"
         class="input"
         :class="{
           'input-with-icon-left': icon,
@@ -90,6 +91,7 @@ interface Props {
   mask?: string
   autofocus?: boolean
   uppercase?: boolean
+  dateMask?: boolean // Enable DD-MM-YYYY date masking
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -111,6 +113,7 @@ const props = withDefaults(defineProps<Props>(), {
   mask: '',
   autofocus: false,
   uppercase: false,
+  dateMask: false,
 })
 
 const emit = defineEmits<{
@@ -121,18 +124,62 @@ const emit = defineEmits<{
   input: [value: string | number]
 }>()
 
+// Get locale for date inputs
+const { locale } = useI18n()
+const inputLocale = computed(() => {
+  if (props.type === 'date') {
+    return locale.value === 'uz' ? 'uz-UZ' : 'ru-RU'
+  }
+  return undefined
+})
+
 // Refs
 const inputRef = ref<HTMLInputElement | null>(null)
 const inputId = computed(() => `input-${Math.random().toString(36).substr(2, 9)}`)
 
-// Internal value
+// Internal value - convert between API format (YYYY-MM-DD) and display format (DD-MM-YYYY)
 const inputValue = computed({
-  get: () => String(props.modelValue || ''),
+  get: () => {
+    const value = String(props.modelValue || '')
+    // If dateMask is enabled, convert from YYYY-MM-DD to DD-MM-YYYY for display
+    if (props.dateMask && value) {
+      // Check if it's already in DD-MM-YYYY format (partial or complete)
+      if (/^\d{1,2}(-\d{1,2}(-\d{0,4})?)?$/.test(value) || /^\d{2}-\d{2}-\d{4}$/.test(value)) {
+        return value
+      }
+      // Convert from YYYY-MM-DD to DD-MM-YYYY
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        const parts = value.split('-')
+        return `${parts[2]}-${parts[1]}-${parts[0]}`
+      }
+    }
+    return value
+  },
   set: (value: string) => {
     // Convert to uppercase if uppercase prop is enabled
     if (props.uppercase) {
       value = value.toUpperCase()
     }
+    
+    // If dateMask is enabled, convert from DD-MM-YYYY to YYYY-MM-DD for API
+    if (props.dateMask && value) {
+      // Check if it's already in YYYY-MM-DD format (shouldn't happen during typing, but handle it)
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        emit('update:modelValue', value)
+        return
+      }
+      // Convert from complete DD-MM-YYYY to YYYY-MM-DD
+      if (/^\d{2}-\d{2}-\d{4}$/.test(value)) {
+        const parts = value.split('-')
+        emit('update:modelValue', `${parts[2]}-${parts[1]}-${parts[0]}`)
+        return
+      }
+      // For partial dates (while typing), emit as-is (DD-MM-YYYY format)
+      // The API conversion will happen when the date is complete
+      emit('update:modelValue', value)
+      return
+    }
+    
     emit('update:modelValue', value)
   },
 })
@@ -151,7 +198,21 @@ const handleInput = (event: Event) => {
     }
   }
 
-  // Apply mask if provided
+  // Apply date mask if enabled (takes priority)
+  if (props.dateMask) {
+    const maskedValue = applyDateMask(value)
+    // Update the input value immediately to show masked format
+    if (target.value !== maskedValue) {
+      target.value = maskedValue
+    }
+    // For date mask, emit the masked value (DD-MM-YYYY) - the computed setter will convert to YYYY-MM-DD
+    // Only emit if we have a valid format or partial input
+    emit('update:modelValue', maskedValue)
+    emit('input', maskedValue)
+    return
+  }
+  
+  // Apply regular mask if provided
   if (props.mask) {
     value = applyMask(value)
   }
@@ -161,6 +222,20 @@ const handleInput = (event: Event) => {
 }
 
 const handleBlur = () => {
+  // If dateMask is enabled, validate and convert complete dates on blur
+  if (props.dateMask && inputValue.value) {
+    const value = String(inputValue.value)
+    // Convert complete DD-MM-YYYY to YYYY-MM-DD
+    if (/^\d{2}-\d{2}-\d{4}$/.test(value)) {
+      const parts = value.split('-')
+      const converted = `${parts[2]}-${parts[1]}-${parts[0]}`
+      // Validate the date
+      const date = new Date(converted)
+      if (!isNaN(date.getTime())) {
+        emit('update:modelValue', converted)
+      }
+    }
+  }
   emit('blur')
 }
 
@@ -183,6 +258,11 @@ const handleClear = () => {
 
 // Apply input mask
 const applyMask = (value: string): string => {
+  // Date mask (DD-MM-YYYY) takes priority
+  if (props.dateMask) {
+    return applyDateMask(value)
+  }
+  
   if (!props.mask) return value
 
   // Simple mask implementation
@@ -202,6 +282,21 @@ const applyMask = (value: string): string => {
   }
 
   return maskedValue
+}
+
+// Apply date mask (DD-MM-YYYY)
+const applyDateMask = (value: string): string => {
+  // Remove all non-digit characters
+  const digits = value.replace(/\D/g, '')
+  
+  // Limit to 8 digits (DDMMYYYY)
+  const limitedDigits = digits.slice(0, 8)
+  
+  // Format as DD-MM-YYYY
+  if (limitedDigits.length === 0) return ''
+  if (limitedDigits.length <= 2) return limitedDigits
+  if (limitedDigits.length <= 4) return `${limitedDigits.slice(0, 2)}-${limitedDigits.slice(2)}`
+  return `${limitedDigits.slice(0, 2)}-${limitedDigits.slice(2, 4)}-${limitedDigits.slice(4)}`
 }
 
 // Focus input programmatically

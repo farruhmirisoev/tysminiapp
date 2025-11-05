@@ -315,3 +315,87 @@ export function formatTimeAgo(date: string | Date): string {
 
   return formatDisplayDate(date)
 }
+
+/**
+ * Convert date from YYYY-MM-DD (API format) to DD-MM-YYYY (display format)
+ * @param date - Date in YYYY-MM-DD format
+ * @returns Date in DD-MM-YYYY format
+ */
+export function dateToDisplayFormat(date: string): string {
+  if (!date) return ''
+  
+  // If already in DD-MM-YYYY format, return as is
+  if (/^\d{2}-\d{2}-\d{4}$/.test(date)) {
+    return date
+  }
+  
+  // Convert from YYYY-MM-DD to DD-MM-YYYY
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    const parts = date.split('-')
+    return `${parts[2]}-${parts[1]}-${parts[0]}`
+  }
+  
+  // Try using dayjs
+  try {
+    return dayjs(date).format('DD-MM-YYYY')
+  } catch {
+    return date
+  }
+}
+
+/**
+ * Convert date from DD-MM-YYYY (display format) to YYYY-MM-DD (API format)
+ * @param date - Date in DD-MM-YYYY format
+ * @returns Date in YYYY-MM-DD format
+ */
+export function dateToApiFormat(date: string): string {
+  if (!date) return ''
+  
+  // If already in YYYY-MM-DD format, return as is
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return date
+  }
+  
+  // Convert from DD-MM-YYYY to YYYY-MM-DD
+  if (/^\d{2}-\d{2}-\d{4}$/.test(date)) {
+    const parts = date.split('-')
+    return `${parts[2]}-${parts[1]}-${parts[0]}`
+  }
+  
+  // Try using dayjs
+  try {
+    return dayjs(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
+  } catch {
+    return date
+  }
+}
+
+/**
+ * Validate date in DD-MM-YYYY format
+ * @param date - Date string to validate
+ * @returns true if valid, false otherwise
+ */
+export function isValidDate(date: string): boolean {
+  if (!date) return false
+  
+  // Check format DD-MM-YYYY
+  if (!/^\d{2}-\d{2}-\d{4}$/.test(date)) return false
+  
+  const parts = date.split('-')
+  const day = parseInt(parts[0], 10)
+  const month = parseInt(parts[1], 10)
+  const year = parseInt(parts[2], 10)
+  
+  // Basic validation
+  if (month < 1 || month > 12) return false
+  if (day < 1 || day > 31) return false
+  if (year < 1900 || year > 2100) return false
+  
+  // Check if date is valid using dayjs
+  try {
+    const d = dayjs(`${year}-${month}-${day}`, 'YYYY-MM-DD')
+    return d.isValid() && d.format('YYYY-MM-DD') === `${year}-${month}-${day}`
+  } catch {
+    return false
+  }
+}

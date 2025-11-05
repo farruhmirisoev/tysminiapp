@@ -1782,7 +1782,7 @@ function findBrowserLocale(locales, browserLocales) {
   return matchedLocales.sort(compareBrowserLocale).at(0)?.code ?? "";
 }
 
-const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"},{"name":"description","content":"Purchase OSGO insurance policy through Telegram"}],"link":[{"rel":"stylesheet","href":"https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"}],"style":[],"script":[{"src":"https://telegram.org/js/telegram-web-app.js","tagPosition":"head"}],"noscript":[],"title":"ECCLIVO Insurance - Telegram Mini App"};
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"},{"name":"description","content":"Purchase OSGO insurance policy through Telegram"}],"link":[{"rel":"stylesheet","href":"https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"}],"style":[],"script":[{"src":"https://telegram.org/js/telegram-web-app.js","tagPosition":"head"}],"noscript":[],"title":"ECCLIVO Insurance - Telegram Mini App","htmlAttrs":{"lang":"ru-RU"}};
 
 const appRootTag = "div";
 
@@ -1978,7 +1978,7 @@ const _A4av4C1IvNm55xTCAAktSv3cOMnjce6XJBVw5UOT2g = defineNitroPlugin(async (nit
     const localeSegment = detector.route(event.path);
     const pathLocale = isSupportedLocale(localeSegment) && localeSegment || void 0;
     const path = (pathLocale && url.pathname.slice(pathLocale.length + 1)) ?? url.pathname;
-    if (!url.pathname.includes("/_i18n/jPSpr1Aq") && !isExistingNuxtRoute(path)) {
+    if (!url.pathname.includes("/_i18n/u4L7Xs_r") && !isExistingNuxtRoute(path)) {
       return;
     }
     const resolved = resolveRedirectPath(event, path, pathLocale, ctx.vueI18nOptions.defaultLocale, detector);

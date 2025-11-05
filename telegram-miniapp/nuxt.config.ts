@@ -45,6 +45,9 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "ECCLIVO Insurance - Telegram Mini App",
+      htmlAttrs: {
+        lang: "ru-RU",
+      },
       meta: [
         { charset: "utf-8" },
         {

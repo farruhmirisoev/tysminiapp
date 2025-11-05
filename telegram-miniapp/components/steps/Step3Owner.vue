@@ -43,7 +43,9 @@
           <InputField
             v-model="owner.birthDate"
             :label="t('step3.birthDate')"
-            type="date"
+            type="text"
+            date-mask
+            placeholder="31-12-2025"
             :disabled="!osgoStore.isEditable"
             required
           />
@@ -173,7 +175,9 @@
             <InputField
               v-model="applicant.birthDate"
               :label="t('step3.birthDate')"
-              type="date"
+              type="text"
+              date-mask
+              placeholder="DD-MM-YYYY"
               :disabled="!osgoStore.isEditable"
               required
             />

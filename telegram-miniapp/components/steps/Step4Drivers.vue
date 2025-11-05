@@ -110,7 +110,9 @@
               <InputField
                 v-model="driver.birthDate"
                 label="Дата рождения"
-                type="date"
+                type="text"
+                date-mask
+                placeholder="DD-MM-YYYY"
                 :disabled="!osgoStore.isEditable"
                 required
               />
