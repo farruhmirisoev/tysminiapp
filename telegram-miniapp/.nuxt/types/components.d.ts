@@ -22,6 +22,7 @@ interface _GlobalComponents {
   'Step3Owner': typeof import("../../components/steps/Step3Owner.vue")['default']
   'Step4Drivers': typeof import("../../components/steps/Step4Drivers.vue")['default']
   'Step5Summary': typeof import("../../components/steps/Step5Summary.vue")['default']
+  'Step6Payment': typeof import("../../components/steps/Step6Payment.vue")['default']
   'CheckButton': typeof import("../../components/ui/CheckButton.vue")['default']
   'InputField': typeof import("../../components/ui/InputField.vue")['default']
   'LanguageSwitcher': typeof import("../../components/ui/LanguageSwitcher.vue")['default']
@@ -58,6 +59,7 @@ interface _GlobalComponents {
   'LazyStep3Owner': LazyComponent<typeof import("../../components/steps/Step3Owner.vue")['default']>
   'LazyStep4Drivers': LazyComponent<typeof import("../../components/steps/Step4Drivers.vue")['default']>
   'LazyStep5Summary': LazyComponent<typeof import("../../components/steps/Step5Summary.vue")['default']>
+  'LazyStep6Payment': LazyComponent<typeof import("../../components/steps/Step6Payment.vue")['default']>
   'LazyCheckButton': LazyComponent<typeof import("../../components/ui/CheckButton.vue")['default']>
   'LazyInputField': LazyComponent<typeof import("../../components/ui/InputField.vue")['default']>
   'LazyLanguageSwitcher': LazyComponent<typeof import("../../components/ui/LanguageSwitcher.vue")['default']>

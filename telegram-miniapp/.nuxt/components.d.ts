@@ -22,6 +22,7 @@ export const Step2Vehicle: typeof import("../components/steps/Step2Vehicle.vue")
 export const Step3Owner: typeof import("../components/steps/Step3Owner.vue")['default']
 export const Step4Drivers: typeof import("../components/steps/Step4Drivers.vue")['default']
 export const Step5Summary: typeof import("../components/steps/Step5Summary.vue")['default']
+export const Step6Payment: typeof import("../components/steps/Step6Payment.vue")['default']
 export const CheckButton: typeof import("../components/ui/CheckButton.vue")['default']
 export const InputField: typeof import("../components/ui/InputField.vue")['default']
 export const LanguageSwitcher: typeof import("../components/ui/LanguageSwitcher.vue")['default']
@@ -58,6 +59,7 @@ export const LazyStep2Vehicle: LazyComponent<typeof import("../components/steps/
 export const LazyStep3Owner: LazyComponent<typeof import("../components/steps/Step3Owner.vue")['default']>
 export const LazyStep4Drivers: LazyComponent<typeof import("../components/steps/Step4Drivers.vue")['default']>
 export const LazyStep5Summary: LazyComponent<typeof import("../components/steps/Step5Summary.vue")['default']>
+export const LazyStep6Payment: LazyComponent<typeof import("../components/steps/Step6Payment.vue")['default']>
 export const LazyCheckButton: LazyComponent<typeof import("../components/ui/CheckButton.vue")['default']>
 export const LazyInputField: LazyComponent<typeof import("../components/ui/InputField.vue")['default']>
 export const LazyLanguageSwitcher: LazyComponent<typeof import("../components/ui/LanguageSwitcher.vue")['default']>

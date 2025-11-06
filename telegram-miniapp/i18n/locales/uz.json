@@ -41,7 +41,8 @@
     "vehicle": "Transport",
     "owner": "Egasi",
     "drivers": "Haydovchilar",
-    "summary": "To'lov"
+    "summary": "Tasdiqlash",
+    "payment": "To'lov"
   },
   "step1": {
     "title": "Polis parametrlari",
@@ -189,6 +190,10 @@
     "startDate": "Polisning amal qilish sanasi",
     "startDatePlaceholder": "Sanani tanlang",
     "payment": "To'lov",
+    "confirm": "Tasdiqlash va to'lovga o'tish",
+    "sendSmsPayme": "SMS yuborish",
+    "sendSmsClick": "SMS yuborish",
+    "checkStatus": "Holatni tekshirish",
     "premium": "Sug'urta mukofoti",
     "paymentMethod": "To'lov usuli",
     "payWithPayme": "Payme orqali to'lash",

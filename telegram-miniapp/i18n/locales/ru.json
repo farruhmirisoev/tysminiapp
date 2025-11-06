@@ -41,7 +41,8 @@
     "vehicle": "Транспорт",
     "owner": "Владелец",
     "drivers": "Водители",
-    "summary": "Оплата"
+    "summary": "Подтверждение",
+    "payment": "Оплата"
   },
   "step1": {
     "title": "Параметры полиса",
@@ -189,6 +190,10 @@
     "startDate": "Дата начала действия полиса",
     "startDatePlaceholder": "Выберите дату",
     "payment": "Оплата",
+    "confirm": "Подтвердить и перейти к оплате",
+    "sendSmsPayme": "Отправить SMS",
+    "sendSmsClick": "Отправить SMS",
+    "checkStatus": "Проверить статус",
     "premium": "Страховая премия",
     "paymentMethod": "Способ оплаты",
     "payWithPayme": "Оплатить через Payme",

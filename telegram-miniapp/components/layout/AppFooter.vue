@@ -23,14 +23,22 @@
       <button
         type="button"
         class="btn flex-1 max-w-[160px]"
-        :class="isLastStep ? 'btn-primary' : 'btn-primary'"
+        :class="{
+          'btn-primary': !isLastStep || currentStep !== STEPS.PAYMENT,
+          'btn-success': isLastStep && currentStep === STEPS.PAYMENT
+        }"
         :disabled="!canProceed || loading"
         @click="handleNext"
       >
         <span v-if="loading" class="spinner"></span>
         <template v-else>
-          <span>{{ isLastStep ? $t('step5.payment') : $t('common.next') }}</span>
-          <i v-if="!isLastStep" class="text-lg bx bx-chevron-right"></i>
+          <span v-if="currentStep === STEPS.SUMMARY && !osgoStore.osgo.id">{{ $t('step5.confirm') }}</span>
+          <span v-else-if="isLastStep && currentStep === STEPS.PAYMENT">
+            <i class="bx bx-credit-card"></i>
+            <span>{{ $t('step5.payment') }}</span>
+          </span>
+          <span v-else>{{ $t('common.next') }}</span>
+          <i v-if="!isLastStep && currentStep !== STEPS.SUMMARY" class="text-lg bx bx-chevron-right"></i>
         </template>
       </button>
     </div>
@@ -38,13 +46,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useOsgoStore } from '~/stores/osgo'
 import { STEPS } from '~/utils/constants'
 
 const osgoStore = useOsgoStore()
 const tg = useTelegramWebApp()
+const api = useApi()
 const { t } = useI18n()
+
+// Payment sending state
+const sendingPayment = ref(false)
+const paymentError = ref<string | null>(null)
+const paymentSuccess = ref<string | null>(null)
 
 // Computed properties
 const currentStep = computed(() => osgoStore.currentStep)
@@ -52,7 +66,7 @@ const totalSteps = computed(() => osgoStore.totalSteps)
 const isFirstStep = computed(() => currentStep.value === 0)
 const isLastStep = computed(() => currentStep.value === totalSteps.value - 1)
 const canProceed = computed(() => osgoStore.canProceedToNextStep)
-const loading = computed(() => osgoStore.saving || osgoStore.fetching)
+const loading = computed(() => osgoStore.saving || osgoStore.fetching || sendingPayment.value)
 
 // Handle previous button
 const handlePrevious = () => {
@@ -93,12 +107,34 @@ const handleNext = async () => {
       if (!osgoStore.osgo.applicantIsOwner && !osgoStore.applicantVerified) {
         await osgoStore.verifyApplicant()
       }
+    } else if (currentStep.value === STEPS.SUMMARY) {
+      // On summary step, create policy if it doesn't exist
+      if (!osgoStore.osgo.id) {
+        await osgoStore.createPolicy()
+        console.log('[AppFooter] Policy created:', osgoStore.osgo.id)
+        
+        if (tg.isTelegramWebApp.value) {
+          tg.hapticNotification('success')
+        }
+      }
+    } else if (currentStep.value === STEPS.PAYMENT) {
+      // On payment step, send payment link via SMS
+      if (!osgoStore.selectedPaymentMethod) {
+        if (tg.isTelegramWebApp.value) {
+          tg.hapticNotification('error')
+          await tg.showAlert('Выберите способ оплаты')
+        }
+        return
+      }
+
+      await sendPaymentLink()
+      return // Don't proceed to next step after sending payment
     }
 
     // Move to next step or submit
     if (isLastStep.value) {
-      // TODO: Handle payment submission
-      console.log('[AppFooter] Submit payment')
+      // This should not happen for payment step as we return early
+      console.log('[AppFooter] Last step reached')
     } else {
       osgoStore.nextStep()
     }

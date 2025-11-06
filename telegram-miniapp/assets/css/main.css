@@ -88,6 +88,10 @@
         @apply border-2 border-error text-error hover:bg-error hover:text-white active:scale-[0.98];
     }
 
+    .btn-success {
+        @apply bg-green-600 text-white hover:bg-green-700 active:scale-[0.98];
+    }
+
     /* Input Styles */
     .input {
         @apply w-full px-4 py-3 border border-border rounded-lg bg-white text-text placeholder:text-text-lighter focus:border-primary transition-colors;

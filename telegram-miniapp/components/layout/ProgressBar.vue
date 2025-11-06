@@ -40,6 +40,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from '#imports'
 
 interface Props {
   currentStep: number
@@ -47,15 +48,17 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { t } = useI18n()
 
-// Step labels
-const steps = [
-  'Параметры',
-  'Транспорт',
-  'Владелец',
-  'Водители',
-  'Оплата',
-]
+// Step labels - use translations
+const steps = computed(() => [
+  t('steps.params'),
+  t('steps.vehicle'),
+  t('steps.owner'),
+  t('steps.drivers'),
+  t('steps.summary'),
+  t('steps.payment'),
+])
 
 // Calculate progress percentage
 const progressPercentage = computed(() => {

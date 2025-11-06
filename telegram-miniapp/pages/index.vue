@@ -36,6 +36,10 @@
                         v-else-if="osgoStore.currentStep === STEPS.SUMMARY"
                         :key="STEPS.SUMMARY"
                     />
+                    <Step6Payment
+                        v-else-if="osgoStore.currentStep === STEPS.PAYMENT"
+                        :key="STEPS.PAYMENT"
+                    />
                 </Transition>
             </div>
         </main>
@@ -80,6 +84,7 @@ import Step2Vehicle from "~/components/steps/Step2Vehicle.vue";
 import Step3Owner from "~/components/steps/Step3Owner.vue";
 import Step4Drivers from "~/components/steps/Step4Drivers.vue";
 import Step5Summary from "~/components/steps/Step5Summary.vue";
+import Step6Payment from "~/components/steps/Step6Payment.vue";
 
 const osgoStore = useOsgoStore();
 const metaStore = useMetaStore();

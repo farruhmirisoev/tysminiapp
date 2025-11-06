@@ -47,6 +47,9 @@ export const useOsgoStore = defineStore('osgo', () => {
   const fundError = ref<string | null>(null)
   const fetchingFundData = ref(false)
 
+  // Payment method selection
+  const selectedPaymentMethod = ref<'payme' | 'click' | 'uzum' | null>(null)
+
   // Verification states
   const vehicleVerifying = ref(false)
   const vehicleVerified = ref(false)
@@ -468,7 +471,20 @@ export const useOsgoStore = defineStore('osgo', () => {
         }
       case STEPS.SUMMARY:
         return {
-          valid: !!(osgo.value.party?.phone && osgo.value.contractStartDate)
+          valid: !!(
+            owner.value.id &&
+            applicant.value.id &&
+            osgo.value.vehicle?.id &&
+            (!osgo.value.driversLimited || (osgo.value.drivers?.length && osgo.value.drivers.every(d => d.id))) &&
+            osgo.value.party?.phone &&
+            osgo.value.party.phone.replace(/[+()-]/g, '').length === 12 &&
+            osgo.value.contractStartDate
+          )
+        }
+      case STEPS.PAYMENT:
+        // Payment step requires policy to be created and payment method selected
+        return {
+          valid: !!(osgo.value.id && selectedPaymentMethod.value)
         }
       default:
         return { valid: false }
@@ -796,6 +812,7 @@ export const useOsgoStore = defineStore('osgo', () => {
     fundData,
     fundError,
     fetchingFundData,
+    selectedPaymentMethod,
 
     // Verification
     vehicleVerifying,

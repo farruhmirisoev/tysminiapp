@@ -37,6 +37,7 @@ export const STEPS = {
   OWNER: 2,
   DRIVERS: 3,
   SUMMARY: 4,
+  PAYMENT: 5,
 } as const;
 
 export const STEP_NAMES = [
@@ -44,6 +45,7 @@ export const STEP_NAMES = [
   "policy.osgo.tabs.vehicle",
   "policy.osgo.tabs.owner",
   "policy.osgo.tabs.drivers",
+  "policy.osgo.tabs.summary",
   "policy.osgo.tabs.payment",
 ] as const;
 

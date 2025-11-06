@@ -1978,7 +1978,7 @@ const _A4av4C1IvNm55xTCAAktSv3cOMnjce6XJBVw5UOT2g = defineNitroPlugin(async (nit
     const localeSegment = detector.route(event.path);
     const pathLocale = isSupportedLocale(localeSegment) && localeSegment || void 0;
     const path = (pathLocale && url.pathname.slice(pathLocale.length + 1)) ?? url.pathname;
-    if (!url.pathname.includes("/_i18n/u4L7Xs_r") && !isExistingNuxtRoute(path)) {
+    if (!url.pathname.includes("/_i18n/nJm1sVoT") && !isExistingNuxtRoute(path)) {
       return;
     }
     const resolved = resolveRedirectPath(event, path, pathLocale, ctx.vueI18nOptions.defaultLocale, detector);
@@ -2884,7 +2884,8 @@ var steps$1 = {
 	vehicle: "Транспорт",
 	owner: "Владелец",
 	drivers: "Водители",
-	summary: "Оплата"
+	summary: "Подтверждение",
+	payment: "Оплата"
 };
 var step1$1 = {
 	title: "Параметры полиса",
@@ -3032,6 +3033,10 @@ var step5$1 = {
 	startDate: "Дата начала действия полиса",
 	startDatePlaceholder: "Выберите дату",
 	payment: "Оплата",
+	confirm: "Подтвердить и перейти к оплате",
+	sendSmsPayme: "Отправить SMS",
+	sendSmsClick: "Отправить SMS",
+	checkStatus: "Проверить статус",
 	premium: "Страховая премия",
 	paymentMethod: "Способ оплаты",
 	payWithPayme: "Оплатить через Payme",
@@ -3183,7 +3188,8 @@ var steps = {
 	vehicle: "Transport",
 	owner: "Egasi",
 	drivers: "Haydovchilar",
-	summary: "To'lov"
+	summary: "Tasdiqlash",
+	payment: "To'lov"
 };
 var step1 = {
 	title: "Polis parametrlari",
@@ -3331,6 +3337,10 @@ var step5 = {
 	startDate: "Polisning amal qilish sanasi",
 	startDatePlaceholder: "Sanani tanlang",
 	payment: "To'lov",
+	confirm: "Tasdiqlash va to'lovga o'tish",
+	sendSmsPayme: "SMS yuborish",
+	sendSmsClick: "SMS yuborish",
+	checkStatus: "Holatni tekshirish",
 	premium: "Sug'urta mukofoti",
 	paymentMethod: "To'lov usuli",
 	payWithPayme: "Payme orqali to'lash",
