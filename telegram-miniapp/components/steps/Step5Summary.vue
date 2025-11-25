@@ -146,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useOsgoStore } from '~/stores/osgo'
 import { useMetaStore } from '~/stores/meta'
 import { formatPrice, formatPassport } from '~/utils/formatting'

@@ -304,6 +304,18 @@ export const useOsgoStore = defineStore('osgo', () => {
           ...result,
         }
         osgo.value.beneficiary = { ...owner.value }
+        
+        // If applicant is owner, copy owner data to applicant as well
+        if (osgo.value.applicantIsOwner) {
+          applicant.value = {
+            passportSeries: owner.value.passportSeries,
+            passportNumber: owner.value.passportNumber,
+            birthDate: owner.value.birthDate,
+            ...result,
+          }
+          osgo.value.party = { ...owner.value }
+          applicantVerified.value = true // Mark as verified since it's the same person
+        }
       }
 
       ownerVerified.value = true
@@ -470,10 +482,15 @@ export const useOsgoStore = defineStore('osgo', () => {
           valid: !osgo.value.driversLimited || osgo.value.drivers.length > 0
         }
       case STEPS.SUMMARY:
+        // If applicant is owner, use owner.id; otherwise require applicant.id
+        const applicantHasId = osgo.value.applicantIsOwner 
+          ? owner.value.id 
+          : applicant.value.id
+        
         return {
           valid: !!(
             owner.value.id &&
-            applicant.value.id &&
+            applicantHasId &&
             osgo.value.vehicle?.id &&
             (!osgo.value.driversLimited || (osgo.value.drivers?.length && osgo.value.drivers.every(d => d.id))) &&
             osgo.value.party?.phone &&
