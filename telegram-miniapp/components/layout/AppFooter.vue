@@ -127,7 +127,55 @@ const handleNext = async () => {
         return
       }
 
-      await sendPaymentLink()
+      // Map payment method to API method name
+      const methodMap = {
+        'payme': 'sendSmsPayme',
+        'click': 'sendSmsClick',
+        'uzum': 'sendSmsUzum'
+      } as const
+
+      const apiMethod = methodMap[osgoStore.selectedPaymentMethod]
+      const contractId = osgoStore.osgo.id
+      const party = osgoStore.osgo.applicantIsOwner ? osgoStore.owner : osgoStore.applicant
+      const phone = party.phone || ''
+      const amount = osgoStore.calculatedPremium
+
+      if (!contractId || !phone || !amount) {
+        const errorMsg = 'Недостаточно данных для отправки платежной ссылки'
+        console.error('[AppFooter] Missing payment data:', { contractId, phone, amount })
+        if (tg.isTelegramWebApp.value) {
+          tg.hapticNotification('error')
+          await tg.showAlert(errorMsg)
+        }
+        return
+      }
+
+      try {
+        sendingPayment.value = true
+        paymentError.value = null
+        paymentSuccess.value = null
+
+        await api.sendPaymentLink(apiMethod, contractId, phone, amount)
+
+        paymentSuccess.value = 'Платежная ссылка отправлена на ваш номер телефона'
+        console.log('[AppFooter] Payment link sent successfully')
+
+        if (tg.isTelegramWebApp.value) {
+          tg.hapticNotification('success')
+          await tg.showAlert('Платежная ссылка отправлена на ваш номер телефона')
+        }
+      } catch (error: any) {
+        paymentError.value = error.message || 'Ошибка при отправке платежной ссылки'
+        console.error('[AppFooter] Payment link error:', error)
+
+        if (tg.isTelegramWebApp.value) {
+          tg.hapticNotification('error')
+          await tg.showAlert(paymentError.value)
+        }
+      } finally {
+        sendingPayment.value = false
+      }
+
       return // Don't proceed to next step after sending payment
     }
 
