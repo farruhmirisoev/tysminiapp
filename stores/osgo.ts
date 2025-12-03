@@ -631,6 +631,23 @@ export const useOsgoStore = defineStore('osgo', () => {
         ({ coefficient }) => coefficient === 1
       )
 
+      // Validate contract start date
+      if (!osgo.value.contractStartDate) {
+        throw new Error('Contract start date is required')
+      }
+
+      // Validate date format (must be YYYY-MM-DD)
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+      if (!dateRegex.test(osgo.value.contractStartDate)) {
+        throw new Error('Contract start date must be in YYYY-MM-DD format')
+      }
+
+      // Validate date is valid
+      const startDate = dayjs(osgo.value.contractStartDate)
+      if (!startDate.isValid()) {
+        throw new Error('Invalid contract start date')
+      }
+
       // Prepare osgo payload - ensure all nested objects are included
       // The API expects full objects with all properties, not just IDs
       const osgoPayload = {
@@ -641,7 +658,7 @@ export const useOsgoStore = defineStore('osgo', () => {
         drivedArea: osgo.value.drivedArea, // Full drivedArea object
         discountType: discountType, // Full discountType object
         drivers: osgo.value.drivers || [], // Array of Driver objects
-        contractStartDate: osgo.value.contractStartDate,
+        contractStartDate: osgo.value.contractStartDate, // Already validated as YYYY-MM-DD
         contractEndDate: osgo.value.contractEndDate,
         status: osgo.value.status || 'DRAFT',
         applicantIsOwner: osgo.value.applicantIsOwner ?? true,
@@ -670,6 +687,13 @@ export const useOsgoStore = defineStore('osgo', () => {
       })
 
       const policyId = await api.createOsgoApplication(data)
+      
+      // Validate that policyId is a string (not an error object)
+      if (!policyId || typeof policyId !== "string") {
+        console.error('[OsgoStore] Invalid policy ID returned:', policyId)
+        throw new Error('Failed to create policy: invalid response')
+      }
+      
       osgo.value.id = policyId
 
       // Update party reference with cleaned phone

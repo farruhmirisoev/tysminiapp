@@ -448,34 +448,100 @@ export const useApi = () => {
         },
       );
 
-      // Handle response format - API returns { data: { result: { id } } } or { result: { id } }
+      // Handle response format matching website implementation
+      // Website expects: { data: { error?: AjaxError; result: { id: string } } }
+      // $fetch returns the response.data directly, so we get: { error?: any; result: { id: string } }
+      
+      if (response && typeof response === "object") {
+        // Check if response has nested data structure (axios-style response)
+        if ("data" in response) {
+          const data = (response as any).data;
+          
+          // Check for error first (website pattern)
+          if (data.error) {
+            const errorMsg = data.error.message || data.error.messageUz || "Failed to create application";
+            throw new Error(errorMsg);
+          }
+          
+          // Check if result has error nested inside
+          if (data.result && typeof data.result === "object") {
+            // Check if result itself is an error object (has error property)
+            if ("error" in data.result) {
+              const errorMsg = data.result.error?.message || data.result.error?.messageUz || "Failed to create application";
+              throw new Error(errorMsg);
+            }
+            
+            // Check if result itself looks like an error object (has code/message but no id)
+            if (("code" in data.result || "message" in data.result) && !("id" in data.result)) {
+              const errorMsg = data.result.message || data.result.messageUz || "Failed to create application";
+              throw new Error(errorMsg);
+            }
+            
+            // Extract ID from result
+            if (data.result.id && typeof data.result.id === "string") {
+              return data.result.id;
+            }
+          }
+          
+          // Fallback: check if data has id directly
+          if (data.id && typeof data.id === "string") {
+            return data.id;
+          }
+        }
+        
+        // Check if response has error directly (unwrapped response)
+        if ("error" in response) {
+          const errorMsg = (response as any).error?.message || (response as any).error?.messageUz || "Failed to create application";
+          throw new Error(errorMsg);
+        }
+        
+        // Check if response has result directly
+        if ("result" in response) {
+          const result = (response as any).result;
+          
+          // If result is an error object, throw it
+          if (result && typeof result === "object") {
+            // Check if result has nested error
+            if ("error" in result) {
+              const errorMsg = result.error?.message || result.error?.messageUz || "Failed to create application";
+              throw new Error(errorMsg);
+            }
+            
+            // Check if result itself looks like an error object (has code/message but no id)
+            if (("code" in result || "message" in result) && !("id" in result)) {
+              const errorMsg = result.message || result.messageUz || "Failed to create application";
+              throw new Error(errorMsg);
+            }
+            
+            // Extract ID from result
+            if (result.id && typeof result.id === "string") {
+              return result.id;
+            }
+          }
+          
+          // If result is a string (the ID), return it
+          if (typeof result === "string") {
+            return result;
+          }
+        }
+      }
+      
       // If response is a string, it's likely the ID directly
       if (typeof response === "string") {
         return response;
       }
-
+      
+      // Final safety check: if response looks like an error object, throw it
       if (response && typeof response === "object") {
-        // Check if response has nested data structure
-        if ("data" in response) {
-          const data = (response as any).data;
-          if (data.error) {
-            throw new Error(data.error.message || "Failed to create application");
-          }
-          return data.result?.id || data.id;
-        }
-        // Check if response has result directly
-        if ("result" in response) {
-          const result = (response as any).result;
-          if (result && typeof result === "object") {
-            if ("error" in result) {
-              throw new Error(result.error?.message || "Failed to create application");
-            }
-            return result.id;
-          }
-          return result;
+        if (("code" in response || "message" in response) && !("id" in response)) {
+          const errorMsg = (response as any).message || (response as any).messageUz || "Failed to create application";
+          throw new Error(errorMsg);
         }
       }
-      return response;
+      
+      // If we can't extract an ID, throw an error
+      console.error("[useApi] createOsgoApplication: Invalid response format", response);
+      throw new Error("Invalid response format: could not extract contract ID");
     } catch (error) {
       console.error("[useApi] createOsgoApplication error:", error);
       throw error;
@@ -537,6 +603,11 @@ export const useApi = () => {
     amount: number
   ) => {
     try {
+      // Validate contractId is a string (not an error object)
+      if (!contractId || typeof contractId !== "string") {
+        throw new Error("Invalid contract ID: contract must be created first");
+      }
+
       const response = await invokeService("BillingService", method, {
         method: "POST",
         body: {
@@ -548,16 +619,23 @@ export const useApi = () => {
         },
       });
 
-      // Handle response format
+      // Handle response format matching website implementation
+      // Website expects: { data: { error?: any } }
       if (response && typeof response === "object" && "data" in response) {
         const data = (response as any).data;
         if (data.error) {
-          throw new Error(
-            data.error.message || "Failed to send payment link"
-          );
+          const errorMsg = data.error.message || data.error.messageUz || "Failed to send payment link";
+          throw new Error(errorMsg);
         }
         return data.result || data;
       }
+      
+      // Check if response has error directly
+      if (response && typeof response === "object" && "error" in response) {
+        const errorMsg = (response as any).error?.message || (response as any).error?.messageUz || "Failed to send payment link";
+        throw new Error(errorMsg);
+      }
+      
       return response;
     } catch (error) {
       console.error("[useApi] sendPaymentLink error:", error);
