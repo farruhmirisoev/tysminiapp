@@ -1,0 +1,4 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/tysuz/bot.tys.uz/
+    - /bin/cp -R telegram-miniapp/.nuxt/dist/* $DEPLOYPATH
