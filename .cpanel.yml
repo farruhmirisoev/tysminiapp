@@ -1,4 +1,4 @@
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/tysuz/tgminiapp.tys.uz/
+    - export DEPLOYPATH=/home/tysuz/tgminapp.tys.uz/
     - /bin/cp -R .output/public/* $DEPLOYPATH
