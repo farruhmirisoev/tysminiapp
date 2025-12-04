@@ -1,4 +1,4 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/tysuz/tgminiapp.tys.uz/
-    - /bin/cp -R telegram-miniapp/.output/public/* $DEPLOYPATH
+    - /bin/cp -R .output/public/* $DEPLOYPATH
