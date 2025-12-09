@@ -415,7 +415,7 @@ export const useApi = () => {
       if (response && typeof response === "object") {
         if ("error" in response) {
           throw new Error((response as any).error?.message || "Driver verification failed");
-        }
+      }
         if ("result" in response) {
           const result = (response as any).result;
           if (!result || (typeof result === "object" && Object.keys(result).length === 0)) {
@@ -427,7 +427,7 @@ export const useApi = () => {
       
       // If response is the driver object directly
       if (response && typeof response === "object" && "id" in response) {
-        return response;
+      return response;
       }
       
       throw new Error("Invalid response format from driver verification");
@@ -451,7 +451,7 @@ export const useApi = () => {
       // Handle response format matching website implementation
       // Website expects: { data: { error?: AjaxError; result: { id: string } } }
       // $fetch returns the response.data directly, so we get: { error?: any; result: { id: string } }
-      
+
       if (response && typeof response === "object") {
         // Check if response has nested data structure (axios-style response)
         if ("data" in response) {
@@ -469,13 +469,13 @@ export const useApi = () => {
             if ("error" in data.result) {
               const errorMsg = data.result.error?.message || data.result.error?.messageUz || "Failed to create application";
               throw new Error(errorMsg);
-            }
+          }
             
             // Check if result itself looks like an error object (has code/message but no id)
             if (("code" in data.result || "message" in data.result) && !("id" in data.result)) {
               const errorMsg = data.result.message || data.result.messageUz || "Failed to create application";
               throw new Error(errorMsg);
-            }
+        }
             
             // Extract ID from result
             if (data.result.id && typeof data.result.id === "string") {
@@ -515,20 +515,20 @@ export const useApi = () => {
             
             // Extract ID from result
             if (result.id && typeof result.id === "string") {
-              return result.id;
+            return result.id;
             }
           }
           
           // If result is a string (the ID), return it
           if (typeof result === "string") {
-            return result;
+          return result;
           }
         }
       }
       
       // If response is a string, it's likely the ID directly
       if (typeof response === "string") {
-        return response;
+      return response;
       }
       
       // Final safety check: if response looks like an error object, throw it

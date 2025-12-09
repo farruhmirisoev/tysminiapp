@@ -483,11 +483,11 @@ export const useOsgoStore = defineStore('osgo', () => {
       return
     }
 
-    addDriver({
-      passportSeries: owner.value.passportSeries,
-      passportNumber: owner.value.passportNumber,
-      birthDate: owner.value.birthDate,
-    })
+      addDriver({
+        passportSeries: owner.value.passportSeries,
+        passportNumber: owner.value.passportNumber,
+        birthDate: owner.value.birthDate,
+      })
     console.log('[OsgoStore] Owner added as driver')
   }
 

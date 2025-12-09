@@ -58,6 +58,10 @@ export default defineNuxtConfig({
     strategy: "no_prefix",
     // Disable browser language detection to prevent loading wrong locale
     detectBrowserLanguage: false,
+    // Ensure locale is set immediately
+    legacy: false,
+    // Skip default locale in URL (we're using no_prefix strategy)
+    skipDefaultLocale: false,
     // Ensure translations are available during SSG
     compilation: {
       strictMessage: false,
