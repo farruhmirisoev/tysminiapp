@@ -30,7 +30,7 @@
     "continue": "Davom etish",
     "submit": "Yuborish",
     "retry": "Qayta urinish",
-    "step": "{current}-qadam {total}dan"
+    "step": "{current}/{total}"
   },
   "header": {
     "title": "OSGO sug'urtasi",

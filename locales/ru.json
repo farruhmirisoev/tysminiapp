@@ -30,7 +30,7 @@
     "continue": "Продолжить",
     "submit": "Отправить",
     "retry": "Повторить",
-    "step": "Шаг {current} из {total}"
+    "step": "{current}/{total}"
   },
   "header": {
     "title": "Страхование ОСГО",
