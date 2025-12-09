@@ -1,9 +1,9 @@
 <template>
   <div class="step-container">
     <div class="step-header">
-      <h2 class="step-title">Информация о водителях</h2>
+      <h2 class="step-title">{{ t('step4.title') }}</h2>
       <p class="step-description">
-        Добавьте водителей, допущенных к управлению транспортным средством
+        {{ t('step4.description') }}
       </p>
     </div>
 
@@ -12,9 +12,9 @@
       <div v-if="!osgo.driversLimited" class="info-card">
         <i class="bx bx-info-circle"></i>
         <div>
-          <div class="info-title">Неограниченное количество водителей</div>
+          <div class="info-title">{{ t('step4.unlimitedDriversTitle') }}</div>
           <div class="info-text">
-            Вы выбрали полис без ограничения по количеству водителей. Добавление водителей не требуется.
+            {{ t('step4.unlimitedDriversDesc') }}
           </div>
         </div>
       </div>
@@ -30,7 +30,7 @@
             @click="addDriver"
           >
             <i class="bx bx-plus"></i>
-            <span>Добавить водителя</span>
+            <span>{{ t('step4.addDriver') }}</span>
           </button>
 
           <button
@@ -41,7 +41,7 @@
             @click="addOwnerAsDriver"
           >
             <i class="bx bx-user"></i>
-            <span>Владелец - водитель</span>
+            <span>{{ t('step4.ownerIsDriver') }}</span>
           </button>
 
           <button
@@ -52,14 +52,14 @@
             @click="addApplicantAsDriver"
           >
             <i class="bx bx-user"></i>
-            <span>Страхователь - водитель</span>
+            <span>{{ t('step4.applicantIsDriver') }}</span>
           </button>
         </div>
 
         <!-- Drivers list -->
         <div v-if="osgo.drivers.length === 0" class="empty-state">
           <i class="bx bx-user-plus"></i>
-          <p>Добавьте хотя бы одного водителя</p>
+          <p>{{ t('validation.addAtLeastOneDriver') }}</p>
         </div>
 
         <div v-else class="drivers-list">
@@ -71,7 +71,7 @@
             <div class="driver-header">
               <div class="driver-number">
                 <i class="bx bx-user"></i>
-                <span>Водитель {{ index + 1 }}</span>
+                <span>{{ t('step4.driver') }} {{ index + 1 }}</span>
               </div>
               <button
                 v-if="osgoStore.isEditable"
@@ -87,8 +87,8 @@
               <!-- Passport Series -->
               <InputField
                 v-model="driver.passportSeries"
-                label="Серия паспорта"
-                placeholder="AA"
+                :label="t('step4.passportSeries')"
+                :placeholder="t('step4.passportSeriesPlaceholder')"
                 :disabled="!osgoStore.isEditable"
                 :max-length="2"
                 uppercase
@@ -98,8 +98,8 @@
               <!-- Passport Number -->
               <InputField
                 v-model="driver.passportNumber"
-                label="Номер паспорта"
-                placeholder="1234567"
+                :label="t('step4.passportNumber')"
+                :placeholder="t('step4.passportNumberPlaceholder')"
                 :disabled="!osgoStore.isEditable"
                 input-mode="numeric"
                 :max-length="7"
@@ -109,10 +109,10 @@
               <!-- Birth Date -->
               <InputField
                 v-model="driver.birthDate"
-                label="Дата рождения"
+                :label="t('step4.birthDate')"
                 type="text"
                 date-mask
-                placeholder="DD-MM-YYYY"
+                :placeholder="t('step4.birthDatePlaceholder')"
                 :disabled="!osgoStore.isEditable"
                 required
               />
@@ -125,7 +125,7 @@
                 @click="verifyDriver(index)"
               >
                 <i class="bx bx-check-circle"></i>
-                <span>{{ driver.name ? 'Проверено' : 'Проверить' }}</span>
+                <span>{{ driver.name ? t('step4.verified') : t('step4.verify') }}</span>
               </button>
 
               <!-- Driver info (after verification) -->
@@ -262,7 +262,7 @@ const addDriver = () => {
   } catch (error) {
     console.error('[Step4Drivers] Error adding driver:', error)
     if (tg.isTelegramWebApp.value) {
-      tg.showAlert('Ошибка при добавлении водителя')
+      tg.showAlert(t('errors.driverNotFound'))
     }
   }
 }
@@ -271,14 +271,14 @@ const addDriver = () => {
 const addOwnerAsDriver = () => {
   if (!osgoStore.isEditable || !osgoStore.ownerVerified) {
     if (tg.isTelegramWebApp.value) {
-      tg.showAlert('Сначала необходимо проверить данные владельца')
+      tg.showAlert(t('validation.verifyOwner'))
     }
     return
   }
   
   if (!owner.value.passportSeries || !owner.value.passportNumber || !owner.value.birthDate) {
     if (tg.isTelegramWebApp.value) {
-      tg.showAlert('Данные владельца не заполнены')
+      tg.showAlert(t('validation.fillAllFields'))
     }
     return
   }
@@ -292,7 +292,7 @@ const addOwnerAsDriver = () => {
   } catch (error) {
     console.error('[Step4Drivers] Error adding owner as driver:', error)
     if (tg.isTelegramWebApp.value) {
-      tg.showAlert('Ошибка при добавлении владельца как водителя')
+      tg.showAlert(t('errors.driverNotFound'))
     }
   }
 }
@@ -342,14 +342,14 @@ const verifyDriver = async (index: number) => {
 
     if (tg.isTelegramWebApp.value) {
       tg.hapticNotification('success')
-      tg.showAlert('Водитель успешно проверен')
+      tg.showAlert(t('step4.driverVerified'))
     }
   } catch (error: any) {
     console.error('[Step4Drivers] Driver verification error:', error)
     
     if (tg.isTelegramWebApp.value) {
       tg.hapticNotification('error')
-      tg.showAlert(error?.message || 'Ошибка при проверке водителя')
+      tg.showAlert(error?.message || t('step4.verifyError'))
     }
   }
 }

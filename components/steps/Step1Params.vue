@@ -3,7 +3,7 @@
         <!-- Loading State -->
         <div v-if="metaStore.fetching" class="loading-state">
             <div class="loading-spinner"></div>
-            <p>Загрузка данных...</p>
+            <p>{{ t('common.loading') }}</p>
         </div>
 
         <!-- Error State -->
@@ -11,7 +11,7 @@
             <i class="bx bx-error-circle"></i>
             <p>{{ metaStore.error }}</p>
             <button @click="metaStore.fetchMeta(true)" class="btn-retry">
-                Попробовать снова
+                {{ t('common.retry') }}
             </button>
         </div>
 
@@ -21,7 +21,7 @@
             class="error-state"
         >
             <i class="bx bx-info-circle"></i>
-            <p>Нет данных. Загрузка...</p>
+            <p>{{ t('common.loading') }}</p>
             <p class="debug-info">
                 isLoaded: {{ metaStore.isLoaded }}<br />
                 carTypes: {{ metaStore.carTypes.length }}<br />
@@ -32,17 +32,16 @@
         <!-- Content -->
         <div v-else>
             <div class="step-header">
-                <h2 class="step-title">Параметры полиса</h2>
+                <h2 class="step-title">{{ t('step1.title') }}</h2>
                 <p class="step-description">
-                    Выберите тип транспорта, период страхования и параметры
-                    использования
+                    {{ t('step1.description') }}
                 </p>
             </div>
 
             <div class="step-content">
                 <!-- Vehicle Type Selection -->
                 <div class="form-section">
-                    <h3 class="section-title">Тип транспортного средства</h3>
+                    <h3 class="section-title">{{ t('step1.vehicleType') }}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <CheckButton
                             v-for="carType in metaStore.carTypes"
@@ -57,7 +56,7 @@
 
                 <!-- Insurance Period -->
                 <div class="form-section">
-                    <h3 class="section-title">Период страхования</h3>
+                    <h3 class="section-title">{{ t('step1.period') }}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <CheckButton
                             v-for="period in metaStore.periods"
@@ -72,18 +71,18 @@
 
                 <!-- Driver Limitation -->
                 <div class="form-section">
-                    <h3 class="section-title">Количество водителей</h3>
+                    <h3 class="section-title">{{ t('step1.driversLimited') }}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <CheckButton
-                            title="Без ограничений"
-                            description="Любое количество водителей"
+                            :title="t('step1.driversLimitedNo')"
+                            :description="t('step1.driversLimitedNoDesc')"
                             :active="!osgo.driversLimited"
                             :disabled="!osgoStore.isEditable"
                             @click="osgo.driversLimited = false"
                         />
                         <CheckButton
-                            title="Ограниченное"
-                            description="Указанные водители"
+                            :title="t('step1.driversLimitedYes')"
+                            :description="t('step1.driversLimitedYesDesc')"
                             :active="osgo.driversLimited"
                             :disabled="!osgoStore.isEditable"
                             @click="osgo.driversLimited = true"
@@ -94,7 +93,7 @@
                 <!-- Incident Frequency (conditional) -->
                 <Transition name="slide-down">
                     <div v-if="osgo.driversLimited" class="form-section">
-                        <h3 class="section-title">Частота страховых случаев</h3>
+                        <h3 class="section-title">{{ t('step1.incidentFrequency') }}</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <CheckButton
                                 v-for="frequency in metaStore.incidentFrequencies"
@@ -112,7 +111,7 @@
 
                 <!-- Usage Territory -->
                 <div class="form-section">
-                    <h3 class="section-title">Территория использования</h3>
+                    <h3 class="section-title">{{ t('step1.usageTerritory') }}</h3>
                     <div class="select-wrapper">
                         <select
                             v-model="selectedDrivedArea"
@@ -120,7 +119,7 @@
                             :disabled="!osgoStore.isEditable"
                         >
                             <option value="" disabled>
-                                Выберите территорию
+                                {{ t('step1.usageTerritoryPlaceholder') }}
                             </option>
                             <option
                                 v-for="area in metaStore.drivedAreas"
@@ -144,7 +143,7 @@
                     <div class="premium-card-content">
                         <div class="premium-label">
                             <i class="bx bx-shield-alt-2"></i>
-                            <span>Страховая премия</span>
+                            <span>{{ t('step1.premium') }}</span>
                         </div>
                         <div class="premium-amount">
                             {{ formatPrice(osgoStore.calculatedPremium) }}
@@ -197,7 +196,7 @@ import { formatPrice } from "~/utils/formatting";
 const osgoStore = useOsgoStore();
 const metaStore = useMetaStore();
 const tg = useTelegramWebApp();
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 // Debug logging on mount
 onMounted(() => {

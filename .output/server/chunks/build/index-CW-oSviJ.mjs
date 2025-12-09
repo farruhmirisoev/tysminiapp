@@ -951,7 +951,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
     const osgoStore = useOsgoStore();
     const metaStore = useMetaStore();
     const tg = useTelegramWebApp();
-    const { locale } = useI18n();
+    const { locale, t } = useI18n();
     const osgo = computed(() => osgoStore.osgo);
     const getLocalizedName2 = (item) => {
       return metaStore.getLocalizedName(item, locale.value || "uz");
@@ -998,15 +998,15 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
     };
     return (_ctx, _push, _parent, _attrs) => {
       const _component_CheckButton = __nuxt_component_0$1;
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-9caa72cf>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-e2cea3d2>`);
       if (unref(metaStore).fetching) {
-        _push(`<div class="loading-state" data-v-9caa72cf><div class="loading-spinner" data-v-9caa72cf></div><p data-v-9caa72cf>\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430 \u0434\u0430\u043D\u043D\u044B\u0445...</p></div>`);
+        _push(`<div class="loading-state" data-v-e2cea3d2><div class="loading-spinner" data-v-e2cea3d2></div><p data-v-e2cea3d2>${ssrInterpolate(unref(t)("common.loading"))}</p></div>`);
       } else if (unref(metaStore).error) {
-        _push(`<div class="error-state" data-v-9caa72cf><i class="bx bx-error-circle" data-v-9caa72cf></i><p data-v-9caa72cf>${ssrInterpolate(unref(metaStore).error)}</p><button class="btn-retry" data-v-9caa72cf> \u041F\u043E\u043F\u0440\u043E\u0431\u043E\u0432\u0430\u0442\u044C \u0441\u043D\u043E\u0432\u0430 </button></div>`);
+        _push(`<div class="error-state" data-v-e2cea3d2><i class="bx bx-error-circle" data-v-e2cea3d2></i><p data-v-e2cea3d2>${ssrInterpolate(unref(metaStore).error)}</p><button class="btn-retry" data-v-e2cea3d2>${ssrInterpolate(unref(t)("common.retry"))}</button></div>`);
       } else if (!unref(metaStore).isLoaded || unref(metaStore).carTypes.length === 0) {
-        _push(`<div class="error-state" data-v-9caa72cf><i class="bx bx-info-circle" data-v-9caa72cf></i><p data-v-9caa72cf>\u041D\u0435\u0442 \u0434\u0430\u043D\u043D\u044B\u0445. \u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430...</p><p class="debug-info" data-v-9caa72cf> isLoaded: ${ssrInterpolate(unref(metaStore).isLoaded)}<br data-v-9caa72cf> carTypes: ${ssrInterpolate(unref(metaStore).carTypes.length)}<br data-v-9caa72cf> meta: ${ssrInterpolate(unref(metaStore).meta ? "exists" : "null")}</p></div>`);
+        _push(`<div class="error-state" data-v-e2cea3d2><i class="bx bx-info-circle" data-v-e2cea3d2></i><p data-v-e2cea3d2>${ssrInterpolate(unref(t)("common.loading"))}</p><p class="debug-info" data-v-e2cea3d2> isLoaded: ${ssrInterpolate(unref(metaStore).isLoaded)}<br data-v-e2cea3d2> carTypes: ${ssrInterpolate(unref(metaStore).carTypes.length)}<br data-v-e2cea3d2> meta: ${ssrInterpolate(unref(metaStore).meta ? "exists" : "null")}</p></div>`);
       } else {
-        _push(`<div data-v-9caa72cf><div class="step-header" data-v-9caa72cf><h2 class="step-title" data-v-9caa72cf>\u041F\u0430\u0440\u0430\u043C\u0435\u0442\u0440\u044B \u043F\u043E\u043B\u0438\u0441\u0430</h2><p class="step-description" data-v-9caa72cf> \u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0442\u0438\u043F \u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u0430, \u043F\u0435\u0440\u0438\u043E\u0434 \u0441\u0442\u0440\u0430\u0445\u043E\u0432\u0430\u043D\u0438\u044F \u0438 \u043F\u0430\u0440\u0430\u043C\u0435\u0442\u0440\u044B \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u044F </p></div><div class="step-content" data-v-9caa72cf><div class="form-section" data-v-9caa72cf><h3 class="section-title" data-v-9caa72cf>\u0422\u0438\u043F \u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u043D\u043E\u0433\u043E \u0441\u0440\u0435\u0434\u0441\u0442\u0432\u0430</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" data-v-9caa72cf><!--[-->`);
+        _push(`<div data-v-e2cea3d2><div class="step-header" data-v-e2cea3d2><h2 class="step-title" data-v-e2cea3d2>${ssrInterpolate(unref(t)("step1.title"))}</h2><p class="step-description" data-v-e2cea3d2>${ssrInterpolate(unref(t)("step1.description"))}</p></div><div class="step-content" data-v-e2cea3d2><div class="form-section" data-v-e2cea3d2><h3 class="section-title" data-v-e2cea3d2>${ssrInterpolate(unref(t)("step1.vehicleType"))}</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" data-v-e2cea3d2><!--[-->`);
         ssrRenderList(unref(metaStore).carTypes, (carType) => {
           var _a, _b;
           _push(ssrRenderComponent(_component_CheckButton, {
@@ -1017,7 +1017,7 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
             onClick: ($event) => selectCarType(carType)
           }, null, _parent));
         });
-        _push(`<!--]--></div></div><div class="form-section" data-v-9caa72cf><h3 class="section-title" data-v-9caa72cf>\u041F\u0435\u0440\u0438\u043E\u0434 \u0441\u0442\u0440\u0430\u0445\u043E\u0432\u0430\u043D\u0438\u044F</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-3" data-v-9caa72cf><!--[-->`);
+        _push(`<!--]--></div></div><div class="form-section" data-v-e2cea3d2><h3 class="section-title" data-v-e2cea3d2>${ssrInterpolate(unref(t)("step1.period"))}</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-3" data-v-e2cea3d2><!--[-->`);
         ssrRenderList(unref(metaStore).periods, (period) => {
           var _a;
           _push(ssrRenderComponent(_component_CheckButton, {
@@ -1028,24 +1028,24 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
             onClick: ($event) => selectPeriod(period)
           }, null, _parent));
         });
-        _push(`<!--]--></div></div><div class="form-section" data-v-9caa72cf><h3 class="section-title" data-v-9caa72cf>\u041A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" data-v-9caa72cf>`);
+        _push(`<!--]--></div></div><div class="form-section" data-v-e2cea3d2><h3 class="section-title" data-v-e2cea3d2>${ssrInterpolate(unref(t)("step1.driversLimited"))}</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" data-v-e2cea3d2>`);
         _push(ssrRenderComponent(_component_CheckButton, {
-          title: "\u0411\u0435\u0437 \u043E\u0433\u0440\u0430\u043D\u0438\u0447\u0435\u043D\u0438\u0439",
-          description: "\u041B\u044E\u0431\u043E\u0435 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439",
+          title: unref(t)("step1.driversLimitedNo"),
+          description: unref(t)("step1.driversLimitedNoDesc"),
           active: !osgo.value.driversLimited,
           disabled: !unref(osgoStore).isEditable,
           onClick: ($event) => osgo.value.driversLimited = false
         }, null, _parent));
         _push(ssrRenderComponent(_component_CheckButton, {
-          title: "\u041E\u0433\u0440\u0430\u043D\u0438\u0447\u0435\u043D\u043D\u043E\u0435",
-          description: "\u0423\u043A\u0430\u0437\u0430\u043D\u043D\u044B\u0435 \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0438",
+          title: unref(t)("step1.driversLimitedYes"),
+          description: unref(t)("step1.driversLimitedYesDesc"),
           active: osgo.value.driversLimited,
           disabled: !unref(osgoStore).isEditable,
           onClick: ($event) => osgo.value.driversLimited = true
         }, null, _parent));
         _push(`</div></div>`);
         if (osgo.value.driversLimited) {
-          _push(`<div class="form-section" data-v-9caa72cf><h3 class="section-title" data-v-9caa72cf>\u0427\u0430\u0441\u0442\u043E\u0442\u0430 \u0441\u0442\u0440\u0430\u0445\u043E\u0432\u044B\u0445 \u0441\u043B\u0443\u0447\u0430\u0435\u0432</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" data-v-9caa72cf><!--[-->`);
+          _push(`<div class="form-section" data-v-e2cea3d2><h3 class="section-title" data-v-e2cea3d2>${ssrInterpolate(unref(t)("step1.incidentFrequency"))}</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3" data-v-e2cea3d2><!--[-->`);
           ssrRenderList(unref(metaStore).incidentFrequencies, (frequency) => {
             _push(ssrRenderComponent(_component_CheckButton, {
               key: frequency.id,
@@ -1059,13 +1059,13 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
         } else {
           _push(`<!---->`);
         }
-        _push(`<div class="form-section" data-v-9caa72cf><h3 class="section-title" data-v-9caa72cf>\u0422\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u044F \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u044F</h3><div class="select-wrapper" data-v-9caa72cf><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-9caa72cf><option value="" disabled data-v-9caa72cf${ssrIncludeBooleanAttr(Array.isArray(selectedDrivedArea.value) ? ssrLooseContain(selectedDrivedArea.value, "") : ssrLooseEqual(selectedDrivedArea.value, "")) ? " selected" : ""}> \u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0442\u0435\u0440\u0440\u0438\u0442\u043E\u0440\u0438\u044E </option><!--[-->`);
+        _push(`<div class="form-section" data-v-e2cea3d2><h3 class="section-title" data-v-e2cea3d2>${ssrInterpolate(unref(t)("step1.usageTerritory"))}</h3><div class="select-wrapper" data-v-e2cea3d2><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-e2cea3d2><option value="" disabled data-v-e2cea3d2${ssrIncludeBooleanAttr(Array.isArray(selectedDrivedArea.value) ? ssrLooseContain(selectedDrivedArea.value, "") : ssrLooseEqual(selectedDrivedArea.value, "")) ? " selected" : ""}>${ssrInterpolate(unref(t)("step1.usageTerritoryPlaceholder"))}</option><!--[-->`);
         ssrRenderList(unref(metaStore).drivedAreas, (area) => {
-          _push(`<option${ssrRenderAttr("value", area.id)} data-v-9caa72cf${ssrIncludeBooleanAttr(Array.isArray(selectedDrivedArea.value) ? ssrLooseContain(selectedDrivedArea.value, area.id) : ssrLooseEqual(selectedDrivedArea.value, area.id)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName2(area))}</option>`);
+          _push(`<option${ssrRenderAttr("value", area.id)} data-v-e2cea3d2${ssrIncludeBooleanAttr(Array.isArray(selectedDrivedArea.value) ? ssrLooseContain(selectedDrivedArea.value, area.id) : ssrLooseEqual(selectedDrivedArea.value, area.id)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName2(area))}</option>`);
         });
-        _push(`<!--]--></select><div class="select-icon" data-v-9caa72cf><i class="bx bx-chevron-down" data-v-9caa72cf></i></div></div></div>`);
+        _push(`<!--]--></select><div class="select-icon" data-v-e2cea3d2><i class="bx bx-chevron-down" data-v-e2cea3d2></i></div></div></div>`);
         if (unref(osgoStore).calculatedPremium > 0) {
-          _push(`<div class="premium-card" data-v-9caa72cf><div class="premium-card-content" data-v-9caa72cf><div class="premium-label" data-v-9caa72cf><i class="bx bx-shield-alt-2" data-v-9caa72cf></i><span data-v-9caa72cf>\u0421\u0442\u0440\u0430\u0445\u043E\u0432\u0430\u044F \u043F\u0440\u0435\u043C\u0438\u044F</span></div><div class="premium-amount" data-v-9caa72cf>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))}</div></div></div>`);
+          _push(`<div class="premium-card" data-v-e2cea3d2><div class="premium-card-content" data-v-e2cea3d2><div class="premium-label" data-v-e2cea3d2><i class="bx bx-shield-alt-2" data-v-e2cea3d2></i><span data-v-e2cea3d2>${ssrInterpolate(unref(t)("step1.premium"))}</span></div><div class="premium-amount" data-v-e2cea3d2>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))}</div></div></div>`);
         } else {
           _push(`<!---->`);
         }
@@ -1081,7 +1081,7 @@ _sfc_main$7.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/steps/Step1Params.vue");
   return _sfc_setup$7 ? _sfc_setup$7(props, ctx) : void 0;
 };
-const Step1Params = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-9caa72cf"]]);
+const Step1Params = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-e2cea3d2"]]);
 const _sfc_main$6 = /* @__PURE__ */ defineComponent({
   __name: "InputField",
   __ssrInlineRender: true,
@@ -1280,6 +1280,7 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
     const osgoStore = useOsgoStore();
     useMetaStore();
     useTelegramWebApp();
+    const { t } = useI18n();
     const osgo = computed(() => osgoStore.osgo);
     const errors = ref({});
     const canVerify = computed(() => {
@@ -1320,12 +1321,12 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
     return (_ctx, _push, _parent, _attrs) => {
       var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
       const _component_InputField = __nuxt_component_0;
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-7b02d127><div class="step-header" data-v-7b02d127><h2 class="step-title" data-v-7b02d127>\u0418\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u044F \u043E \u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u0435</h2><p class="step-description" data-v-7b02d127> \u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u0434\u0430\u043D\u043D\u044B\u0435 \u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u043D\u043E\u0433\u043E \u0441\u0440\u0435\u0434\u0441\u0442\u0432\u0430 \u0434\u043B\u044F \u043F\u0440\u043E\u0432\u0435\u0440\u043A\u0438 </p></div><div class="step-content" data-v-7b02d127><div class="form-section" data-v-7b02d127>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-3ead2593><div class="step-header" data-v-3ead2593><h2 class="step-title" data-v-3ead2593>${ssrInterpolate(unref(t)("step2.title"))}</h2><p class="step-description" data-v-3ead2593>${ssrInterpolate(unref(t)("step2.description"))}</p></div><div class="step-content" data-v-3ead2593><div class="form-section" data-v-3ead2593>`);
       _push(ssrRenderComponent(_component_InputField, {
         modelValue: osgo.value.vehicle.govNumber,
         "onUpdate:modelValue": ($event) => osgo.value.vehicle.govNumber = $event,
-        label: "\u0413\u043E\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0435\u043D\u043D\u044B\u0439 \u043D\u043E\u043C\u0435\u0440",
-        placeholder: "01A000AA",
+        label: unref(t)("step2.govNumber"),
+        placeholder: unref(t)("step2.govNumberPlaceholder"),
         disabled: !unref(osgoStore).isEditable,
         error: errors.value.govNumber,
         icon: "bx bx-car",
@@ -1333,12 +1334,12 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
         uppercase: "",
         onBlur: ($event) => validateField("govNumber")
       }, null, _parent));
-      _push(`</div><div class="form-section" data-v-7b02d127>`);
+      _push(`</div><div class="form-section" data-v-3ead2593>`);
       _push(ssrRenderComponent(_component_InputField, {
         modelValue: osgo.value.vehicle.techPassportSeries,
         "onUpdate:modelValue": ($event) => osgo.value.vehicle.techPassportSeries = $event,
-        label: "\u0421\u0435\u0440\u0438\u044F \u0442\u0435\u0445\u043F\u0430\u0441\u043F\u043E\u0440\u0442\u0430",
-        placeholder: "AAA",
+        label: unref(t)("step2.techPassportSeries"),
+        placeholder: unref(t)("step2.techPassportSeriesPlaceholder"),
         disabled: !unref(osgoStore).isEditable,
         error: errors.value.techPassportSeries,
         "max-length": 3,
@@ -1346,64 +1347,64 @@ const _sfc_main$5 = /* @__PURE__ */ defineComponent({
         uppercase: "",
         onBlur: ($event) => validateField("techPassportSeries")
       }, null, _parent));
-      _push(`</div><div class="form-section" data-v-7b02d127>`);
+      _push(`</div><div class="form-section" data-v-3ead2593>`);
       _push(ssrRenderComponent(_component_InputField, {
         modelValue: osgo.value.vehicle.techPassportNumber,
         "onUpdate:modelValue": ($event) => osgo.value.vehicle.techPassportNumber = $event,
-        label: "\u041D\u043E\u043C\u0435\u0440 \u0442\u0435\u0445\u043F\u0430\u0441\u043F\u043E\u0440\u0442\u0430",
-        placeholder: "1234567",
+        label: unref(t)("step2.techPassportNumber"),
+        placeholder: unref(t)("step2.techPassportNumberPlaceholder"),
         disabled: !unref(osgoStore).isEditable,
         error: errors.value.techPassportNumber,
         "input-mode": "numeric",
         required: "",
         onBlur: ($event) => validateField("techPassportNumber")
       }, null, _parent));
-      _push(`</div><div class="form-section" data-v-7b02d127><button type="button" class="btn btn-primary w-full"${ssrIncludeBooleanAttr(!canVerify.value || unref(osgoStore).vehicleVerifying) ? " disabled" : ""} data-v-7b02d127>`);
+      _push(`</div><div class="form-section" data-v-3ead2593><button type="button" class="btn btn-primary w-full"${ssrIncludeBooleanAttr(!canVerify.value || unref(osgoStore).vehicleVerifying) ? " disabled" : ""} data-v-3ead2593>`);
       if (unref(osgoStore).vehicleVerifying) {
-        _push(`<span class="spinner" data-v-7b02d127></span>`);
+        _push(`<span class="spinner" data-v-3ead2593></span>`);
       } else {
-        _push(`<!--[--><i class="bx bx-check-circle" data-v-7b02d127></i><span data-v-7b02d127>${ssrInterpolate(unref(osgoStore).vehicleVerified ? "\u041F\u0440\u043E\u0432\u0435\u0440\u0435\u043D\u043E" : "\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C")}</span><!--]-->`);
+        _push(`<!--[--><i class="bx bx-check-circle" data-v-3ead2593></i><span data-v-3ead2593>${ssrInterpolate(unref(osgoStore).vehicleVerified ? unref(t)("step2.verified") : unref(t)("step2.verify"))}</span><!--]-->`);
       }
       _push(`</button></div>`);
       if (unref(osgoStore).vehicleVerifyError) {
-        _push(`<div class="alert alert-error" data-v-7b02d127><i class="bx bx-error-circle" data-v-7b02d127></i><span data-v-7b02d127>${ssrInterpolate(unref(osgoStore).vehicleVerifyError)}</span></div>`);
+        _push(`<div class="alert alert-error" data-v-3ead2593><i class="bx bx-error-circle" data-v-3ead2593></i><span data-v-3ead2593>${ssrInterpolate(unref(osgoStore).vehicleVerifyError)}</span></div>`);
       } else {
         _push(`<!---->`);
       }
       if (unref(osgoStore).vehicleVerified && osgo.value.vehicle) {
-        _push(`<div class="vehicle-info-card" data-v-7b02d127><div class="card-header" data-v-7b02d127><i class="bx bx-check-circle text-success" data-v-7b02d127></i><span data-v-7b02d127>\u0422\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442 \u043D\u0430\u0439\u0434\u0435\u043D</span></div><div class="card-content" data-v-7b02d127>`);
+        _push(`<div class="vehicle-info-card" data-v-3ead2593><div class="card-header" data-v-3ead2593><i class="bx bx-check-circle text-success" data-v-3ead2593></i><span data-v-3ead2593>${ssrInterpolate(unref(t)("step2.vehicleFound"))}</span></div><div class="card-content" data-v-3ead2593>`);
         {
           _push(`<!---->`);
         }
-        _push(`<div class="vehicle-info-grid" data-v-7b02d127>`);
+        _push(`<div class="vehicle-info-grid" data-v-3ead2593>`);
         if ((_a = osgo.value.vehicle) == null ? void 0 : _a.techPassportIssueDate) {
-          _push(`<div class="vehicle-info-item" data-v-7b02d127><div class="vehicle-info-label" data-v-7b02d127>\u0414\u0430\u0442\u0430 \u0432\u044B\u0434\u0430\u0447\u0438 \u0442\u0435\u0445\u043F\u0430\u0441\u043F\u043E\u0440\u0442\u0430</div><div class="vehicle-info-value" data-v-7b02d127>${ssrInterpolate(unref(formatDisplayDate)(osgo.value.vehicle.techPassportIssueDate))}</div></div>`);
+          _push(`<div class="vehicle-info-item" data-v-3ead2593><div class="vehicle-info-label" data-v-3ead2593>${ssrInterpolate(unref(t)("step2.techPassportIssueDate"))}</div><div class="vehicle-info-value" data-v-3ead2593>${ssrInterpolate(unref(formatDisplayDate)(osgo.value.vehicle.techPassportIssueDate))}</div></div>`);
         } else {
           _push(`<!---->`);
         }
         if (((_b = osgo.value.vehicle) == null ? void 0 : _b.modelName) || ((_c = osgo.value.vehicle) == null ? void 0 : _c.model)) {
-          _push(`<div class="vehicle-info-item" data-v-7b02d127><div class="vehicle-info-label" data-v-7b02d127>\u041C\u043E\u0434\u0435\u043B\u044C</div><div class="vehicle-info-value" data-v-7b02d127>${ssrInterpolate(((_d = osgo.value.vehicle) == null ? void 0 : _d.modelName) || ((_e = osgo.value.vehicle) == null ? void 0 : _e.model) || "-")}</div></div>`);
+          _push(`<div class="vehicle-info-item" data-v-3ead2593><div class="vehicle-info-label" data-v-3ead2593>${ssrInterpolate(unref(t)("step2.model"))}</div><div class="vehicle-info-value" data-v-3ead2593>${ssrInterpolate(((_d = osgo.value.vehicle) == null ? void 0 : _d.modelName) || ((_e = osgo.value.vehicle) == null ? void 0 : _e.model) || "-")}</div></div>`);
         } else {
           _push(`<!---->`);
         }
         if (((_f = osgo.value.vehicle) == null ? void 0 : _f.createdYear) || ((_g = osgo.value.vehicle) == null ? void 0 : _g.year)) {
-          _push(`<div class="vehicle-info-item" data-v-7b02d127><div class="vehicle-info-label" data-v-7b02d127>\u0413\u043E\u0434 \u0432\u044B\u043F\u0443\u0441\u043A\u0430</div><div class="vehicle-info-value" data-v-7b02d127>${ssrInterpolate(((_h = osgo.value.vehicle) == null ? void 0 : _h.createdYear) || ((_i = osgo.value.vehicle) == null ? void 0 : _i.year) || "-")}</div></div>`);
+          _push(`<div class="vehicle-info-item" data-v-3ead2593><div class="vehicle-info-label" data-v-3ead2593>${ssrInterpolate(unref(t)("step2.year"))}</div><div class="vehicle-info-value" data-v-3ead2593>${ssrInterpolate(((_h = osgo.value.vehicle) == null ? void 0 : _h.createdYear) || ((_i = osgo.value.vehicle) == null ? void 0 : _i.year) || "-")}</div></div>`);
         } else {
           _push(`<!---->`);
         }
         if ((_j = osgo.value.vehicle) == null ? void 0 : _j.engineNumber) {
-          _push(`<div class="vehicle-info-item" data-v-7b02d127><div class="vehicle-info-label" data-v-7b02d127>\u041D\u043E\u043C\u0435\u0440 \u0434\u0432\u0438\u0433\u0430\u0442\u0435\u043B\u044F</div><div class="vehicle-info-value" data-v-7b02d127>${ssrInterpolate(osgo.value.vehicle.engineNumber)}</div></div>`);
+          _push(`<div class="vehicle-info-item" data-v-3ead2593><div class="vehicle-info-label" data-v-3ead2593>${ssrInterpolate(unref(t)("step2.engineNumber"))}</div><div class="vehicle-info-value" data-v-3ead2593>${ssrInterpolate(osgo.value.vehicle.engineNumber)}</div></div>`);
         } else {
           _push(`<!---->`);
         }
         if ((_k = osgo.value.vehicle) == null ? void 0 : _k.bodyNumber) {
-          _push(`<div class="vehicle-info-item" data-v-7b02d127><div class="vehicle-info-label" data-v-7b02d127>\u041D\u043E\u043C\u0435\u0440 \u043A\u0443\u0437\u043E\u0432\u0430/\u0448\u0430\u0441\u0441\u0438</div><div class="vehicle-info-value" data-v-7b02d127>${ssrInterpolate(osgo.value.vehicle.bodyNumber)}</div></div>`);
+          _push(`<div class="vehicle-info-item" data-v-3ead2593><div class="vehicle-info-label" data-v-3ead2593>${ssrInterpolate(unref(t)("step2.bodyNumber"))}</div><div class="vehicle-info-value" data-v-3ead2593>${ssrInterpolate(osgo.value.vehicle.bodyNumber)}</div></div>`);
         } else {
           _push(`<!---->`);
         }
         _push(`</div>`);
         if (vehicleInfoCount.value === 0) {
-          _push(`<div class="vehicle-info-empty" data-v-7b02d127> \u041D\u0435\u0442 \u0434\u0430\u043D\u043D\u044B\u0445 \u043E \u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u043D\u043E\u043C \u0441\u0440\u0435\u0434\u0441\u0442\u0432\u0435 </div>`);
+          _push(`<div class="vehicle-info-empty" data-v-3ead2593>${ssrInterpolate(unref(t)("step2.vehicleNotFound"))}</div>`);
         } else {
           _push(`<!---->`);
         }
@@ -1421,7 +1422,7 @@ _sfc_main$5.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/steps/Step2Vehicle.vue");
   return _sfc_setup$5 ? _sfc_setup$5(props, ctx) : void 0;
 };
-const Step2Vehicle = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["__scopeId", "data-v-7b02d127"]]);
+const Step2Vehicle = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["__scopeId", "data-v-3ead2593"]]);
 const _sfc_main$4 = /* @__PURE__ */ defineComponent({
   __name: "Step3Owner",
   __ssrInlineRender: true,
@@ -1572,40 +1573,40 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
     };
     return (_ctx, _push, _parent, _attrs) => {
       const _component_InputField = __nuxt_component_0;
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-d2bd1c0c><div class="step-header" data-v-d2bd1c0c><h2 class="step-title" data-v-d2bd1c0c>\u0418\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u044F \u043E \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044F\u0445</h2><p class="step-description" data-v-d2bd1c0c> \u0414\u043E\u0431\u0430\u0432\u044C\u0442\u0435 \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439, \u0434\u043E\u043F\u0443\u0449\u0435\u043D\u043D\u044B\u0445 \u043A \u0443\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u0438\u044E \u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u043D\u044B\u043C \u0441\u0440\u0435\u0434\u0441\u0442\u0432\u043E\u043C </p></div><div class="step-content" data-v-d2bd1c0c>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-a1a9d331><div class="step-header" data-v-a1a9d331><h2 class="step-title" data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.title"))}</h2><p class="step-description" data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.description"))}</p></div><div class="step-content" data-v-a1a9d331>`);
       if (!osgo.value.driversLimited) {
-        _push(`<div class="info-card" data-v-d2bd1c0c><i class="bx bx-info-circle" data-v-d2bd1c0c></i><div data-v-d2bd1c0c><div class="info-title" data-v-d2bd1c0c>\u041D\u0435\u043E\u0433\u0440\u0430\u043D\u0438\u0447\u0435\u043D\u043D\u043E\u0435 \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u043E \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439</div><div class="info-text" data-v-d2bd1c0c> \u0412\u044B \u0432\u044B\u0431\u0440\u0430\u043B\u0438 \u043F\u043E\u043B\u0438\u0441 \u0431\u0435\u0437 \u043E\u0433\u0440\u0430\u043D\u0438\u0447\u0435\u043D\u0438\u044F \u043F\u043E \u043A\u043E\u043B\u0438\u0447\u0435\u0441\u0442\u0432\u0443 \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439. \u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u0438\u0435 \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u0435\u0439 \u043D\u0435 \u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044F. </div></div></div>`);
+        _push(`<div class="info-card" data-v-a1a9d331><i class="bx bx-info-circle" data-v-a1a9d331></i><div data-v-a1a9d331><div class="info-title" data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.unlimitedDriversTitle"))}</div><div class="info-text" data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.unlimitedDriversDesc"))}</div></div></div>`);
       } else {
-        _push(`<!--[--><div class="actions-row" data-v-d2bd1c0c><button type="button" class="btn btn-primary-outlined"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-d2bd1c0c><i class="bx bx-plus" data-v-d2bd1c0c></i><span data-v-d2bd1c0c>\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044F</span></button>`);
+        _push(`<!--[--><div class="actions-row" data-v-a1a9d331><button type="button" class="btn btn-primary-outlined"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-a1a9d331><i class="bx bx-plus" data-v-a1a9d331></i><span data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.addDriver"))}</span></button>`);
         if (!hasOwnerAsDriver.value) {
-          _push(`<button type="button" class="btn btn-primary-outlined"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable || !unref(osgoStore).ownerVerified) ? " disabled" : ""} data-v-d2bd1c0c><i class="bx bx-user" data-v-d2bd1c0c></i><span data-v-d2bd1c0c>\u0412\u043B\u0430\u0434\u0435\u043B\u0435\u0446 - \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C</span></button>`);
+          _push(`<button type="button" class="btn btn-primary-outlined"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable || !unref(osgoStore).ownerVerified) ? " disabled" : ""} data-v-a1a9d331><i class="bx bx-user" data-v-a1a9d331></i><span data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.ownerIsDriver"))}</span></button>`);
         } else {
           _push(`<!---->`);
         }
         if (!osgo.value.applicantIsOwner && !hasApplicantAsDriver.value) {
-          _push(`<button type="button" class="btn btn-primary-outlined"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable || !unref(osgoStore).applicantVerified) ? " disabled" : ""} data-v-d2bd1c0c><i class="bx bx-user" data-v-d2bd1c0c></i><span data-v-d2bd1c0c>\u0421\u0442\u0440\u0430\u0445\u043E\u0432\u0430\u0442\u0435\u043B\u044C - \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044C</span></button>`);
+          _push(`<button type="button" class="btn btn-primary-outlined"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable || !unref(osgoStore).applicantVerified) ? " disabled" : ""} data-v-a1a9d331><i class="bx bx-user" data-v-a1a9d331></i><span data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.applicantIsDriver"))}</span></button>`);
         } else {
           _push(`<!---->`);
         }
         _push(`</div>`);
         if (osgo.value.drivers.length === 0) {
-          _push(`<div class="empty-state" data-v-d2bd1c0c><i class="bx bx-user-plus" data-v-d2bd1c0c></i><p data-v-d2bd1c0c>\u0414\u043E\u0431\u0430\u0432\u044C\u0442\u0435 \u0445\u043E\u0442\u044F \u0431\u044B \u043E\u0434\u043D\u043E\u0433\u043E \u0432\u043E\u0434\u0438\u0442\u0435\u043B\u044F</p></div>`);
+          _push(`<div class="empty-state" data-v-a1a9d331><i class="bx bx-user-plus" data-v-a1a9d331></i><p data-v-a1a9d331>${ssrInterpolate(unref(t)("validation.addAtLeastOneDriver"))}</p></div>`);
         } else {
-          _push(`<div class="drivers-list" data-v-d2bd1c0c><!--[-->`);
+          _push(`<div class="drivers-list" data-v-a1a9d331><!--[-->`);
           ssrRenderList(osgo.value.drivers, (driver, index2) => {
             var _a;
-            _push(`<div class="driver-card" data-v-d2bd1c0c><div class="driver-header" data-v-d2bd1c0c><div class="driver-number" data-v-d2bd1c0c><i class="bx bx-user" data-v-d2bd1c0c></i><span data-v-d2bd1c0c>\u0412\u043E\u0434\u0438\u0442\u0435\u043B\u044C ${ssrInterpolate(index2 + 1)}</span></div>`);
+            _push(`<div class="driver-card" data-v-a1a9d331><div class="driver-header" data-v-a1a9d331><div class="driver-number" data-v-a1a9d331><i class="bx bx-user" data-v-a1a9d331></i><span data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.driver"))} ${ssrInterpolate(index2 + 1)}</span></div>`);
             if (unref(osgoStore).isEditable) {
-              _push(`<button type="button" class="btn-icon btn-danger" data-v-d2bd1c0c><i class="bx bx-trash" data-v-d2bd1c0c></i></button>`);
+              _push(`<button type="button" class="btn-icon btn-danger" data-v-a1a9d331><i class="bx bx-trash" data-v-a1a9d331></i></button>`);
             } else {
               _push(`<!---->`);
             }
-            _push(`</div><div class="driver-content" data-v-d2bd1c0c>`);
+            _push(`</div><div class="driver-content" data-v-a1a9d331>`);
             _push(ssrRenderComponent(_component_InputField, {
               modelValue: driver.passportSeries,
               "onUpdate:modelValue": ($event) => driver.passportSeries = $event,
-              label: "\u0421\u0435\u0440\u0438\u044F \u043F\u0430\u0441\u043F\u043E\u0440\u0442\u0430",
-              placeholder: "AA",
+              label: unref(t)("step4.passportSeries"),
+              placeholder: unref(t)("step4.passportSeriesPlaceholder"),
               disabled: !unref(osgoStore).isEditable,
               "max-length": 2,
               uppercase: "",
@@ -1614,8 +1615,8 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
             _push(ssrRenderComponent(_component_InputField, {
               modelValue: driver.passportNumber,
               "onUpdate:modelValue": ($event) => driver.passportNumber = $event,
-              label: "\u041D\u043E\u043C\u0435\u0440 \u043F\u0430\u0441\u043F\u043E\u0440\u0442\u0430",
-              placeholder: "1234567",
+              label: unref(t)("step4.passportNumber"),
+              placeholder: unref(t)("step4.passportNumberPlaceholder"),
               disabled: !unref(osgoStore).isEditable,
               "input-mode": "numeric",
               "max-length": 7,
@@ -1624,81 +1625,81 @@ const _sfc_main$3 = /* @__PURE__ */ defineComponent({
             _push(ssrRenderComponent(_component_InputField, {
               modelValue: driver.birthDate,
               "onUpdate:modelValue": ($event) => driver.birthDate = $event,
-              label: "\u0414\u0430\u0442\u0430 \u0440\u043E\u0436\u0434\u0435\u043D\u0438\u044F",
+              label: unref(t)("step4.birthDate"),
               type: "text",
               "date-mask": "",
-              placeholder: "DD-MM-YYYY",
+              placeholder: unref(t)("step4.birthDatePlaceholder"),
               disabled: !unref(osgoStore).isEditable,
               required: ""
             }, null, _parent));
-            _push(`<button type="button" class="btn btn-primary-outlined w-full"${ssrIncludeBooleanAttr(!canVerifyDriver(driver)) ? " disabled" : ""} data-v-d2bd1c0c><i class="bx bx-check-circle" data-v-d2bd1c0c></i><span data-v-d2bd1c0c>${ssrInterpolate(driver.name ? "\u041F\u0440\u043E\u0432\u0435\u0440\u0435\u043D\u043E" : "\u041F\u0440\u043E\u0432\u0435\u0440\u0438\u0442\u044C")}</span></button>`);
+            _push(`<button type="button" class="btn btn-primary-outlined w-full"${ssrIncludeBooleanAttr(!canVerifyDriver(driver)) ? " disabled" : ""} data-v-a1a9d331><i class="bx bx-check-circle" data-v-a1a9d331></i><span data-v-a1a9d331>${ssrInterpolate(driver.name ? unref(t)("step4.verified") : unref(t)("step4.verify"))}</span></button>`);
             if (driver.id) {
-              _push(`<div class="driver-info" data-v-d2bd1c0c><div class="driver-info-grid" data-v-d2bd1c0c>`);
+              _push(`<div class="driver-info" data-v-a1a9d331><div class="driver-info-grid" data-v-a1a9d331>`);
               if (driver.passportIssueDate) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step3.passportIssueDate"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(unref(formatDisplayDate)(driver.passportIssueDate))}</div></div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step3.passportIssueDate"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(unref(formatDisplayDate)(driver.passportIssueDate))}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.pinfl) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step3.pinfl"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(driver.pinfl)}</div></div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step3.pinfl"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(driver.pinfl)}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.passportIssuedBy) {
-                _push(`<div class="info-item info-item-wide" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step3.issuedBy"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(driver.passportIssuedBy)}</div></div>`);
+                _push(`<div class="info-item info-item-wide" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step3.issuedBy"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(driver.passportIssuedBy)}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.lastName) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step3.lastName"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(driver.lastName)}</div></div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step3.lastName"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(driver.lastName)}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.firstName) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step3.firstName"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(driver.firstName)}</div></div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step3.firstName"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(driver.firstName)}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.middleName) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step3.middleName"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(driver.middleName)}</div></div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step3.middleName"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(driver.middleName)}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.gender) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step3.gender"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(unref(formatGender)(driver.gender, unref(locale).value))}</div></div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step3.gender"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(unref(formatGender)(driver.gender, unref(locale).value))}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.address) {
-                _push(`<div class="info-item info-item-full" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step3.address"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(driver.address)}</div></div>`);
+                _push(`<div class="info-item info-item-full" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step3.address"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(driver.address)}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.licenseSeries) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step4.licenseSeries"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(driver.licenseSeries)}</div></div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.licenseSeries"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(driver.licenseSeries)}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.licenseNumber) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step4.licenseNumber"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(driver.licenseNumber)}</div></div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.licenseNumber"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(driver.licenseNumber)}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (driver.licenseDate) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step4.licenseDate"))}</div><div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(unref(formatDisplayDate)(driver.licenseDate))}</div></div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.licenseDate"))}</div><div class="info-value" data-v-a1a9d331>${ssrInterpolate(unref(formatDisplayDate)(driver.licenseDate))}</div></div>`);
               } else {
                 _push(`<!---->`);
               }
               if (unref(metaStore).relatives.length > 0) {
-                _push(`<div class="info-item" data-v-d2bd1c0c><div class="info-label" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step4.relationship"))}</div>`);
+                _push(`<div class="info-item" data-v-a1a9d331><div class="info-label" data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.relationship"))}</div>`);
                 if (unref(osgoStore).isEditable) {
-                  _push(`<select${ssrRenderAttr("value", ((_a = driver.relative) == null ? void 0 : _a.id) || "")} class="info-select" data-v-d2bd1c0c><option value="" data-v-d2bd1c0c>${ssrInterpolate(unref(t)("step4.selectRelationship"))}</option><!--[-->`);
+                  _push(`<select${ssrRenderAttr("value", ((_a = driver.relative) == null ? void 0 : _a.id) || "")} class="info-select" data-v-a1a9d331><option value="" data-v-a1a9d331>${ssrInterpolate(unref(t)("step4.selectRelationship"))}</option><!--[-->`);
                   ssrRenderList(unref(metaStore).relatives, (relative) => {
-                    _push(`<option${ssrRenderAttr("value", relative.id)} data-v-d2bd1c0c>${ssrInterpolate(unref(getLocalizedName)(relative))}</option>`);
+                    _push(`<option${ssrRenderAttr("value", relative.id)} data-v-a1a9d331>${ssrInterpolate(unref(getLocalizedName)(relative))}</option>`);
                   });
                   _push(`<!--]--></select>`);
                 } else {
-                  _push(`<div class="info-value" data-v-d2bd1c0c>${ssrInterpolate(driver.relative ? unref(getLocalizedName)(driver.relative) : "-")}</div>`);
+                  _push(`<div class="info-value" data-v-a1a9d331>${ssrInterpolate(driver.relative ? unref(getLocalizedName)(driver.relative) : "-")}</div>`);
                 }
                 _push(`</div>`);
               } else {
@@ -1724,7 +1725,7 @@ _sfc_main$3.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/steps/Step4Drivers.vue");
   return _sfc_setup$3 ? _sfc_setup$3(props, ctx) : void 0;
 };
-const Step4Drivers = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-d2bd1c0c"]]);
+const Step4Drivers = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-a1a9d331"]]);
 const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __name: "Step5Summary",
   __ssrInlineRender: true,
@@ -1756,7 +1757,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
         }
       }
     });
-    const { locale } = useI18n();
+    const { locale, t } = useI18n();
     const getPeriodName = () => {
       if (!osgo.value.period) return "-";
       return metaStore.getLocalizedName(osgo.value.period, locale.value || "uz");
@@ -1768,39 +1769,39 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
     return (_ctx, _push, _parent, _attrs) => {
       var _a, _b, _c, _d;
       const _component_InputField = __nuxt_component_0;
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-832f148c><div class="step-header" data-v-832f148c><h2 class="step-title" data-v-832f148c>\u041F\u043E\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043D\u0438\u0435</h2><p class="step-description" data-v-832f148c> \u041F\u0440\u043E\u0432\u0435\u0440\u044C\u0442\u0435 \u0434\u0430\u043D\u043D\u044B\u0435 \u043F\u043E\u043B\u0438\u0441\u0430 \u043F\u0435\u0440\u0435\u0434 \u043E\u0444\u043E\u0440\u043C\u043B\u0435\u043D\u0438\u0435\u043C </p></div><div class="step-content" data-v-832f148c><div class="summary-section" data-v-832f148c><h3 class="section-title" data-v-832f148c><i class="bx bx-file-blank" data-v-832f148c></i><span data-v-832f148c>\u0418\u043D\u0444\u043E\u0440\u043C\u0430\u0446\u0438\u044F \u043E \u0441\u0442\u0440\u0430\u0445\u043E\u0432\u043A\u0435</span></h3><div class="summary-card" data-v-832f148c><div class="card-title" data-v-832f148c>\u0421\u043E\u0431\u0441\u0442\u0432\u0435\u043D\u043D\u0438\u043A</div><div class="card-content" data-v-832f148c><div class="info-row" data-v-832f148c><span class="info-value-full" data-v-832f148c>${ssrInterpolate(owner.value.name || "-")}${ssrInterpolate(owner.value.birthDate ? ` (${owner.value.birthDate})` : "")}</span></div></div></div><div class="summary-card" data-v-832f148c><div class="card-title" data-v-832f148c>\u0417\u0430\u044F\u0432\u0438\u0442\u0435\u043B\u044C</div><div class="card-content" data-v-832f148c><div class="info-row" data-v-832f148c><span class="info-value-full" data-v-832f148c>${ssrInterpolate((osgo.value.applicantIsOwner ? owner.value : applicant.value).name || "-")}${ssrInterpolate((osgo.value.applicantIsOwner ? owner.value : applicant.value).birthDate ? ` (${(osgo.value.applicantIsOwner ? owner.value : applicant.value).birthDate})` : "")}</span></div></div></div><div class="summary-card" data-v-832f148c><div class="card-title" data-v-832f148c>\u0422\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u043D\u043E\u0435 \u0441\u0440\u0435\u0434\u0441\u0442\u0432\u043E</div><div class="card-content" data-v-832f148c><div class="info-row" data-v-832f148c><span class="info-value-full" data-v-832f148c>${ssrInterpolate(((_a = osgo.value.vehicle) == null ? void 0 : _a.modelName) || ((_b = osgo.value.vehicle) == null ? void 0 : _b.model) || "-")} ${ssrInterpolate(((_c = osgo.value.vehicle) == null ? void 0 : _c.govNumber) ? ` (${osgo.value.vehicle.govNumber})` : "")}</span></div></div></div><div class="summary-card" data-v-832f148c><div class="card-title" data-v-832f148c>\u0423\u0441\u043B\u043E\u0432\u0438\u044F \u0441\u0442\u0440\u0430\u0445\u043E\u0432\u0430\u043D\u0438\u044F</div><div class="card-content" data-v-832f148c><div class="info-row" data-v-832f148c><span class="info-value-full" data-v-832f148c>${ssrInterpolate(getPeriodName())}</span></div><div class="info-row" data-v-832f148c><span class="info-value-full" data-v-832f148c>${ssrInterpolate(getAreaName())}</span></div><div class="info-row" data-v-832f148c><span class="info-value-full" data-v-832f148c>${ssrInterpolate(osgo.value.driversLimited ? `\u041E\u0433\u0440\u0430\u043D\u0438\u0447\u0435\u043D\u043D\u043E (${((_d = osgo.value.drivers) == null ? void 0 : _d.length) || 0})` : "\u041D\u0435 \u043E\u0433\u0440\u0430\u043D\u0438\u0447\u0435\u043D\u043E")}</span></div></div></div><div class="summary-card" data-v-832f148c><div class="card-title" data-v-832f148c>\u0421\u0442\u0440\u0430\u0445\u043E\u0432\u0430\u044F \u0441\u0443\u043C\u043C\u0430</div><div class="card-content" data-v-832f148c><div class="info-row" data-v-832f148c><span class="info-value-full" data-v-832f148c>${ssrInterpolate(formatPriceNumber(unref(COMPENSATION)))} \u0441\u0443\u043C</span></div></div></div></div><div class="summary-section" data-v-832f148c><h3 class="section-title" data-v-832f148c><i class="bx bx-phone" data-v-832f148c></i><span data-v-832f148c>\u041A\u043E\u043D\u0442\u0430\u043A\u0442\u043D\u044B\u0435 \u0434\u0430\u043D\u043D\u044B\u0435</span></h3><div class="form-section" data-v-832f148c>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-ad4e13fe><div class="step-header" data-v-ad4e13fe><h2 class="step-title" data-v-ad4e13fe>${ssrInterpolate(unref(t)("step5.title"))}</h2><p class="step-description" data-v-ad4e13fe>${ssrInterpolate(unref(t)("step5.description"))}</p></div><div class="step-content" data-v-ad4e13fe><div class="summary-section" data-v-ad4e13fe><h3 class="section-title" data-v-ad4e13fe><i class="bx bx-file-blank" data-v-ad4e13fe></i><span data-v-ad4e13fe>${ssrInterpolate(unref(t)("step5.policyInfo"))}</span></h3><div class="summary-card" data-v-ad4e13fe><div class="card-title" data-v-ad4e13fe>${ssrInterpolate(unref(t)("step3.owner"))}</div><div class="card-content" data-v-ad4e13fe><div class="info-row" data-v-ad4e13fe><span class="info-value-full" data-v-ad4e13fe>${ssrInterpolate(owner.value.name || "-")}${ssrInterpolate(owner.value.birthDate ? ` (${owner.value.birthDate})` : "")}</span></div></div></div><div class="summary-card" data-v-ad4e13fe><div class="card-title" data-v-ad4e13fe>${ssrInterpolate(unref(t)("step3.applicant"))}</div><div class="card-content" data-v-ad4e13fe><div class="info-row" data-v-ad4e13fe><span class="info-value-full" data-v-ad4e13fe>${ssrInterpolate((osgo.value.applicantIsOwner ? owner.value : applicant.value).name || "-")}${ssrInterpolate((osgo.value.applicantIsOwner ? owner.value : applicant.value).birthDate ? ` (${(osgo.value.applicantIsOwner ? owner.value : applicant.value).birthDate})` : "")}</span></div></div></div><div class="summary-card" data-v-ad4e13fe><div class="card-title" data-v-ad4e13fe>${ssrInterpolate(unref(t)("step5.vehicleInfo"))}</div><div class="card-content" data-v-ad4e13fe><div class="info-row" data-v-ad4e13fe><span class="info-value-full" data-v-ad4e13fe>${ssrInterpolate(((_a = osgo.value.vehicle) == null ? void 0 : _a.modelName) || ((_b = osgo.value.vehicle) == null ? void 0 : _b.model) || "-")} ${ssrInterpolate(((_c = osgo.value.vehicle) == null ? void 0 : _c.govNumber) ? ` (${osgo.value.vehicle.govNumber})` : "")}</span></div></div></div><div class="summary-card" data-v-ad4e13fe><div class="card-title" data-v-ad4e13fe>${ssrInterpolate(unref(t)("step5.policyInfo"))}</div><div class="card-content" data-v-ad4e13fe><div class="info-row" data-v-ad4e13fe><span class="info-value-full" data-v-ad4e13fe>${ssrInterpolate(getPeriodName())}</span></div><div class="info-row" data-v-ad4e13fe><span class="info-value-full" data-v-ad4e13fe>${ssrInterpolate(getAreaName())}</span></div><div class="info-row" data-v-ad4e13fe><span class="info-value-full" data-v-ad4e13fe>${ssrInterpolate(osgo.value.driversLimited ? unref(t)("step5.driversLimited", { count: ((_d = osgo.value.drivers) == null ? void 0 : _d.length) || 0 }) : unref(t)("step5.noDriversLimitation"))}</span></div></div></div><div class="summary-card" data-v-ad4e13fe><div class="card-title" data-v-ad4e13fe>${ssrInterpolate(unref(t)("step5.compensation"))}</div><div class="card-content" data-v-ad4e13fe><div class="info-row" data-v-ad4e13fe><span class="info-value-full" data-v-ad4e13fe>${ssrInterpolate(formatPriceNumber(unref(COMPENSATION)))} \u0441\u0443\u043C</span></div></div></div></div><div class="summary-section" data-v-ad4e13fe><h3 class="section-title" data-v-ad4e13fe><i class="bx bx-phone" data-v-ad4e13fe></i><span data-v-ad4e13fe>${ssrInterpolate(unref(t)("step5.contactInfo"))}</span></h3><div class="form-section" data-v-ad4e13fe>`);
       _push(ssrRenderComponent(_component_InputField, {
         modelValue: phone.value,
         "onUpdate:modelValue": ($event) => phone.value = $event,
-        label: "\u041D\u043E\u043C\u0435\u0440 \u0442\u0435\u043B\u0435\u0444\u043E\u043D\u0430",
-        placeholder: "+998 90 123 45 67",
+        label: unref(t)("step5.phone"),
+        placeholder: unref(t)("step5.phonePlaceholder"),
         type: "tel",
         icon: "bx bx-phone",
         "input-mode": "tel",
         disabled: !unref(osgoStore).isEditable,
         required: ""
       }, null, _parent));
-      _push(`</div><div class="form-section" data-v-832f148c>`);
+      _push(`</div><div class="form-section" data-v-ad4e13fe>`);
       _push(ssrRenderComponent(_component_InputField, {
         modelValue: osgo.value.contractStartDate,
         "onUpdate:modelValue": ($event) => osgo.value.contractStartDate = $event,
-        label: "\u0414\u0430\u0442\u0430 \u043D\u0430\u0447\u0430\u043B\u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043F\u043E\u043B\u0438\u0441\u0430",
+        label: unref(t)("step5.startDate"),
         type: "text",
         "date-mask": "",
-        placeholder: "DD-MM-YYYY",
+        placeholder: unref(t)("step5.startDatePlaceholder"),
         icon: "bx bx-calendar",
         disabled: !unref(osgoStore).isEditable,
         required: ""
       }, null, _parent));
       _push(`</div>`);
       if (osgo.value.contractEndDate) {
-        _push(`<div class="form-section" data-v-832f148c>`);
+        _push(`<div class="form-section" data-v-ad4e13fe>`);
         _push(ssrRenderComponent(_component_InputField, {
           "model-value": osgo.value.contractEndDate,
-          label: "\u0414\u0430\u0442\u0430 \u043E\u043A\u043E\u043D\u0447\u0430\u043D\u0438\u044F \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044F \u043F\u043E\u043B\u0438\u0441\u0430",
+          label: unref(t)("step5.endDate"),
           type: "text",
           "date-mask": "",
-          placeholder: "DD-MM-YYYY",
+          placeholder: unref(t)("step5.startDatePlaceholder"),
           icon: "bx bx-calendar",
           disabled: ""
         }, null, _parent));
@@ -1808,7 +1809,7 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
       } else {
         _push(`<!---->`);
       }
-      _push(`</div><div class="premium-section" data-v-832f148c><div class="premium-card-large" data-v-832f148c><div class="premium-header" data-v-832f148c><i class="bx bx-shield-alt-2" data-v-832f148c></i><span data-v-832f148c>\u0421\u0442\u0440\u0430\u0445\u043E\u0432\u0430\u044F \u043F\u0440\u0435\u043C\u0438\u044F</span></div><div class="premium-amount-large" data-v-832f148c>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))} \u0441\u0443\u043C </div></div></div></div></div>`);
+      _push(`</div><div class="premium-section" data-v-ad4e13fe><div class="premium-card-large" data-v-ad4e13fe><div class="premium-header" data-v-ad4e13fe><i class="bx bx-shield-alt-2" data-v-ad4e13fe></i><span data-v-ad4e13fe>${ssrInterpolate(unref(t)("step5.premium"))}</span></div><div class="premium-amount-large" data-v-ad4e13fe>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))} \u0441\u0443\u043C </div></div></div></div></div>`);
     };
   }
 });
@@ -1818,7 +1819,7 @@ _sfc_main$2.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/steps/Step5Summary.vue");
   return _sfc_setup$2 ? _sfc_setup$2(props, ctx) : void 0;
 };
-const Step5Summary = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__scopeId", "data-v-832f148c"]]);
+const Step5Summary = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["__scopeId", "data-v-ad4e13fe"]]);
 const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "Step6Payment",
   __ssrInlineRender: true,
@@ -1826,7 +1827,7 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     const osgoStore = useOsgoStore();
     useTelegramWebApp();
     useApi();
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const osgo = computed(() => osgoStore.osgo);
     const fundData = computed(() => osgoStore.fundData);
     computed(() => {
@@ -1845,10 +1846,14 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
     });
     const statusClass = computed(() => {
       if (!paymentStatusText.value) return "";
-      if (paymentStatusText.value.toLowerCase().includes("\u043E\u043F\u043B\u0430\u0447\u0435\u043D") || paymentStatusText.value.toLowerCase().includes("\u0443\u0441\u043F\u0435\u0448\u043D\u043E")) {
+      const text = paymentStatusText.value.toLowerCase();
+      const currentLocale = locale.value;
+      const successKeywords = currentLocale === "ru" ? ["\u043E\u043F\u043B\u0430\u0447\u0435\u043D", "\u0443\u0441\u043F\u0435\u0448\u043D\u043E", "\u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0430"] : ["to'langan", "muvaffaqiyatli", "yakunlandi"];
+      const errorKeywords = currentLocale === "ru" ? ["\u043E\u0448\u0438\u0431\u043A\u0430", "\u043D\u0435 \u043F\u043E\u043B\u0443\u0447\u0435\u043D\u0430"] : ["xato", "olindi"];
+      if (successKeywords.some((keyword) => text.includes(keyword))) {
         return "status-success";
       }
-      if (paymentStatusText.value.toLowerCase().includes("\u043E\u0448\u0438\u0431\u043A\u0430") || paymentStatusText.value.toLowerCase().includes("\u043D\u0435")) {
+      if (errorKeywords.some((keyword) => text.includes(keyword))) {
         return "status-error";
       }
       return "status-info";
@@ -1863,44 +1868,44 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       return "bx bx-info-circle";
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-f6910a80><div class="step-header" data-v-f6910a80><h2 class="step-title" data-v-f6910a80>\u041E\u043F\u043B\u0430\u0442\u0430</h2><p class="step-description" data-v-f6910a80> \u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0441\u043F\u043E\u0441\u043E\u0431 \u043E\u043F\u043B\u0430\u0442\u044B \u0434\u043B\u044F \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u044F \u043E\u0444\u043E\u0440\u043C\u043B\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u0438\u0441\u0430 </p></div><div class="step-content" data-v-f6910a80><div class="premium-section" data-v-f6910a80><div class="premium-card-large" data-v-f6910a80><div class="premium-header" data-v-f6910a80><i class="bx bx-shield-alt-2" data-v-f6910a80></i><span data-v-f6910a80>\u0421\u0442\u0440\u0430\u0445\u043E\u0432\u0430\u044F \u043F\u0440\u0435\u043C\u0438\u044F</span></div><div class="premium-amount-large" data-v-f6910a80>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))} \u0441\u0443\u043C </div></div></div><div class="payment-section" data-v-f6910a80><h3 class="section-title" data-v-f6910a80><i class="bx bx-credit-card" data-v-f6910a80></i><span data-v-f6910a80>\u0412\u044B\u0431\u0435\u0440\u0438\u0442\u0435 \u0441\u043F\u043E\u0441\u043E\u0431 \u043E\u043F\u043B\u0430\u0442\u044B</span></h3><div class="payment-buttons" data-v-f6910a80><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "payme" }, "payment-btn payme"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-f6910a80><div class="payment-icon" data-v-f6910a80>\u{1F4B3}</div><div class="payment-name" data-v-f6910a80>Payme</div>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-f963a176><div class="step-header" data-v-f963a176><h2 class="step-title" data-v-f963a176>${ssrInterpolate(unref(t)("step5.payment"))}</h2><p class="step-description" data-v-f963a176>${ssrInterpolate(unref(t)("step5.paymentDescription"))}</p></div><div class="step-content" data-v-f963a176><div class="premium-section" data-v-f963a176><div class="premium-card-large" data-v-f963a176><div class="premium-header" data-v-f963a176><i class="bx bx-shield-alt-2" data-v-f963a176></i><span data-v-f963a176>${ssrInterpolate(unref(t)("step5.premium"))}</span></div><div class="premium-amount-large" data-v-f963a176>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))} \u0441\u0443\u043C </div></div></div><div class="payment-section" data-v-f963a176><h3 class="section-title" data-v-f963a176><i class="bx bx-credit-card" data-v-f963a176></i><span data-v-f963a176>${ssrInterpolate(unref(t)("step5.paymentMethod"))}</span></h3><div class="payment-buttons" data-v-f963a176><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "payme" }, "payment-btn payme"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-f963a176><div class="payment-icon" data-v-f963a176>\u{1F4B3}</div><div class="payment-name" data-v-f963a176>Payme</div>`);
       if (selectedPaymentMethod.value === "payme") {
-        _push(`<div class="payment-selected-indicator" data-v-f6910a80><i class="bx bx-check-circle" data-v-f6910a80></i></div>`);
+        _push(`<div class="payment-selected-indicator" data-v-f963a176><i class="bx bx-check-circle" data-v-f963a176></i></div>`);
       } else {
         _push(`<!---->`);
       }
-      _push(`</button><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "click" }, "payment-btn click"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-f6910a80><div class="payment-icon" data-v-f6910a80>\u{1F535}</div><div class="payment-name" data-v-f6910a80>Click</div>`);
+      _push(`</button><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "click" }, "payment-btn click"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-f963a176><div class="payment-icon" data-v-f963a176>\u{1F535}</div><div class="payment-name" data-v-f963a176>Click</div>`);
       if (selectedPaymentMethod.value === "click") {
-        _push(`<div class="payment-selected-indicator" data-v-f6910a80><i class="bx bx-check-circle" data-v-f6910a80></i></div>`);
+        _push(`<div class="payment-selected-indicator" data-v-f963a176><i class="bx bx-check-circle" data-v-f963a176></i></div>`);
       } else {
         _push(`<!---->`);
       }
-      _push(`</button><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "uzum" }, "payment-btn uzum"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-f6910a80><div class="payment-icon" data-v-f6910a80>\u{1F7E3}</div><div class="payment-name" data-v-f6910a80>Uzum</div>`);
+      _push(`</button><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "uzum" }, "payment-btn uzum"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-f963a176><div class="payment-icon" data-v-f963a176>\u{1F7E3}</div><div class="payment-name" data-v-f963a176>Uzum</div>`);
       if (selectedPaymentMethod.value === "uzum") {
-        _push(`<div class="payment-selected-indicator" data-v-f6910a80><i class="bx bx-check-circle" data-v-f6910a80></i></div>`);
+        _push(`<div class="payment-selected-indicator" data-v-f963a176><i class="bx bx-check-circle" data-v-f963a176></i></div>`);
       } else {
         _push(`<!---->`);
       }
-      _push(`</button></div></div><div class="status-section" data-v-f6910a80><button type="button" class="btn btn-primary-outlined w-full"${ssrIncludeBooleanAttr(!!statusCheckSeconds.value || checkingStatus.value || !osgo.value.id) ? " disabled" : ""} data-v-f6910a80><i class="bx bx-refresh" data-v-f6910a80></i><span data-v-f6910a80>${ssrInterpolate(unref(t)("step5.checkStatus"))}</span>`);
+      _push(`</button></div></div><div class="status-section" data-v-f963a176><button type="button" class="btn btn-primary-outlined w-full"${ssrIncludeBooleanAttr(!!statusCheckSeconds.value || checkingStatus.value || !osgo.value.id) ? " disabled" : ""} data-v-f963a176><i class="bx bx-refresh" data-v-f963a176></i><span data-v-f963a176>${ssrInterpolate(unref(t)("step5.checkStatus"))}</span>`);
       if (statusCheckSeconds.value) {
-        _push(`<span class="ml-1" data-v-f6910a80>(${ssrInterpolate(statusCheckSeconds.value)})</span>`);
+        _push(`<span class="ml-1" data-v-f963a176>(${ssrInterpolate(statusCheckSeconds.value)})</span>`);
       } else {
         _push(`<!---->`);
       }
       _push(`</button>`);
       if (statusError.value) {
-        _push(`<div class="error-message mt-2" data-v-f6910a80><i class="bx bx-error-circle" data-v-f6910a80></i><span data-v-f6910a80>${ssrInterpolate(statusError.value)}</span></div>`);
+        _push(`<div class="error-message mt-2" data-v-f963a176><i class="bx bx-error-circle" data-v-f963a176></i><span data-v-f963a176>${ssrInterpolate(statusError.value)}</span></div>`);
       } else {
         _push(`<!---->`);
       }
       if (paymentStatusText.value) {
-        _push(`<div class="${ssrRenderClass([statusClass.value, "status-text"])}" data-v-f6910a80><i class="${ssrRenderClass(statusIcon.value)}" data-v-f6910a80></i><span data-v-f6910a80>${ssrInterpolate(paymentStatusText.value)}</span></div>`);
+        _push(`<div class="${ssrRenderClass([statusClass.value, "status-text"])}" data-v-f963a176><i class="${ssrRenderClass(statusIcon.value)}" data-v-f963a176></i><span data-v-f963a176>${ssrInterpolate(paymentStatusText.value)}</span></div>`);
       } else {
         _push(`<!---->`);
       }
       _push(`</div>`);
       if (osgo.value.id && fundData.value && fundData.value.seria) {
-        _push(`<div class="success-card" data-v-f6910a80><div class="success-icon" data-v-f6910a80><i class="bx bx-check-circle" data-v-f6910a80></i></div><h3 class="success-title" data-v-f6910a80>\u041F\u043E\u043B\u0438\u0441 \u043E\u0444\u043E\u0440\u043C\u043B\u0435\u043D!</h3><p class="success-description" data-v-f6910a80> \u0412\u0430\u0448 \u043F\u043E\u043B\u0438\u0441 \u041E\u0421\u0413\u041E \u0443\u0441\u043F\u0435\u0448\u043D\u043E \u043E\u0444\u043E\u0440\u043C\u043B\u0435\u043D \u0438 \u043E\u043F\u043B\u0430\u0447\u0435\u043D </p><div class="policy-details" data-v-f6910a80><div class="policy-row" data-v-f6910a80><span class="policy-label" data-v-f6910a80>\u0421\u0435\u0440\u0438\u044F:</span><span class="policy-value" data-v-f6910a80>${ssrInterpolate(fundData.value.seria)}</span></div><div class="policy-row" data-v-f6910a80><span class="policy-label" data-v-f6910a80>\u041D\u043E\u043C\u0435\u0440:</span><span class="policy-value" data-v-f6910a80>${ssrInterpolate(fundData.value.number)}</span></div></div></div>`);
+        _push(`<div class="success-card" data-v-f963a176><div class="success-icon" data-v-f963a176><i class="bx bx-check-circle" data-v-f963a176></i></div><h3 class="success-title" data-v-f963a176>${ssrInterpolate(unref(t)("step5.success"))}</h3><p class="success-description" data-v-f963a176>${ssrInterpolate(unref(t)("step5.policyIssued"))}</p><div class="policy-details" data-v-f963a176><div class="policy-row" data-v-f963a176><span class="policy-label" data-v-f963a176>${ssrInterpolate(unref(t)("step5.policySeries"))}:</span><span class="policy-value" data-v-f963a176>${ssrInterpolate(fundData.value.seria)}</span></div><div class="policy-row" data-v-f963a176><span class="policy-label" data-v-f963a176>${ssrInterpolate(unref(t)("step5.policyNumber"))}:</span><span class="policy-value" data-v-f963a176>${ssrInterpolate(fundData.value.number)}</span></div></div></div>`);
       } else {
         _push(`<!---->`);
       }
@@ -1914,7 +1919,7 @@ _sfc_main$1.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/steps/Step6Payment.vue");
   return _sfc_setup$1 ? _sfc_setup$1(props, ctx) : void 0;
 };
-const Step6Payment = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-f6910a80"]]);
+const Step6Payment = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-f963a176"]]);
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "index",
   __ssrInlineRender: true,
@@ -1977,4 +1982,4 @@ _sfc_main.setup = (props, ctx) => {
 const index = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-8561f7bb"]]);
 
 export { index as default };
-//# sourceMappingURL=index-DKPuyml6.mjs.map
+//# sourceMappingURL=index-CW-oSviJ.mjs.map

@@ -1,9 +1,9 @@
 <template>
   <div class="step-container">
     <div class="step-header">
-      <h2 class="step-title">Оплата</h2>
+      <h2 class="step-title">{{ t('step5.payment') }}</h2>
       <p class="step-description">
-        Выберите способ оплаты для завершения оформления полиса
+        {{ t('step5.paymentDescription') }}
       </p>
     </div>
 
@@ -13,7 +13,7 @@
         <div class="premium-card-large">
           <div class="premium-header">
             <i class="bx bx-shield-alt-2"></i>
-            <span>Страховая премия</span>
+            <span>{{ t('step5.premium') }}</span>
           </div>
           <div class="premium-amount-large">
             {{ formatPrice(osgoStore.calculatedPremium) }} сум
@@ -25,7 +25,7 @@
       <div class="payment-section">
         <h3 class="section-title">
           <i class="bx bx-credit-card"></i>
-          <span>Выберите способ оплаты</span>
+          <span>{{ t('step5.paymentMethod') }}</span>
         </h3>
 
         <div class="payment-buttons">
@@ -108,17 +108,17 @@
           <div class="success-icon">
             <i class="bx bx-check-circle"></i>
           </div>
-          <h3 class="success-title">Полис оформлен!</h3>
+          <h3 class="success-title">{{ t('step5.success') }}</h3>
           <p class="success-description">
-            Ваш полис ОСГО успешно оформлен и оплачен
+            {{ t('step5.policyIssued') }}
           </p>
           <div class="policy-details">
             <div class="policy-row">
-              <span class="policy-label">Серия:</span>
+              <span class="policy-label">{{ t('step5.policySeries') }}:</span>
               <span class="policy-value">{{ fundData.seria }}</span>
             </div>
             <div class="policy-row">
-              <span class="policy-label">Номер:</span>
+              <span class="policy-label">{{ t('step5.policyNumber') }}:</span>
               <span class="policy-value">{{ fundData.number }}</span>
             </div>
           </div>
@@ -137,7 +137,7 @@ import { STEPS } from '~/utils/constants'
 const osgoStore = useOsgoStore()
 const tg = useTelegramWebApp()
 const api = useApi()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const osgo = computed(() => osgoStore.osgo)
 const fundData = computed(() => osgoStore.fundData)
@@ -167,12 +167,15 @@ const selectedPaymentMethod = computed({
 // Status class and icon based on payment status
 const statusClass = computed(() => {
   if (!paymentStatusText.value) return ''
-  if (paymentStatusText.value.toLowerCase().includes('оплачен') || 
-      paymentStatusText.value.toLowerCase().includes('успешно')) {
+  const text = paymentStatusText.value.toLowerCase()
+  const currentLocale = locale.value
+  const successKeywords = currentLocale === 'ru' ? ['оплачен', 'успешно', 'завершена'] : ['to\'langan', 'muvaffaqiyatli', 'yakunlandi']
+  const errorKeywords = currentLocale === 'ru' ? ['ошибка', 'не получена'] : ['xato', 'olindi']
+  
+  if (successKeywords.some(keyword => text.includes(keyword))) {
     return 'status-success'
   }
-  if (paymentStatusText.value.toLowerCase().includes('ошибка') || 
-      paymentStatusText.value.toLowerCase().includes('не')) {
+  if (errorKeywords.some(keyword => text.includes(keyword))) {
     return 'status-error'
   }
   return 'status-info'
@@ -205,8 +208,8 @@ const selectPaymentMethod = (method: 'payme' | 'click' | 'uzum') => {
 
 // Check payment status
 const checkPaymentStatus = async () => {
-  if (!osgo.value.id) {
-    statusError.value = 'Полис не создан'
+    if (!osgo.value.id) {
+    statusError.value = t('errors.createApplicationFailed')
     return
   }
 
@@ -225,14 +228,14 @@ const checkPaymentStatus = async () => {
 
     // Determine status text based on fund data
     if (fundData.value?.seria && fundData.value?.number) {
-      paymentStatusText.value = 'Оплата успешно завершена. Полис оформлен.'
+      paymentStatusText.value = t('step5.paymentSuccess')
       if (tg.isTelegramWebApp.value) {
         tg.hapticNotification('success')
       }
     } else if (fundData.value) {
-      paymentStatusText.value = 'Оплата обрабатывается. Проверьте статус позже.'
+      paymentStatusText.value = t('step5.paymentProcessing')
     } else {
-      paymentStatusText.value = 'Оплата не получена. Проверьте SMS или попробуйте снова.'
+      paymentStatusText.value = t('step5.paymentNotReceived')
     }
 
     // Start countdown timer
@@ -253,8 +256,8 @@ const checkPaymentStatus = async () => {
 
   } catch (error: any) {
     console.error('[Step6Payment] Check status error:', error)
-    statusError.value = error.message || 'Ошибка при проверке статуса оплаты'
-    paymentStatusText.value = 'Ошибка при проверке статуса. Попробуйте позже.'
+    statusError.value = error.message || t('errors.paymentFailed')
+    paymentStatusText.value = t('errors.paymentFailed')
 
     if (tg.isTelegramWebApp.value) {
       tg.hapticNotification('error')

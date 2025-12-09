@@ -1,9 +1,9 @@
 <template>
   <div class="step-container">
     <div class="step-header">
-      <h2 class="step-title">Подтверждение</h2>
+      <h2 class="step-title">{{ t('step5.title') }}</h2>
       <p class="step-description">
-        Проверьте данные полиса перед оформлением
+        {{ t('step5.description') }}
       </p>
     </div>
 
@@ -12,12 +12,12 @@
       <div class="summary-section">
         <h3 class="section-title">
           <i class="bx bx-file-blank"></i>
-          <span>Информация о страховке</span>
+          <span>{{ t('step5.policyInfo') }}</span>
         </h3>
 
         <!-- Owner Info -->
         <div class="summary-card">
-          <div class="card-title">Собственник</div>
+          <div class="card-title">{{ t('step3.owner') }}</div>
           <div class="card-content">
             <div class="info-row">
               <span class="info-value-full">
@@ -29,7 +29,7 @@
 
         <!-- Applicant Info -->
         <div class="summary-card">
-          <div class="card-title">Заявитель</div>
+          <div class="card-title">{{ t('step3.applicant') }}</div>
           <div class="card-content">
             <div class="info-row">
               <span class="info-value-full">
@@ -41,7 +41,7 @@
 
         <!-- Vehicle Info -->
         <div class="summary-card">
-          <div class="card-title">Транспортное средство</div>
+          <div class="card-title">{{ t('step5.vehicleInfo') }}</div>
           <div class="card-content">
             <div class="info-row">
               <span class="info-value-full">
@@ -55,7 +55,7 @@
 
         <!-- Period & Territory -->
         <div class="summary-card">
-          <div class="card-title">Условия страхования</div>
+          <div class="card-title">{{ t('step5.policyInfo') }}</div>
           <div class="card-content">
             <div class="info-row">
               <span class="info-value-full">{{ getPeriodName() }}</span>
@@ -65,7 +65,7 @@
             </div>
             <div class="info-row">
               <span class="info-value-full">
-                {{ osgo.driversLimited ? `Ограниченно (${osgo.drivers?.length || 0})` : 'Не ограничено' }}
+                {{ osgo.driversLimited ? t('step5.driversLimited', { count: osgo.drivers?.length || 0 }) : t('step5.noDriversLimitation') }}
               </span>
             </div>
           </div>
@@ -73,7 +73,7 @@
 
         <!-- Insurance Amount -->
         <div class="summary-card">
-          <div class="card-title">Страховая сумма</div>
+          <div class="card-title">{{ t('step5.compensation') }}</div>
           <div class="card-content">
             <div class="info-row">
               <span class="info-value-full">{{ formatPriceNumber(COMPENSATION) }} сум</span>
@@ -86,14 +86,14 @@
       <div class="summary-section">
         <h3 class="section-title">
           <i class="bx bx-phone"></i>
-          <span>Контактные данные</span>
+          <span>{{ t('step5.contactInfo') }}</span>
         </h3>
 
         <div class="form-section">
           <InputField
             v-model="phone"
-            label="Номер телефона"
-            placeholder="+998 90 123 45 67"
+            :label="t('step5.phone')"
+            :placeholder="t('step5.phonePlaceholder')"
             type="tel"
             icon="bx bx-phone"
             input-mode="tel"
@@ -105,10 +105,10 @@
         <div class="form-section">
           <InputField
             v-model="osgo.contractStartDate"
-            label="Дата начала действия полиса"
+            :label="t('step5.startDate')"
             type="text"
             date-mask
-            placeholder="DD-MM-YYYY"
+            :placeholder="t('step5.startDatePlaceholder')"
             icon="bx bx-calendar"
             :disabled="!osgoStore.isEditable"
             required
@@ -118,10 +118,10 @@
         <div v-if="osgo.contractEndDate" class="form-section">
           <InputField
             :model-value="osgo.contractEndDate"
-            label="Дата окончания действия полиса"
+            :label="t('step5.endDate')"
             type="text"
             date-mask
-            placeholder="DD-MM-YYYY"
+            :placeholder="t('step5.startDatePlaceholder')"
             icon="bx bx-calendar"
             disabled
           />
@@ -133,7 +133,7 @@
         <div class="premium-card-large">
           <div class="premium-header">
             <i class="bx bx-shield-alt-2"></i>
-            <span>Страховая премия</span>
+            <span>{{ t('step5.premium') }}</span>
           </div>
           <div class="premium-amount-large">
             {{ formatPrice(osgoStore.calculatedPremium) }} сум
@@ -186,7 +186,7 @@ const phone = computed({
 })
 
 // Helper methods
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 const getCarTypeName = (): string => {
   if (!osgo.value.vehicle?.carType) return '-'

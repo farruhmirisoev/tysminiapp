@@ -1,9 +1,9 @@
 <template>
   <div class="step-container">
     <div class="step-header">
-      <h2 class="step-title">Информация о транспорте</h2>
+      <h2 class="step-title">{{ t('step2.title') }}</h2>
       <p class="step-description">
-        Введите данные транспортного средства для проверки
+        {{ t('step2.description') }}
       </p>
     </div>
 
@@ -12,8 +12,8 @@
       <div class="form-section">
         <InputField
           v-model="osgo.vehicle!.govNumber"
-          label="Государственный номер"
-          placeholder="01A000AA"
+          :label="t('step2.govNumber')"
+          :placeholder="t('step2.govNumberPlaceholder')"
           :disabled="!osgoStore.isEditable"
           :error="errors.govNumber"
           icon="bx bx-car"
@@ -27,8 +27,8 @@
       <div class="form-section">
         <InputField
           v-model="osgo.vehicle!.techPassportSeries"
-          label="Серия техпаспорта"
-          placeholder="AAA"
+          :label="t('step2.techPassportSeries')"
+          :placeholder="t('step2.techPassportSeriesPlaceholder')"
           :disabled="!osgoStore.isEditable"
           :error="errors.techPassportSeries"
           :max-length="3"
@@ -42,8 +42,8 @@
       <div class="form-section">
         <InputField
           v-model="osgo.vehicle!.techPassportNumber"
-          label="Номер техпаспорта"
-          placeholder="1234567"
+          :label="t('step2.techPassportNumber')"
+          :placeholder="t('step2.techPassportNumberPlaceholder')"
           :disabled="!osgoStore.isEditable"
           :error="errors.techPassportNumber"
           input-mode="numeric"
@@ -63,7 +63,7 @@
           <span v-if="osgoStore.vehicleVerifying" class="spinner"></span>
           <template v-else>
             <i class="bx bx-check-circle"></i>
-            <span>{{ osgoStore.vehicleVerified ? 'Проверено' : 'Проверить' }}</span>
+            <span>{{ osgoStore.vehicleVerified ? t('step2.verified') : t('step2.verify') }}</span>
           </template>
         </button>
       </div>
@@ -79,7 +79,7 @@
         <div v-if="osgoStore.vehicleVerified && osgo.vehicle" class="vehicle-info-card">
           <div class="card-header">
             <i class="bx bx-check-circle text-success"></i>
-            <span>Транспорт найден</span>
+            <span>{{ t('step2.vehicleFound') }}</span>
           </div>
           <div class="card-content">
             <!-- Debug: Show vehicle object (temporary - remove after debugging) -->
@@ -93,30 +93,30 @@
             
             <div class="vehicle-info-grid">
               <div class="vehicle-info-item" v-if="osgo.vehicle?.techPassportIssueDate">
-                <div class="vehicle-info-label">Дата выдачи техпаспорта</div>
+                <div class="vehicle-info-label">{{ t('step2.techPassportIssueDate') }}</div>
                 <div class="vehicle-info-value">{{ formatDisplayDate(osgo.vehicle.techPassportIssueDate) }}</div>
               </div>
               <div class="vehicle-info-item" v-if="osgo.vehicle?.modelName || osgo.vehicle?.model">
-                <div class="vehicle-info-label">Модель</div>
+                <div class="vehicle-info-label">{{ t('step2.model') }}</div>
                 <div class="vehicle-info-value">{{ osgo.vehicle?.modelName || osgo.vehicle?.model || '-' }}</div>
               </div>
               <div class="vehicle-info-item" v-if="osgo.vehicle?.createdYear || osgo.vehicle?.year">
-                <div class="vehicle-info-label">Год выпуска</div>
+                <div class="vehicle-info-label">{{ t('step2.year') }}</div>
                 <div class="vehicle-info-value">{{ osgo.vehicle?.createdYear || osgo.vehicle?.year || '-' }}</div>
               </div>
               <div class="vehicle-info-item" v-if="osgo.vehicle?.engineNumber">
-                <div class="vehicle-info-label">Номер двигателя</div>
+                <div class="vehicle-info-label">{{ t('step2.engineNumber') }}</div>
                 <div class="vehicle-info-value">{{ osgo.vehicle.engineNumber }}</div>
               </div>
               <div class="vehicle-info-item" v-if="osgo.vehicle?.bodyNumber">
-                <div class="vehicle-info-label">Номер кузова/шасси</div>
+                <div class="vehicle-info-label">{{ t('step2.bodyNumber') }}</div>
                 <div class="vehicle-info-value">{{ osgo.vehicle.bodyNumber }}</div>
               </div>
             </div>
             
             <!-- Fallback: Show if no fields match -->
             <div v-if="vehicleInfoCount === 0" class="vehicle-info-empty">
-              Нет данных о транспортном средстве
+              {{ t('step2.vehicleNotFound') }}
             </div>
           </div>
         </div>
@@ -139,6 +139,7 @@ import { formatDisplayDate } from '~/utils/formatting'
 const osgoStore = useOsgoStore()
 const metaStore = useMetaStore()
 const tg = useTelegramWebApp()
+const { t } = useI18n()
 
 const osgo = computed(() => osgoStore.osgo)
 
