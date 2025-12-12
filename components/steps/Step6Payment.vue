@@ -16,7 +16,7 @@
             <span>{{ t('step5.premium') }}</span>
           </div>
           <div class="premium-amount-large">
-            {{ formatPrice(osgoStore.calculatedPremium) }} сум
+            {{ formatPrice(osgoStore.calculatedPremium) }}
           </div>
         </div>
       </div>

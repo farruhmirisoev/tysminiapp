@@ -76,7 +76,7 @@
           <div class="card-title">{{ t('step5.compensation') }}</div>
           <div class="card-content">
             <div class="info-row">
-              <span class="info-value-full">{{ formatPriceNumber(COMPENSATION) }} сум</span>
+              <span class="info-value-full">{{ formatPrice(COMPENSATION) }}</span>
             </div>
           </div>
         </div>
@@ -136,7 +136,7 @@
             <span>{{ t('step5.premium') }}</span>
           </div>
           <div class="premium-amount-large">
-            {{ formatPrice(osgoStore.calculatedPremium) }} сум
+            {{ formatPrice(osgoStore.calculatedPremium) }}
           </div>
         </div>
       </div>
