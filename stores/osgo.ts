@@ -72,10 +72,27 @@ export const useOsgoStore = defineStore('osgo', () => {
     return validation.valid
   })
 
-  const totalSteps = computed(() => Object.keys(STEPS).length)
+  // Total steps excluding DRIVERS (step 4 is hidden)
+  const totalSteps = computed(() => Object.keys(STEPS).length - 1)
+
+  // Map actual step index to display step number (skipping DRIVERS)
+  const getDisplayStepNumber = (stepIndex: number): number => {
+    if (stepIndex <= STEPS.OWNER) {
+      return stepIndex + 1 // Steps 0, 1, 2 -> Display 1, 2, 3
+    } else if (stepIndex === STEPS.DRIVERS) {
+      return -1 // Hidden step
+    } else {
+      return stepIndex // Steps 4, 5 -> Display 4, 5
+    }
+  }
+
+  // Get display step number for current step
+  const displayStepNumber = computed(() => getDisplayStepNumber(currentStep.value))
 
   const progressPercentage = computed(() => {
-    return Math.round(((currentStep.value + 1) / totalSteps.value) * 100)
+    // Calculate progress excluding DRIVERS step
+    const displayStep = displayStepNumber.value
+    return Math.round((displayStep / totalSteps.value) * 100)
   })
 
   // Premium calculation
@@ -528,8 +545,9 @@ export const useOsgoStore = defineStore('osgo', () => {
           valid: ownerVerified.value && (osgo.value.applicantIsOwner || applicantVerified.value)
         }
       case STEPS.DRIVERS:
+        // Drivers step is hidden, always return valid
         return {
-          valid: !osgo.value.driversLimited || osgo.value.drivers.length > 0
+          valid: true
         }
       case STEPS.SUMMARY:
         // If applicant is owner, use owner.id; otherwise require applicant.id
@@ -559,19 +577,25 @@ export const useOsgoStore = defineStore('osgo', () => {
   }
 
   /**
-   * Go to next step
+   * Go to next step (skipping DRIVERS step)
    */
   const nextStep = () => {
-    if (currentStep.value < totalSteps.value - 1) {
+    if (currentStep.value === STEPS.OWNER) {
+      // Skip DRIVERS, go directly to SUMMARY
+      currentStep.value = STEPS.SUMMARY
+    } else if (currentStep.value < STEPS.PAYMENT) {
       currentStep.value++
     }
   }
 
   /**
-   * Go to previous step
+   * Go to previous step (skipping DRIVERS step)
    */
   const previousStep = () => {
-    if (currentStep.value > 0) {
+    if (currentStep.value === STEPS.SUMMARY) {
+      // Skip DRIVERS, go directly to OWNER
+      currentStep.value = STEPS.OWNER
+    } else if (currentStep.value > 0) {
       currentStep.value--
     }
   }
@@ -920,6 +944,7 @@ export const useOsgoStore = defineStore('osgo', () => {
     isEditable,
     canProceedToNextStep,
     totalSteps,
+    displayStepNumber,
     progressPercentage,
     calculatedPremium,
     amountPayable,

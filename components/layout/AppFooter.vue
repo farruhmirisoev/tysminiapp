@@ -15,7 +15,7 @@
       <!-- Step Indicator (center) -->
       <div class="flex-1 text-center">
         <div class="text-sm text-text-light font-medium">
-          {{ $t('common.step', { current: currentStep + 1, total: totalSteps }) }}
+          {{ $t('common.step', { current: displayStepNumber, total: totalSteps }) }}
         </div>
       </div>
 
@@ -63,8 +63,9 @@ const paymentSuccess = ref<string | null>(null)
 // Computed properties
 const currentStep = computed(() => osgoStore.currentStep)
 const totalSteps = computed(() => osgoStore.totalSteps)
+const displayStepNumber = computed(() => osgoStore.displayStepNumber)
 const isFirstStep = computed(() => currentStep.value === 0)
-const isLastStep = computed(() => currentStep.value === totalSteps.value - 1)
+const isLastStep = computed(() => currentStep.value === STEPS.PAYMENT)
 const canProceed = computed(() => osgoStore.canProceedToNextStep)
 const loading = computed(() => osgoStore.saving || osgoStore.fetching || sendingPayment.value)
 

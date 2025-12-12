@@ -28,10 +28,6 @@
                         v-else-if="osgoStore.currentStep === STEPS.OWNER"
                         :key="STEPS.OWNER"
                     />
-                    <Step4Drivers
-                        v-else-if="osgoStore.currentStep === STEPS.DRIVERS"
-                        :key="STEPS.DRIVERS"
-                    />
                     <Step5Summary
                         v-else-if="osgoStore.currentStep === STEPS.SUMMARY"
                         :key="STEPS.SUMMARY"
@@ -87,7 +83,6 @@ import AppFooter from "~/components/layout/AppFooter.vue";
 import Step1Params from "~/components/steps/Step1Params.vue";
 import Step2Vehicle from "~/components/steps/Step2Vehicle.vue";
 import Step3Owner from "~/components/steps/Step3Owner.vue";
-import Step4Drivers from "~/components/steps/Step4Drivers.vue";
 import Step5Summary from "~/components/steps/Step5Summary.vue";
 import Step6Payment from "~/components/steps/Step6Payment.vue";
 

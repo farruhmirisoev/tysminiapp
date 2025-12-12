@@ -20,12 +20,12 @@
         <div
           class="step-circle"
           :class="{
-            'step-active': index === currentStep,
-            'step-completed': index < currentStep,
-            'step-pending': index > currentStep,
+            'step-active': getActualStepIndex(index) === currentStep,
+            'step-completed': getActualStepIndex(index) < currentStep && getActualStepIndex(index) !== STEPS.DRIVERS,
+            'step-pending': getActualStepIndex(index) > currentStep,
           }"
         >
-          <span v-if="index < currentStep" class="step-check">✓</span>
+          <span v-if="getActualStepIndex(index) < currentStep && getActualStepIndex(index) !== STEPS.DRIVERS" class="step-check">✓</span>
           <span v-else class="step-number">{{ index + 1 }}</span>
         </div>
 
@@ -41,6 +41,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from '#imports'
+import { STEPS } from '~/utils/constants'
 
 interface Props {
   currentStep: number
@@ -50,15 +51,23 @@ interface Props {
 const props = defineProps<Props>()
 const { t } = useI18n()
 
-// Step labels - use translations
+// Step labels - use translations (excluding drivers step)
 const steps = computed(() => [
   t('steps.params'),
   t('steps.vehicle'),
   t('steps.owner'),
-  t('steps.drivers'),
   t('steps.summary'),
   t('steps.payment'),
 ])
+
+// Map display index to actual step index (skipping DRIVERS)
+const getActualStepIndex = (displayIndex: number): number => {
+  if (displayIndex <= 2) {
+    return displayIndex // 0, 1, 2 -> PARAMS (0), VEHICLE (1), OWNER (2)
+  } else {
+    return displayIndex + 1 // 3, 4 -> SUMMARY (4), PAYMENT (5)
+  }
+}
 
 // Calculate progress percentage
 const progressPercentage = computed(() => {
