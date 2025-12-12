@@ -72,10 +72,10 @@ import { useMetaStore } from "~/stores/meta";
 import { STEPS } from "~/utils/constants";
 import { formatPrice } from "~/utils/formatting";
 
-// Protect this page with auth middleware
-definePageMeta({
-  middleware: 'auth'
-})
+// TEMPORARILY DISABLED: Auth middleware disabled to allow policy application without login
+// definePageMeta({
+//   middleware: 'auth'
+// })
 
 // Explicit component imports
 import AppHeader from "~/components/layout/AppHeader.vue";
