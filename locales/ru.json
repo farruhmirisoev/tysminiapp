@@ -52,6 +52,7 @@
     "period": "Срок страхования",
     "periodPlaceholder": "Выберите срок",
     "driversLimited": "Количество водителей",
+    "driversLimitedPlaceholder": "Выберите количество водителей",
     "driversLimitedYes": "Ограниченное",
     "driversLimitedYesDesc": "Указанные водители",
     "driversLimitedNo": "Без ограничений",

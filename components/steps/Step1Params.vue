@@ -42,51 +42,74 @@
                 <!-- Vehicle Type Selection -->
                 <div class="form-section">
                     <h3 class="section-title">{{ t('step1.vehicleType') }}</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <CheckButton
-                            v-for="carType in metaStore.carTypes"
-                            :key="carType.id"
-                            :title="getLocalizedName(carType)"
-                            :active="osgo.vehicle?.carType?.id === carType.id"
+                    <div class="select-wrapper">
+                        <select
+                            v-model="selectedCarType"
+                            class="input"
                             :disabled="!osgoStore.isEditable"
-                            @click="selectCarType(carType)"
-                        />
+                        >
+                            <option value="" disabled>
+                                {{ t('step1.vehicleTypePlaceholder') }}
+                            </option>
+                            <option
+                                v-for="carType in metaStore.carTypes"
+                                :key="carType.id"
+                                :value="carType.id"
+                            >
+                                {{ getLocalizedName(carType) }}
+                            </option>
+                        </select>
+                        <div class="select-icon">
+                            <i class="bx bx-chevron-down"></i>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Insurance Period -->
                 <div class="form-section">
                     <h3 class="section-title">{{ t('step1.period') }}</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <CheckButton
-                            v-for="period in metaStore.periods"
-                            :key="period.id"
-                            :title="getLocalizedName(period)"
-                            :active="osgo.period?.id === period.id"
+                    <div class="select-wrapper">
+                        <select
+                            v-model="selectedPeriod"
+                            class="input"
                             :disabled="!osgoStore.isEditable"
-                            @click="selectPeriod(period)"
-                        />
+                        >
+                            <option value="" disabled>
+                                {{ t('step1.periodPlaceholder') }}
+                            </option>
+                            <option
+                                v-for="period in metaStore.periods"
+                                :key="period.id"
+                                :value="period.id"
+                            >
+                                {{ getLocalizedName(period) }}
+                            </option>
+                        </select>
+                        <div class="select-icon">
+                            <i class="bx bx-chevron-down"></i>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Driver Limitation -->
-                <div class="form-section">
+                <!-- Driver Limitation (hidden, defaults to unlimited) -->
+                <div class="form-section" style="display: none;">
                     <h3 class="section-title">{{ t('step1.driversLimited') }}</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <CheckButton
-                            :title="t('step1.driversLimitedNo')"
-                            :description="t('step1.driversLimitedNoDesc')"
-                            :active="!osgo.driversLimited"
+                    <div class="select-wrapper">
+                        <select
+                            v-model="selectedDriversLimited"
+                            class="input"
                             :disabled="!osgoStore.isEditable"
-                            @click="osgo.driversLimited = false"
-                        />
-                        <CheckButton
-                            :title="t('step1.driversLimitedYes')"
-                            :description="t('step1.driversLimitedYesDesc')"
-                            :active="osgo.driversLimited"
-                            :disabled="!osgoStore.isEditable"
-                            @click="osgo.driversLimited = true"
-                        />
+                        >
+                            <option value="false">
+                                {{ t('step1.driversLimitedNo') }} - {{ t('step1.driversLimitedNoDesc') }}
+                            </option>
+                            <option value="true">
+                                {{ t('step1.driversLimitedYes') }} - {{ t('step1.driversLimitedYesDesc') }}
+                            </option>
+                        </select>
+                        <div class="select-icon">
+                            <i class="bx bx-chevron-down"></i>
+                        </div>
                     </div>
                 </div>
 
@@ -94,17 +117,26 @@
                 <Transition name="slide-down">
                     <div v-if="osgo.driversLimited" class="form-section">
                         <h3 class="section-title">{{ t('step1.incidentFrequency') }}</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <CheckButton
-                                v-for="frequency in metaStore.incidentFrequencies"
-                                :key="frequency.id"
-                                :title="getLocalizedName(frequency)"
-                                :active="
-                                    osgo.incidentCoeff === frequency.coefficient
-                                "
+                        <div class="select-wrapper">
+                            <select
+                                v-model="selectedIncidentFrequency"
+                                class="input"
                                 :disabled="!osgoStore.isEditable"
-                                @click="selectIncidentFrequency(frequency)"
-                            />
+                            >
+                                <option value="" disabled>
+                                    {{ t('step1.incidentFrequencyPlaceholder') }}
+                                </option>
+                                <option
+                                    v-for="frequency in metaStore.incidentFrequencies"
+                                    :key="frequency.id"
+                                    :value="frequency.coefficient"
+                                >
+                                    {{ getLocalizedName(frequency) }}
+                                </option>
+                            </select>
+                            <div class="select-icon">
+                                <i class="bx bx-chevron-down"></i>
+                            </div>
                         </div>
                     </div>
                 </Transition>
@@ -206,6 +238,11 @@ onMounted(() => {
     console.log("[Step1Params] Car types:", metaStore.carTypes);
     console.log("[Step1Params] Periods count:", metaStore.periods.length);
     console.log("[Step1Params] Meta object:", metaStore.meta);
+    
+    // Ensure driversLimited defaults to false (unlimited)
+    if (osgo.value.driversLimited === undefined) {
+        osgo.value.driversLimited = false;
+    }
 });
 
 // Reactive references
@@ -215,6 +252,94 @@ const osgo = computed(() => osgoStore.osgo);
 const getLocalizedName = (item: any): string => {
     return metaStore.getLocalizedName(item, locale.value || 'uz');
 };
+
+// Selected car type (for v-model on select)
+const selectedCarType = computed({
+    get: () => osgo.value.vehicle?.carType?.id || "",
+    set: (id: string) => {
+        if (!osgoStore.isEditable) return;
+        
+        const carType = metaStore.carTypes.find(ct => ct.id === id);
+        if (carType) {
+            if (!osgo.value.vehicle) {
+                osgo.value.vehicle = {
+                    govNumber: "",
+                    techPassportSeries: "",
+                    techPassportNumber: "",
+                };
+            }
+            osgo.value.vehicle.carType = carType;
+            
+            // Haptic feedback
+            if (tg.isTelegramWebApp.value) {
+                tg.hapticImpact("light");
+            }
+        }
+    },
+});
+
+// Selected period (for v-model on select)
+const selectedPeriod = computed({
+    get: () => osgo.value.period?.id || "",
+    set: (id: string) => {
+        if (!osgoStore.isEditable) return;
+        
+        const period = metaStore.periods.find(p => p.id === id);
+        if (period) {
+            osgo.value.period = period;
+            
+            // Haptic feedback
+            if (tg.isTelegramWebApp.value) {
+                tg.hapticImpact("light");
+            }
+        }
+    },
+});
+
+// Selected drivers limited (for v-model on select)
+// Defaults to false (unlimited) if not set
+const selectedDriversLimited = computed({
+    get: () => {
+        // Default to false (unlimited) if undefined
+        if (osgo.value.driversLimited === undefined) {
+            osgo.value.driversLimited = false;
+        }
+        return osgo.value.driversLimited ? "true" : "false";
+    },
+    set: (value: string) => {
+        if (!osgoStore.isEditable) return;
+        
+        osgo.value.driversLimited = value === "true";
+        
+        // Clear incident coefficient if switching to unlimited
+        if (!osgo.value.driversLimited) {
+            osgo.value.incidentCoeff = undefined;
+        }
+        
+        // Haptic feedback
+        if (tg.isTelegramWebApp.value) {
+            tg.hapticImpact("light");
+        }
+    },
+});
+
+// Selected incident frequency (for v-model on select)
+const selectedIncidentFrequency = computed({
+    get: () => osgo.value.incidentCoeff?.toString() || "",
+    set: (value: string) => {
+        if (!osgoStore.isEditable) return;
+        
+        const coefficient = parseFloat(value);
+        if (!isNaN(coefficient)) {
+            osgo.value.incidentCoeff = coefficient;
+            
+            // Haptic feedback
+            if (tg.isTelegramWebApp.value) {
+                tg.hapticImpact("light");
+            }
+        }
+    },
+});
 
 // Selected drived area (for v-model on select)
 const selectedDrivedArea = computed({
@@ -226,48 +351,6 @@ const selectedDrivedArea = computed({
         }
     },
 });
-
-// Selection handlers
-const selectCarType = (carType: CarType) => {
-    if (!osgoStore.isEditable) return;
-
-    if (!osgo.value.vehicle) {
-        osgo.value.vehicle = {
-            govNumber: "",
-            techPassportSeries: "",
-            techPassportNumber: "",
-        };
-    }
-
-    osgo.value.vehicle.carType = carType;
-
-    // Haptic feedback
-    if (tg.isTelegramWebApp.value) {
-        tg.hapticImpact("light");
-    }
-};
-
-const selectPeriod = (period: Period) => {
-    if (!osgoStore.isEditable) return;
-
-    osgo.value.period = period;
-
-    // Haptic feedback
-    if (tg.isTelegramWebApp.value) {
-        tg.hapticImpact("light");
-    }
-};
-
-const selectIncidentFrequency = (frequency: IncidentFrequency) => {
-    if (!osgoStore.isEditable) return;
-
-    osgo.value.incidentCoeff = frequency.coefficient;
-
-    // Haptic feedback
-    if (tg.isTelegramWebApp.value) {
-        tg.hapticImpact("light");
-    }
-};
 </script>
 
 <style scoped>
