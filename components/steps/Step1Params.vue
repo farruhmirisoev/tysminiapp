@@ -239,7 +239,7 @@ const setDefaults = () => {
     }
     
     // Set first car type as default - directly in store
-    if (metaStore.carTypes.length > 0) {
+    if (metaStore.carTypes.length > 0 && !osgo.value.vehicle?.carType?.id) {
         const firstCarType = metaStore.carTypes[0];
         if (!osgo.value.vehicle) {
             osgo.value.vehicle = {
@@ -252,12 +252,12 @@ const setDefaults = () => {
     }
     
     // Set first period as default - directly in store
-    if (metaStore.periods.length > 0) {
+    if (metaStore.periods.length > 0 && !osgo.value.period?.id) {
         osgo.value.period = metaStore.periods[0];
     }
     
     // Set first drived area as default - directly in store
-    if (metaStore.drivedAreas.length > 0) {
+    if (metaStore.drivedAreas.length > 0 && !osgo.value.drivedArea?.id) {
         osgo.value.drivedArea = metaStore.drivedAreas[0];
     }
     
@@ -270,6 +270,12 @@ const setDefaults = () => {
     if (osgo.value.driversLimited && !osgo.value.incidentCoeff && metaStore.incidentFrequencies.length > 0) {
         osgo.value.incidentCoeff = metaStore.incidentFrequencies[0].coefficient;
     }
+    
+    // Force premium recalculation by accessing calculatedPremium
+    // This ensures the watcher in osgo store triggers and updates premium
+    nextTick(() => {
+        const _ = osgoStore.calculatedPremium;
+    });
 };
 
 // Watch for metadata loading - set defaults only when form is empty
@@ -325,7 +331,12 @@ const getLocalizedName = (item: any): string => {
 // Selected car type (for v-model on select)
 const selectedCarType = computed({
     get: () => {
-        return osgo.value.vehicle?.carType?.id || "";
+        const currentId = osgo.value.vehicle?.carType?.id;
+        // If no value is set and metadata is loaded, return first option ID for visual display
+        if (!currentId && metaStore.isLoaded && metaStore.carTypes.length > 0) {
+            return metaStore.carTypes[0].id;
+        }
+        return currentId || "";
     },
     set: (id: string) => {
         if (!osgoStore.isEditable) return;
@@ -352,7 +363,12 @@ const selectedCarType = computed({
 // Selected period (for v-model on select)
 const selectedPeriod = computed({
     get: () => {
-        return osgo.value.period?.id || "";
+        const currentId = osgo.value.period?.id;
+        // If no value is set and metadata is loaded, return first option ID for visual display
+        if (!currentId && metaStore.isLoaded && metaStore.periods.length > 0) {
+            return metaStore.periods[0].id;
+        }
+        return currentId || "";
     },
     set: (id: string) => {
         if (!osgoStore.isEditable) return;
@@ -419,15 +435,88 @@ const selectedIncidentFrequency = computed({
 // Selected drived area (for v-model on select)
 const selectedDrivedArea = computed({
     get: () => {
-        return osgo.value.drivedArea?.id || "";
+        const currentId = osgo.value.drivedArea?.id;
+        // If no value is set and metadata is loaded, return first option ID for visual display
+        if (!currentId && metaStore.isLoaded && metaStore.drivedAreas.length > 0) {
+            return metaStore.drivedAreas[0].id;
+        }
+        return currentId || "";
     },
     set: (id: string) => {
+        if (!osgoStore.isEditable) return;
+        
         const area = metaStore.findDrivedArea(id);
         if (area) {
             osgo.value.drivedArea = area;
+            
+            // Haptic feedback
+            if (tg.isTelegramWebApp.value) {
+                tg.hapticImpact("light");
+            }
         }
     },
 });
+
+// Watch computed values to ensure defaults are set when fallbacks are used
+// This watcher runs after all computed properties are defined
+watch(
+    () => [
+        selectedCarType.value,
+        selectedPeriod.value,
+        selectedDrivedArea.value,
+        metaStore.isLoaded
+    ],
+    ([carTypeId, periodId, areaId, isLoaded]) => {
+        // Only sync if metadata is loaded and we have fallback values
+        if (!isLoaded) return;
+        
+        let needsUpdate = false;
+        
+        // Sync car type if fallback is returned but not in store
+        if (carTypeId && !osgo.value.vehicle?.carType?.id && metaStore.carTypes.length > 0) {
+            const carType = metaStore.carTypes.find(ct => ct.id === carTypeId);
+            if (carType) {
+                if (!osgo.value.vehicle) {
+                    osgo.value.vehicle = {
+                        govNumber: "",
+                        techPassportSeries: "",
+                        techPassportNumber: "",
+                    };
+                }
+                osgo.value.vehicle.carType = carType;
+                needsUpdate = true;
+            }
+        }
+        
+        // Sync period if fallback is returned but not in store
+        if (periodId && !osgo.value.period?.id && metaStore.periods.length > 0) {
+            const period = metaStore.periods.find(p => p.id === periodId);
+            if (period) {
+                osgo.value.period = period;
+                needsUpdate = true;
+            }
+        }
+        
+        // Sync drived area if fallback is returned but not in store
+        if (areaId && !osgo.value.drivedArea?.id && metaStore.drivedAreas.length > 0) {
+            const area = metaStore.drivedAreas.find(a => a.id === areaId);
+            if (area) {
+                osgo.value.drivedArea = area;
+                needsUpdate = true;
+            }
+        }
+        
+        // Force premium recalculation by triggering reactivity
+        if (needsUpdate) {
+            nextTick(() => {
+                // The watcher in osgo store should automatically update premium
+                // But we ensure it's triggered by accessing calculatedPremium
+                const _ = osgoStore.calculatedPremium;
+            });
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <style scoped>

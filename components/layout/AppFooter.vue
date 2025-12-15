@@ -1,16 +1,19 @@
 <template>
   <footer class="fixed-footer">
     <div class="max-w-container mx-auto px-4 h-full flex items-center justify-between gap-4">
-      <!-- Previous Button -->
+      <!-- Previous Button (hidden on first step) -->
       <button
+        v-if="!isFirstStep"
         type="button"
         class="btn btn-secondary flex-1 max-w-[160px]"
-        :disabled="isFirstStep || loading"
+        :disabled="loading"
         @click="handlePrevious"
       >
         <i class="text-lg bx bx-chevron-left"></i>
         <span>{{ $t('common.previous') }}</span>
       </button>
+      <!-- Spacer when back button is hidden -->
+      <div v-else class="flex-1 max-w-[160px]"></div>
 
       <!-- Step Indicator (center) -->
       <div class="flex-1 text-center">

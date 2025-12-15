@@ -881,23 +881,29 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
     const canProceed = computed(() => osgoStore.canProceedToNextStep);
     const loading = computed(() => osgoStore.saving || osgoStore.fetching || sendingPayment.value);
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<footer${ssrRenderAttrs(mergeProps({ class: "fixed-footer" }, _attrs))} data-v-9a015344><div class="max-w-container mx-auto px-4 h-full flex items-center justify-between gap-4" data-v-9a015344><button type="button" class="btn btn-secondary flex-1 max-w-[160px]"${ssrIncludeBooleanAttr(isFirstStep.value || loading.value) ? " disabled" : ""} data-v-9a015344><i class="text-lg bx bx-chevron-left" data-v-9a015344></i><span data-v-9a015344>${ssrInterpolate(_ctx.$t("common.previous"))}</span></button><div class="flex-1 text-center" data-v-9a015344><div class="text-sm text-text-light font-medium" data-v-9a015344>${ssrInterpolate(_ctx.$t("common.step", { current: displayStepNumber.value, total: totalSteps.value }))}</div></div><button type="button" class="${ssrRenderClass([{
+      _push(`<footer${ssrRenderAttrs(mergeProps({ class: "fixed-footer" }, _attrs))} data-v-f2291e8a><div class="max-w-container mx-auto px-4 h-full flex items-center justify-between gap-4" data-v-f2291e8a>`);
+      if (!isFirstStep.value) {
+        _push(`<button type="button" class="btn btn-secondary flex-1 max-w-[160px]"${ssrIncludeBooleanAttr(loading.value) ? " disabled" : ""} data-v-f2291e8a><i class="text-lg bx bx-chevron-left" data-v-f2291e8a></i><span data-v-f2291e8a>${ssrInterpolate(_ctx.$t("common.previous"))}</span></button>`);
+      } else {
+        _push(`<div class="flex-1 max-w-[160px]" data-v-f2291e8a></div>`);
+      }
+      _push(`<div class="flex-1 text-center" data-v-f2291e8a><div class="text-sm text-text-light font-medium" data-v-f2291e8a>${ssrInterpolate(_ctx.$t("common.step", { current: displayStepNumber.value, total: totalSteps.value }))}</div></div><button type="button" class="${ssrRenderClass([{
         "btn-primary": !isLastStep.value || currentStep.value !== unref(STEPS).PAYMENT,
         "btn-success": isLastStep.value && currentStep.value === unref(STEPS).PAYMENT
-      }, "btn flex-1 max-w-[160px]"])}"${ssrIncludeBooleanAttr(!canProceed.value || loading.value) ? " disabled" : ""} data-v-9a015344>`);
+      }, "btn flex-1 max-w-[160px]"])}"${ssrIncludeBooleanAttr(!canProceed.value || loading.value) ? " disabled" : ""} data-v-f2291e8a>`);
       if (loading.value) {
-        _push(`<span class="spinner" data-v-9a015344></span>`);
+        _push(`<span class="spinner" data-v-f2291e8a></span>`);
       } else {
         _push(`<!--[-->`);
         if (currentStep.value === unref(STEPS).SUMMARY && !unref(osgoStore).osgo.id) {
-          _push(`<span data-v-9a015344>${ssrInterpolate(_ctx.$t("step5.confirm"))}</span>`);
+          _push(`<span data-v-f2291e8a>${ssrInterpolate(_ctx.$t("step5.confirm"))}</span>`);
         } else if (isLastStep.value && currentStep.value === unref(STEPS).PAYMENT) {
-          _push(`<span data-v-9a015344><i class="bx bx-credit-card" data-v-9a015344></i><span data-v-9a015344>${ssrInterpolate(_ctx.$t("step5.payment"))}</span></span>`);
+          _push(`<span data-v-f2291e8a><i class="bx bx-credit-card" data-v-f2291e8a></i><span data-v-f2291e8a>${ssrInterpolate(_ctx.$t("step5.payment"))}</span></span>`);
         } else {
-          _push(`<span data-v-9a015344>${ssrInterpolate(_ctx.$t("common.next"))}</span>`);
+          _push(`<span data-v-f2291e8a>${ssrInterpolate(_ctx.$t("common.next"))}</span>`);
         }
         if (!isLastStep.value && currentStep.value !== unref(STEPS).SUMMARY) {
-          _push(`<i class="text-lg bx bx-chevron-right" data-v-9a015344></i>`);
+          _push(`<i class="text-lg bx bx-chevron-right" data-v-f2291e8a></i>`);
         } else {
           _push(`<!---->`);
         }
@@ -913,7 +919,7 @@ _sfc_main$7.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/layout/AppFooter.vue");
   return _sfc_setup$7 ? _sfc_setup$7(props, ctx) : void 0;
 };
-const AppFooter = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-9a015344"]]);
+const AppFooter = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-f2291e8a"]]);
 const _sfc_main$6 = /* @__PURE__ */ defineComponent({
   __name: "Step1Params",
   __ssrInlineRender: true,
@@ -924,7 +930,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     const { locale, t } = useI18n();
     const osgo = computed(() => osgoStore.osgo);
     const setDefaults = () => {
-      var _a, _b, _c, _d;
+      var _a, _b, _c, _d, _e, _f, _g, _h;
       if (!metaStore.isLoaded) {
         return;
       }
@@ -932,7 +938,7 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       if (!isFormEmpty) {
         return;
       }
-      if (metaStore.carTypes.length > 0) {
+      if (metaStore.carTypes.length > 0 && !((_f = (_e = osgo.value.vehicle) == null ? void 0 : _e.carType) == null ? void 0 : _f.id)) {
         const firstCarType = metaStore.carTypes[0];
         if (!osgo.value.vehicle) {
           osgo.value.vehicle = {
@@ -943,10 +949,10 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
         }
         osgo.value.vehicle.carType = firstCarType;
       }
-      if (metaStore.periods.length > 0) {
+      if (metaStore.periods.length > 0 && !((_g = osgo.value.period) == null ? void 0 : _g.id)) {
         osgo.value.period = metaStore.periods[0];
       }
-      if (metaStore.drivedAreas.length > 0) {
+      if (metaStore.drivedAreas.length > 0 && !((_h = osgo.value.drivedArea) == null ? void 0 : _h.id)) {
         osgo.value.drivedArea = metaStore.drivedAreas[0];
       }
       if (osgo.value.driversLimited === void 0) {
@@ -955,6 +961,9 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
       if (osgo.value.driversLimited && !osgo.value.incidentCoeff && metaStore.incidentFrequencies.length > 0) {
         osgo.value.incidentCoeff = metaStore.incidentFrequencies[0].coefficient;
       }
+      nextTick(() => {
+        osgoStore.calculatedPremium;
+      });
     };
     watch(
       () => metaStore.isLoaded && metaStore.carTypes.length > 0 && metaStore.periods.length > 0 && metaStore.drivedAreas.length > 0,
@@ -978,7 +987,11 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     const selectedCarType = computed({
       get: () => {
         var _a, _b;
-        return ((_b = (_a = osgo.value.vehicle) == null ? void 0 : _a.carType) == null ? void 0 : _b.id) || "";
+        const currentId = (_b = (_a = osgo.value.vehicle) == null ? void 0 : _a.carType) == null ? void 0 : _b.id;
+        if (!currentId && metaStore.isLoaded && metaStore.carTypes.length > 0) {
+          return metaStore.carTypes[0].id;
+        }
+        return currentId || "";
       },
       set: (id) => {
         if (!osgoStore.isEditable) return;
@@ -1001,7 +1014,11 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     const selectedPeriod = computed({
       get: () => {
         var _a;
-        return ((_a = osgo.value.period) == null ? void 0 : _a.id) || "";
+        const currentId = (_a = osgo.value.period) == null ? void 0 : _a.id;
+        if (!currentId && metaStore.isLoaded && metaStore.periods.length > 0) {
+          return metaStore.periods[0].id;
+        }
+        return currentId || "";
       },
       set: (id) => {
         if (!osgoStore.isEditable) return;
@@ -1051,49 +1068,104 @@ const _sfc_main$6 = /* @__PURE__ */ defineComponent({
     const selectedDrivedArea = computed({
       get: () => {
         var _a;
-        return ((_a = osgo.value.drivedArea) == null ? void 0 : _a.id) || "";
+        const currentId = (_a = osgo.value.drivedArea) == null ? void 0 : _a.id;
+        if (!currentId && metaStore.isLoaded && metaStore.drivedAreas.length > 0) {
+          return metaStore.drivedAreas[0].id;
+        }
+        return currentId || "";
       },
       set: (id) => {
+        if (!osgoStore.isEditable) return;
         const area = metaStore.findDrivedArea(id);
         if (area) {
           osgo.value.drivedArea = area;
+          if (tg.isTelegramWebApp.value) {
+            tg.hapticImpact("light");
+          }
         }
       }
     });
-    return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-d91bcbca>`);
-      if (unref(metaStore).fetching) {
-        _push(`<div class="loading-state" data-v-d91bcbca><div class="loading-spinner" data-v-d91bcbca></div><p data-v-d91bcbca>${ssrInterpolate(unref(t)("common.loading"))}</p></div>`);
-      } else if (unref(metaStore).error) {
-        _push(`<div class="error-state" data-v-d91bcbca><i class="bx bx-error-circle" data-v-d91bcbca></i><p data-v-d91bcbca>${ssrInterpolate(unref(metaStore).error)}</p><button class="btn-retry" data-v-d91bcbca>${ssrInterpolate(unref(t)("common.retry"))}</button></div>`);
-      } else if (!unref(metaStore).isLoaded || unref(metaStore).carTypes.length === 0) {
-        _push(`<div class="error-state" data-v-d91bcbca><i class="bx bx-info-circle" data-v-d91bcbca></i><p data-v-d91bcbca>${ssrInterpolate(unref(t)("common.loading"))}</p><p class="debug-info" data-v-d91bcbca> isLoaded: ${ssrInterpolate(unref(metaStore).isLoaded)}<br data-v-d91bcbca> carTypes: ${ssrInterpolate(unref(metaStore).carTypes.length)}<br data-v-d91bcbca> meta: ${ssrInterpolate(unref(metaStore).meta ? "exists" : "null")}</p></div>`);
-      } else {
-        _push(`<div data-v-d91bcbca><div class="step-header" data-v-d91bcbca><h2 class="step-title" data-v-d91bcbca>${ssrInterpolate(unref(t)("step1.title"))}</h2><p class="step-description" data-v-d91bcbca>${ssrInterpolate(unref(t)("step1.description"))}</p></div><div class="step-content" data-v-d91bcbca><div class="form-section" data-v-d91bcbca><h3 class="section-title" data-v-d91bcbca>${ssrInterpolate(unref(t)("step1.vehicleType"))}</h3><div class="select-wrapper" data-v-d91bcbca><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-d91bcbca><!--[-->`);
-        ssrRenderList(unref(metaStore).carTypes, (carType) => {
-          _push(`<option${ssrRenderAttr("value", carType.id)} data-v-d91bcbca${ssrIncludeBooleanAttr(Array.isArray(selectedCarType.value) ? ssrLooseContain(selectedCarType.value, carType.id) : ssrLooseEqual(selectedCarType.value, carType.id)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName(carType))}</option>`);
-        });
-        _push(`<!--]--></select><div class="select-icon" data-v-d91bcbca><i class="bx bx-chevron-down" data-v-d91bcbca></i></div></div></div><div class="form-section" data-v-d91bcbca><h3 class="section-title" data-v-d91bcbca>${ssrInterpolate(unref(t)("step1.period"))}</h3><div class="select-wrapper" data-v-d91bcbca><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-d91bcbca><!--[-->`);
-        ssrRenderList(unref(metaStore).periods, (period) => {
-          _push(`<option${ssrRenderAttr("value", period.id)} data-v-d91bcbca${ssrIncludeBooleanAttr(Array.isArray(selectedPeriod.value) ? ssrLooseContain(selectedPeriod.value, period.id) : ssrLooseEqual(selectedPeriod.value, period.id)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName(period))}</option>`);
-        });
-        _push(`<!--]--></select><div class="select-icon" data-v-d91bcbca><i class="bx bx-chevron-down" data-v-d91bcbca></i></div></div></div><div class="form-section" style="${ssrRenderStyle({ "display": "none" })}" data-v-d91bcbca><h3 class="section-title" data-v-d91bcbca>${ssrInterpolate(unref(t)("step1.driversLimited"))}</h3><div class="select-wrapper" data-v-d91bcbca><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-d91bcbca><option value="false" data-v-d91bcbca${ssrIncludeBooleanAttr(Array.isArray(selectedDriversLimited.value) ? ssrLooseContain(selectedDriversLimited.value, "false") : ssrLooseEqual(selectedDriversLimited.value, "false")) ? " selected" : ""}>${ssrInterpolate(unref(t)("step1.driversLimitedNo"))} - ${ssrInterpolate(unref(t)("step1.driversLimitedNoDesc"))}</option><option value="true" data-v-d91bcbca${ssrIncludeBooleanAttr(Array.isArray(selectedDriversLimited.value) ? ssrLooseContain(selectedDriversLimited.value, "true") : ssrLooseEqual(selectedDriversLimited.value, "true")) ? " selected" : ""}>${ssrInterpolate(unref(t)("step1.driversLimitedYes"))} - ${ssrInterpolate(unref(t)("step1.driversLimitedYesDesc"))}</option></select><div class="select-icon" data-v-d91bcbca><i class="bx bx-chevron-down" data-v-d91bcbca></i></div></div></div>`);
-        if (osgo.value.driversLimited) {
-          _push(`<div class="form-section" data-v-d91bcbca><h3 class="section-title" data-v-d91bcbca>${ssrInterpolate(unref(t)("step1.incidentFrequency"))}</h3><div class="select-wrapper" data-v-d91bcbca><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-d91bcbca><!--[-->`);
-          ssrRenderList(unref(metaStore).incidentFrequencies, (frequency) => {
-            _push(`<option${ssrRenderAttr("value", frequency.coefficient)} data-v-d91bcbca${ssrIncludeBooleanAttr(Array.isArray(selectedIncidentFrequency.value) ? ssrLooseContain(selectedIncidentFrequency.value, frequency.coefficient) : ssrLooseEqual(selectedIncidentFrequency.value, frequency.coefficient)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName(frequency))}</option>`);
+    watch(
+      () => [
+        selectedCarType.value,
+        selectedPeriod.value,
+        selectedDrivedArea.value,
+        metaStore.isLoaded
+      ],
+      ([carTypeId, periodId, areaId, isLoaded]) => {
+        var _a, _b, _c, _d;
+        if (!isLoaded) return;
+        let needsUpdate = false;
+        if (carTypeId && !((_b = (_a = osgo.value.vehicle) == null ? void 0 : _a.carType) == null ? void 0 : _b.id) && metaStore.carTypes.length > 0) {
+          const carType = metaStore.carTypes.find((ct) => ct.id === carTypeId);
+          if (carType) {
+            if (!osgo.value.vehicle) {
+              osgo.value.vehicle = {
+                govNumber: "",
+                techPassportSeries: "",
+                techPassportNumber: ""
+              };
+            }
+            osgo.value.vehicle.carType = carType;
+            needsUpdate = true;
+          }
+        }
+        if (periodId && !((_c = osgo.value.period) == null ? void 0 : _c.id) && metaStore.periods.length > 0) {
+          const period = metaStore.periods.find((p) => p.id === periodId);
+          if (period) {
+            osgo.value.period = period;
+            needsUpdate = true;
+          }
+        }
+        if (areaId && !((_d = osgo.value.drivedArea) == null ? void 0 : _d.id) && metaStore.drivedAreas.length > 0) {
+          const area = metaStore.drivedAreas.find((a) => a.id === areaId);
+          if (area) {
+            osgo.value.drivedArea = area;
+            needsUpdate = true;
+          }
+        }
+        if (needsUpdate) {
+          nextTick(() => {
+            osgoStore.calculatedPremium;
           });
-          _push(`<!--]--></select><div class="select-icon" data-v-d91bcbca><i class="bx bx-chevron-down" data-v-d91bcbca></i></div></div></div>`);
+        }
+      },
+      { immediate: true }
+    );
+    return (_ctx, _push, _parent, _attrs) => {
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-df5d5ef9>`);
+      if (unref(metaStore).fetching) {
+        _push(`<div class="loading-state" data-v-df5d5ef9><div class="loading-spinner" data-v-df5d5ef9></div><p data-v-df5d5ef9>${ssrInterpolate(unref(t)("common.loading"))}</p></div>`);
+      } else if (unref(metaStore).error) {
+        _push(`<div class="error-state" data-v-df5d5ef9><i class="bx bx-error-circle" data-v-df5d5ef9></i><p data-v-df5d5ef9>${ssrInterpolate(unref(metaStore).error)}</p><button class="btn-retry" data-v-df5d5ef9>${ssrInterpolate(unref(t)("common.retry"))}</button></div>`);
+      } else if (!unref(metaStore).isLoaded || unref(metaStore).carTypes.length === 0) {
+        _push(`<div class="error-state" data-v-df5d5ef9><i class="bx bx-info-circle" data-v-df5d5ef9></i><p data-v-df5d5ef9>${ssrInterpolate(unref(t)("common.loading"))}</p><p class="debug-info" data-v-df5d5ef9> isLoaded: ${ssrInterpolate(unref(metaStore).isLoaded)}<br data-v-df5d5ef9> carTypes: ${ssrInterpolate(unref(metaStore).carTypes.length)}<br data-v-df5d5ef9> meta: ${ssrInterpolate(unref(metaStore).meta ? "exists" : "null")}</p></div>`);
+      } else {
+        _push(`<div data-v-df5d5ef9><div class="step-header" data-v-df5d5ef9><h2 class="step-title" data-v-df5d5ef9>${ssrInterpolate(unref(t)("step1.title"))}</h2><p class="step-description" data-v-df5d5ef9>${ssrInterpolate(unref(t)("step1.description"))}</p></div><div class="step-content" data-v-df5d5ef9><div class="form-section" data-v-df5d5ef9><h3 class="section-title" data-v-df5d5ef9>${ssrInterpolate(unref(t)("step1.vehicleType"))}</h3><div class="select-wrapper" data-v-df5d5ef9><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-df5d5ef9><!--[-->`);
+        ssrRenderList(unref(metaStore).carTypes, (carType) => {
+          _push(`<option${ssrRenderAttr("value", carType.id)} data-v-df5d5ef9${ssrIncludeBooleanAttr(Array.isArray(selectedCarType.value) ? ssrLooseContain(selectedCarType.value, carType.id) : ssrLooseEqual(selectedCarType.value, carType.id)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName(carType))}</option>`);
+        });
+        _push(`<!--]--></select><div class="select-icon" data-v-df5d5ef9><i class="bx bx-chevron-down" data-v-df5d5ef9></i></div></div></div><div class="form-section" data-v-df5d5ef9><h3 class="section-title" data-v-df5d5ef9>${ssrInterpolate(unref(t)("step1.period"))}</h3><div class="select-wrapper" data-v-df5d5ef9><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-df5d5ef9><!--[-->`);
+        ssrRenderList(unref(metaStore).periods, (period) => {
+          _push(`<option${ssrRenderAttr("value", period.id)} data-v-df5d5ef9${ssrIncludeBooleanAttr(Array.isArray(selectedPeriod.value) ? ssrLooseContain(selectedPeriod.value, period.id) : ssrLooseEqual(selectedPeriod.value, period.id)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName(period))}</option>`);
+        });
+        _push(`<!--]--></select><div class="select-icon" data-v-df5d5ef9><i class="bx bx-chevron-down" data-v-df5d5ef9></i></div></div></div><div class="form-section" style="${ssrRenderStyle({ "display": "none" })}" data-v-df5d5ef9><h3 class="section-title" data-v-df5d5ef9>${ssrInterpolate(unref(t)("step1.driversLimited"))}</h3><div class="select-wrapper" data-v-df5d5ef9><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-df5d5ef9><option value="false" data-v-df5d5ef9${ssrIncludeBooleanAttr(Array.isArray(selectedDriversLimited.value) ? ssrLooseContain(selectedDriversLimited.value, "false") : ssrLooseEqual(selectedDriversLimited.value, "false")) ? " selected" : ""}>${ssrInterpolate(unref(t)("step1.driversLimitedNo"))} - ${ssrInterpolate(unref(t)("step1.driversLimitedNoDesc"))}</option><option value="true" data-v-df5d5ef9${ssrIncludeBooleanAttr(Array.isArray(selectedDriversLimited.value) ? ssrLooseContain(selectedDriversLimited.value, "true") : ssrLooseEqual(selectedDriversLimited.value, "true")) ? " selected" : ""}>${ssrInterpolate(unref(t)("step1.driversLimitedYes"))} - ${ssrInterpolate(unref(t)("step1.driversLimitedYesDesc"))}</option></select><div class="select-icon" data-v-df5d5ef9><i class="bx bx-chevron-down" data-v-df5d5ef9></i></div></div></div>`);
+        if (osgo.value.driversLimited) {
+          _push(`<div class="form-section" data-v-df5d5ef9><h3 class="section-title" data-v-df5d5ef9>${ssrInterpolate(unref(t)("step1.incidentFrequency"))}</h3><div class="select-wrapper" data-v-df5d5ef9><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-df5d5ef9><!--[-->`);
+          ssrRenderList(unref(metaStore).incidentFrequencies, (frequency) => {
+            _push(`<option${ssrRenderAttr("value", frequency.coefficient)} data-v-df5d5ef9${ssrIncludeBooleanAttr(Array.isArray(selectedIncidentFrequency.value) ? ssrLooseContain(selectedIncidentFrequency.value, frequency.coefficient) : ssrLooseEqual(selectedIncidentFrequency.value, frequency.coefficient)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName(frequency))}</option>`);
+          });
+          _push(`<!--]--></select><div class="select-icon" data-v-df5d5ef9><i class="bx bx-chevron-down" data-v-df5d5ef9></i></div></div></div>`);
         } else {
           _push(`<!---->`);
         }
-        _push(`<div class="form-section" data-v-d91bcbca><h3 class="section-title" data-v-d91bcbca>${ssrInterpolate(unref(t)("step1.usageTerritory"))}</h3><div class="select-wrapper" data-v-d91bcbca><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-d91bcbca><!--[-->`);
+        _push(`<div class="form-section" data-v-df5d5ef9><h3 class="section-title" data-v-df5d5ef9>${ssrInterpolate(unref(t)("step1.usageTerritory"))}</h3><div class="select-wrapper" data-v-df5d5ef9><select class="input"${ssrIncludeBooleanAttr(!unref(osgoStore).isEditable) ? " disabled" : ""} data-v-df5d5ef9><!--[-->`);
         ssrRenderList(unref(metaStore).drivedAreas, (area) => {
-          _push(`<option${ssrRenderAttr("value", area.id)} data-v-d91bcbca${ssrIncludeBooleanAttr(Array.isArray(selectedDrivedArea.value) ? ssrLooseContain(selectedDrivedArea.value, area.id) : ssrLooseEqual(selectedDrivedArea.value, area.id)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName(area))}</option>`);
+          _push(`<option${ssrRenderAttr("value", area.id)} data-v-df5d5ef9${ssrIncludeBooleanAttr(Array.isArray(selectedDrivedArea.value) ? ssrLooseContain(selectedDrivedArea.value, area.id) : ssrLooseEqual(selectedDrivedArea.value, area.id)) ? " selected" : ""}>${ssrInterpolate(getLocalizedName(area))}</option>`);
         });
-        _push(`<!--]--></select><div class="select-icon" data-v-d91bcbca><i class="bx bx-chevron-down" data-v-d91bcbca></i></div></div></div>`);
+        _push(`<!--]--></select><div class="select-icon" data-v-df5d5ef9><i class="bx bx-chevron-down" data-v-df5d5ef9></i></div></div></div>`);
         if (unref(osgoStore).calculatedPremium > 0) {
-          _push(`<div class="premium-card" data-v-d91bcbca><div class="premium-card-content" data-v-d91bcbca><div class="premium-label" data-v-d91bcbca><i class="bx bx-shield-alt-2" data-v-d91bcbca></i><span data-v-d91bcbca>${ssrInterpolate(unref(t)("step1.premium"))}</span></div><div class="premium-amount" data-v-d91bcbca>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))}</div></div></div>`);
+          _push(`<div class="premium-card" data-v-df5d5ef9><div class="premium-card-content" data-v-df5d5ef9><div class="premium-label" data-v-df5d5ef9><i class="bx bx-shield-alt-2" data-v-df5d5ef9></i><span data-v-df5d5ef9>${ssrInterpolate(unref(t)("step1.premium"))}</span></div><div class="premium-amount" data-v-df5d5ef9>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))}</div></div></div>`);
         } else {
           _push(`<!---->`);
         }
@@ -1109,7 +1181,7 @@ _sfc_main$6.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/steps/Step1Params.vue");
   return _sfc_setup$6 ? _sfc_setup$6(props, ctx) : void 0;
 };
-const Step1Params = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__scopeId", "data-v-d91bcbca"]]);
+const Step1Params = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["__scopeId", "data-v-df5d5ef9"]]);
 const _sfc_main$5 = /* @__PURE__ */ defineComponent({
   __name: "InputField",
   __ssrInlineRender: true,
@@ -1820,4 +1892,4 @@ _sfc_main.setup = (props, ctx) => {
 const index = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-4214c6a6"]]);
 
 export { index as default };
-//# sourceMappingURL=index-DoT1EzT7.mjs.map
+//# sourceMappingURL=index-B4MwtkEu.mjs.map
