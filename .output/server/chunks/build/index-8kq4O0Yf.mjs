@@ -828,12 +828,13 @@ const _sfc_main$8 = /* @__PURE__ */ defineComponent({
   __ssrInlineRender: true,
   setup(__props) {
     const osgoStore = useOsgoStore();
+    const { t } = useI18n();
     const currentStep = computed(() => osgoStore.currentStep);
     const totalSteps = computed(() => osgoStore.totalSteps);
     return (_ctx, _push, _parent, _attrs) => {
       const _component_LanguageSwitcher = __nuxt_component_0$1;
       const _component_ProgressBar = __nuxt_component_1;
-      _push(`<header${ssrRenderAttrs(mergeProps({ class: "fixed-header" }, _attrs))} data-v-67b64b56><div class="max-w-container mx-auto px-4 h-full flex flex-col justify-center" data-v-67b64b56><div class="flex items-center justify-between mb-3" data-v-67b64b56><div class="flex items-center gap-3" data-v-67b64b56><div class="w-10 h-10 bg-primary overflow-hidden rounded-lg flex items-center justify-center text-white font-bold text-lg" data-v-67b64b56><img${ssrRenderAttr("src", _imports_0)} alt="Temiryo&#39;l Sug&#39;urta Logo" data-v-67b64b56></div><div data-v-67b64b56><div class="text-base font-bold text-text" data-v-67b64b56>\u041E\u0421\u0413\u041E\u0412\u0422\u0421</div><div class="text-xs text-text-light" data-v-67b64b56> Temiryo&#39;l Sug&#39;urta </div></div></div>`);
+      _push(`<header${ssrRenderAttrs(mergeProps({ class: "fixed-header" }, _attrs))} data-v-60581198><div class="max-w-container mx-auto px-4 h-full flex flex-col justify-center" data-v-60581198><div class="flex items-center justify-between mb-3" data-v-60581198><div class="flex items-center gap-3" data-v-60581198><div class="w-10 h-10 bg-primary overflow-hidden rounded-lg flex items-center justify-center text-white font-bold text-lg" data-v-60581198><img${ssrRenderAttr("src", _imports_0)} alt="Temiryo&#39;l Sug&#39;urta Logo" data-v-60581198></div><div data-v-60581198><div class="text-base font-bold text-text" data-v-60581198>${ssrInterpolate(unref(t)("header.appTitle"))}</div><div class="text-xs text-text-light" data-v-60581198> Temiryo&#39;l Sug&#39;urta </div></div></div>`);
       _push(ssrRenderComponent(_component_LanguageSwitcher, null, null, _parent));
       _push(`</div>`);
       _push(ssrRenderComponent(_component_ProgressBar, {
@@ -850,7 +851,7 @@ _sfc_main$8.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/layout/AppHeader.vue");
   return _sfc_setup$8 ? _sfc_setup$8(props, ctx) : void 0;
 };
-const AppHeader = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["__scopeId", "data-v-67b64b56"]]);
+const AppHeader = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["__scopeId", "data-v-60581198"]]);
 const _sfc_main$7 = /* @__PURE__ */ defineComponent({
   __name: "AppFooter",
   __ssrInlineRender: true,
@@ -1790,4 +1791,4 @@ _sfc_main.setup = (props, ctx) => {
 const index = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-4214c6a6"]]);
 
 export { index as default };
-//# sourceMappingURL=index-GD-f_nrO.mjs.map
+//# sourceMappingURL=index-8kq4O0Yf.mjs.map
