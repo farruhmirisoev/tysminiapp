@@ -17,7 +17,7 @@
                         />
                     </div>
                     <div>
-                        <div class="text-base font-bold text-text">ОСГОВТС</div>
+                        <div class="text-base font-bold text-text">{{ t('header.appTitle') }}</div>
                         <div class="text-xs text-text-light">
                             Temiryo'l Sug'urta
                         </div>
@@ -42,6 +42,7 @@ import { computed } from "vue";
 import { useOsgoStore } from "~/stores/osgo";
 
 const osgoStore = useOsgoStore();
+const { t } = useI18n();
 
 const currentStep = computed(() => osgoStore.currentStep);
 const totalSteps = computed(() => osgoStore.totalSteps);

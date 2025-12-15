@@ -34,7 +34,8 @@
   },
   "header": {
     "title": "OSGO sug'urtasi",
-    "subtitle": "Polisni rasmiylashtirish"
+    "subtitle": "Polisni rasmiylashtirish",
+    "appTitle": "OSGOVTS"
   },
   "steps": {
     "params": "Parametrlar",
