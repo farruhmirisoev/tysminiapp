@@ -434,7 +434,7 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-8kq4O0Yf.mjs')
+    component: () => import('./index-DoT1EzT7.mjs')
   },
   {
     name: "signin",
@@ -1874,7 +1874,7 @@ function createNuxtI18nContext(nuxt, vueI18n, defaultLocale) {
       return;
     }
     const headers = getLocaleConfig(locale)?.cacheable ? {} : { "Cache-Control": "no-cache" };
-    const messages = await $fetch(`${"/_i18n/s3Kkiez0"}/${locale}/messages.json`, { headers });
+    const messages = await $fetch(`${"/_i18n/oQBA_Jxh"}/${locale}/messages.json`, { headers });
     for (const k of Object.keys(messages)) {
       i18n.mergeLocaleMessage(k, messages[k]);
     }
@@ -6112,7 +6112,7 @@ const i18n_EI7LsD1KYQADczz5hrChviGQCdVM8yUkvFEZLJpmnvM = /* @__PURE__ */ defineN
     {
       localeConfigs.value = useRequestEvent().context.nuxtI18n?.localeConfigs || {};
     }
-    prerenderRoutes(localeCodes.map((locale) => `${"/_i18n/s3Kkiez0"}/${locale}/messages.json`));
+    prerenderRoutes(localeCodes.map((locale) => `${"/_i18n/oQBA_Jxh"}/${locale}/messages.json`));
     const i18n = createI18n(optionsI18n);
     const detectors = useDetectors(useRequestEvent(nuxt), useI18nDetection(nuxt), nuxt);
     const ctx = createNuxtI18nContext(nuxt, i18n, optionsI18n.defaultLocale);
@@ -6507,12 +6507,36 @@ const STEPS = {
 const useApi = () => {
   const config = /* @__PURE__ */ useRuntimeConfig();
   const API_BASE_URL = config.public.apiBase || "https://port.tys.uz/rest/v2/";
+  const TEMP_CREDENTIALS = {
+    USERNAME: config.public.tempAuthUsername || "998935286407",
+    PASSWORD: config.public.tempAuthPassword || "1642845"
+  };
   const getToken = () => {
     return null;
   };
   const setToken = (token) => {
   };
   const clearToken = () => {
+  };
+  let authPromise = null;
+  const ensureAuth = async () => {
+    if (authPromise) {
+      return authPromise;
+    }
+    authPromise = (async () => {
+      try {
+        console.log("[useApi] No token found, auto-logging in with temp credentials");
+        const token = await signIn(TEMP_CREDENTIALS.USERNAME, TEMP_CREDENTIALS.PASSWORD);
+        console.log("[useApi] Auto-login successful");
+        authPromise = null;
+        return token;
+      } catch (error) {
+        console.error("[useApi] Auto-login failed:", error);
+        authPromise = null;
+        throw error;
+      }
+    })();
+    return authPromise;
   };
   const getCurrentLocale = () => {
     try {
@@ -6556,6 +6580,7 @@ const useApi = () => {
   };
   const invokeService = async (service, method, options) => {
     try {
+      await ensureAuth();
       const requestBody = options?.body || options?.data;
       const additionalHeaders = {};
       if (requestBody && (options?.method === "POST" || options?.method === "PUT" || options?.method === "PATCH")) {
@@ -6578,6 +6603,35 @@ const useApi = () => {
       });
       return response;
     } catch (error) {
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        try {
+          await ensureAuth();
+          const requestBody = options?.body || options?.data;
+          const additionalHeaders = {};
+          if (requestBody && (options?.method === "POST" || options?.method === "PUT" || options?.method === "PATCH")) {
+            additionalHeaders["Content-Type"] = "application/json";
+          }
+          const headers = buildHeaders(additionalHeaders);
+          const response = await $fetch(
+            `${API_BASE_URL}services/${service}/${method}`,
+            {
+              method: options?.method || "GET",
+              headers,
+              body: requestBody,
+              params: options?.params
+            }
+          );
+          return response;
+        } catch (retryError) {
+          console.error("[useApi] invokeService retry error:", {
+            service,
+            method,
+            retryError
+          });
+          handleError(retryError);
+        }
+      }
       console.error("[useApi] invokeService error:", {
         service,
         method,
@@ -6588,6 +6642,7 @@ const useApi = () => {
   };
   const invokeQuery = async (query, method, options) => {
     try {
+      await ensureAuth();
       return await $fetch(`${API_BASE_URL}queries/${query}/${method}`, {
         method: options?.method || "GET",
         headers: buildHeaders(),
@@ -6595,58 +6650,139 @@ const useApi = () => {
         params: options?.params
       });
     } catch (error) {
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        try {
+          await ensureAuth();
+          return await $fetch(`${API_BASE_URL}queries/${query}/${method}`, {
+            method: options?.method || "GET",
+            headers: buildHeaders(),
+            body: options?.body,
+            params: options?.params
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
   const fetchEntity = async (entity, id, params) => {
     try {
+      await ensureAuth();
       return await $fetch(`${API_BASE_URL}entities/${entity}/${id}`, {
         headers: buildHeaders(),
         params
       });
     } catch (error) {
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        try {
+          await ensureAuth();
+          return await $fetch(`${API_BASE_URL}entities/${entity}/${id}`, {
+            headers: buildHeaders(),
+            params
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
   const fetchEntities = async (entity, params) => {
     try {
+      await ensureAuth();
       return await $fetch(`${API_BASE_URL}entities/${entity}`, {
         headers: buildHeaders(),
         params
       });
     } catch (error) {
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        try {
+          await ensureAuth();
+          return await $fetch(`${API_BASE_URL}entities/${entity}`, {
+            headers: buildHeaders(),
+            params
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
   const createEntity = async (entity, payload) => {
     try {
+      await ensureAuth();
       return await $fetch(`${API_BASE_URL}entities/${entity}`, {
         method: "POST",
         headers: buildHeaders({ "Content-Type": "application/json" }),
         body: payload
       });
     } catch (error) {
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        try {
+          await ensureAuth();
+          return await $fetch(`${API_BASE_URL}entities/${entity}`, {
+            method: "POST",
+            headers: buildHeaders({ "Content-Type": "application/json" }),
+            body: payload
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
   const searchEntities = async (entity, params) => {
     try {
+      await ensureAuth();
       return await $fetch(`${API_BASE_URL}entities/${entity}/search`, {
         method: "POST",
         headers: buildHeaders({ "Content-Type": "application/json" }),
         body: params
       });
     } catch (error) {
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        try {
+          await ensureAuth();
+          return await $fetch(`${API_BASE_URL}entities/${entity}/search`, {
+            method: "POST",
+            headers: buildHeaders({ "Content-Type": "application/json" }),
+            body: params
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
   const fetchUserInfo = async () => {
     try {
+      await ensureAuth();
       const response = await $fetch(`${API_BASE_URL}userInfo/`, {
         headers: buildHeaders()
       });
       return response;
     } catch (error) {
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        try {
+          await ensureAuth();
+          return await $fetch(`${API_BASE_URL}userInfo/`, {
+            headers: buildHeaders()
+          });
+        } catch (retryError) {
+          console.error("[useApi] fetchUserInfo retry error:", retryError);
+          handleError(retryError);
+        }
+      }
       console.error("[useApi] fetchUserInfo error:", error);
       handleError(error);
     }
@@ -6676,6 +6812,7 @@ const useApi = () => {
   };
   const uploadFile = async (file) => {
     try {
+      await ensureAuth();
       const formData = new FormData();
       formData.append("file", file);
       return await $fetch(`${API_BASE_URL}files`, {
@@ -6684,6 +6821,21 @@ const useApi = () => {
         body: formData
       });
     } catch (error) {
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        try {
+          await ensureAuth();
+          const formData = new FormData();
+          formData.append("file", file);
+          return await $fetch(`${API_BASE_URL}files`, {
+            method: "POST",
+            headers: buildHeaders(),
+            body: formData
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
@@ -7066,6 +7218,7 @@ const useApi = () => {
     getToken,
     setToken,
     clearToken,
+    ensureAuth,
     AjaxError,
     // OSGO specific methods
     getVehicle,

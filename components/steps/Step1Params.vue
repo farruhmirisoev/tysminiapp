@@ -211,7 +211,7 @@ import type {
     IncidentFrequency,
     DrivedArea,
 } from "~/types/osgo";
-import { formatPrice } from "~/utils/formatting";
+import { formatPrice, toCapitalCase } from "~/utils/formatting";
 
 const osgoStore = useOsgoStore();
 const metaStore = useMetaStore();
@@ -316,9 +316,10 @@ onMounted(async () => {
     }
 });
 
-// Get localized name based on current language
+// Get localized name based on current language and convert to capital case
 const getLocalizedName = (item: any): string => {
-    return metaStore.getLocalizedName(item, locale.value || 'uz');
+    const name = metaStore.getLocalizedName(item, locale.value || 'uz');
+    return toCapitalCase(name);
 };
 
 // Selected car type (for v-model on select)
@@ -492,7 +493,6 @@ const selectedDrivedArea = computed({
     appearance: none;
     padding-right: 40px;
     cursor: pointer;
-    text-transform: uppercase;
     font-weight: 500;
 }
 

@@ -2,6 +2,12 @@
 export const useApi = () => {
   const config = useRuntimeConfig();
   const API_BASE_URL = config.public.apiBase || "https://port.tys.uz/rest/v2/";
+  
+  // Get temp credentials from environment variables
+  const TEMP_CREDENTIALS = {
+    USERNAME: config.public.tempAuthUsername || "998935286407",
+    PASSWORD: config.public.tempAuthPassword || "1642845",
+  };
 
   // Token management
   const getToken = (): string | null => {
@@ -19,6 +25,38 @@ export const useApi = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("auth-token");
     }
+  };
+  
+  // Auto-login with temp credentials if no token exists
+  let authPromise: Promise<string> | null = null;
+  const ensureAuth = async (): Promise<string> => {
+    // Return existing token if available
+    const existingToken = getToken();
+    if (existingToken) {
+      return existingToken;
+    }
+    
+    // If auth is already in progress, wait for it
+    if (authPromise) {
+      return authPromise;
+    }
+    
+    // Start auto-login with temp credentials
+    authPromise = (async () => {
+      try {
+        console.log("[useApi] No token found, auto-logging in with temp credentials");
+        const token = await signIn(TEMP_CREDENTIALS.USERNAME, TEMP_CREDENTIALS.PASSWORD);
+        console.log("[useApi] Auto-login successful");
+        authPromise = null; // Clear promise after completion
+        return token;
+      } catch (error) {
+        console.error("[useApi] Auto-login failed:", error);
+        authPromise = null; // Clear promise on error
+        throw error;
+      }
+    })();
+    
+    return authPromise;
   };
 
   // Get current locale for language header
@@ -103,6 +141,9 @@ export const useApi = () => {
     },
   ) => {
     try {
+      // Ensure authentication before making request
+      await ensureAuth();
+      
       // Use body if provided, otherwise use data (for compatibility with website)
       const requestBody = options?.body || options?.data;
       
@@ -128,7 +169,39 @@ export const useApi = () => {
         response,
       });
       return response;
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 401 errors by re-authenticating and retrying once
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        clearToken();
+        try {
+          await ensureAuth();
+          // Retry the request once after re-auth
+          const requestBody = options?.body || options?.data;
+          const additionalHeaders: Record<string, string> = {};
+          if (requestBody && (options?.method === 'POST' || options?.method === 'PUT' || options?.method === 'PATCH')) {
+            additionalHeaders['Content-Type'] = 'application/json';
+          }
+          const headers = buildHeaders(additionalHeaders);
+          const response = await $fetch(
+            `${API_BASE_URL}services/${service}/${method}`,
+            {
+              method: options?.method || "GET",
+              headers,
+              body: requestBody,
+              params: options?.params,
+            },
+          );
+          return response;
+        } catch (retryError) {
+          console.error("[useApi] invokeService retry error:", {
+            service,
+            method,
+            retryError,
+          });
+          handleError(retryError);
+        }
+      }
       console.error("[useApi] invokeService error:", {
         service,
         method,
@@ -148,13 +221,32 @@ export const useApi = () => {
     },
   ) => {
     try {
+      // Ensure authentication before making request
+      await ensureAuth();
+      
       return await $fetch(`${API_BASE_URL}queries/${query}/${method}`, {
         method: options?.method || "GET",
         headers: buildHeaders(),
         body: options?.body,
         params: options?.params,
       });
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 401 errors by re-authenticating and retrying once
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        clearToken();
+        try {
+          await ensureAuth();
+          return await $fetch(`${API_BASE_URL}queries/${query}/${method}`, {
+            method: options?.method || "GET",
+            headers: buildHeaders(),
+            body: options?.body,
+            params: options?.params,
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
@@ -165,11 +257,28 @@ export const useApi = () => {
     params?: any,
   ): Promise<T> => {
     try {
+      // Ensure authentication before making request
+      await ensureAuth();
+      
       return await $fetch<T>(`${API_BASE_URL}entities/${entity}/${id}`, {
         headers: buildHeaders(),
         params: params,
       });
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 401 errors by re-authenticating and retrying once
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        clearToken();
+        try {
+          await ensureAuth();
+          return await $fetch<T>(`${API_BASE_URL}entities/${entity}/${id}`, {
+            headers: buildHeaders(),
+            params: params,
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
@@ -179,11 +288,28 @@ export const useApi = () => {
     params?: any,
   ): Promise<T[]> => {
     try {
+      // Ensure authentication before making request
+      await ensureAuth();
+      
       return await $fetch<T[]>(`${API_BASE_URL}entities/${entity}`, {
         headers: buildHeaders(),
         params: params,
       });
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 401 errors by re-authenticating and retrying once
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        clearToken();
+        try {
+          await ensureAuth();
+          return await $fetch<T[]>(`${API_BASE_URL}entities/${entity}`, {
+            headers: buildHeaders(),
+            params: params,
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
@@ -193,12 +319,30 @@ export const useApi = () => {
     payload?: any,
   ): Promise<T> => {
     try {
+      // Ensure authentication before making request
+      await ensureAuth();
+      
       return await $fetch<T>(`${API_BASE_URL}entities/${entity}`, {
         method: "POST",
         headers: buildHeaders({ 'Content-Type': 'application/json' }),
         body: payload,
       });
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 401 errors by re-authenticating and retrying once
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        clearToken();
+        try {
+          await ensureAuth();
+          return await $fetch<T>(`${API_BASE_URL}entities/${entity}`, {
+            method: "POST",
+            headers: buildHeaders({ 'Content-Type': 'application/json' }),
+            body: payload,
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
@@ -208,23 +352,58 @@ export const useApi = () => {
     params?: any,
   ): Promise<T[]> => {
     try {
+      // Ensure authentication before making request
+      await ensureAuth();
+      
       return await $fetch<T[]>(`${API_BASE_URL}entities/${entity}/search`, {
         method: "POST",
         headers: buildHeaders({ 'Content-Type': 'application/json' }),
         body: params,
       });
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 401 errors by re-authenticating and retrying once
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        clearToken();
+        try {
+          await ensureAuth();
+          return await $fetch<T[]>(`${API_BASE_URL}entities/${entity}/search`, {
+            method: "POST",
+            headers: buildHeaders({ 'Content-Type': 'application/json' }),
+            body: params,
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
 
   const fetchUserInfo = async () => {
     try {
+      // Ensure authentication before making request
+      await ensureAuth();
+      
       const response = await $fetch(`${API_BASE_URL}userInfo/`, {
         headers: buildHeaders(),
       });
       return response;
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 401 errors by re-authenticating and retrying once
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        clearToken();
+        try {
+          await ensureAuth();
+          return await $fetch(`${API_BASE_URL}userInfo/`, {
+            headers: buildHeaders(),
+          });
+        } catch (retryError) {
+          console.error("[useApi] fetchUserInfo retry error:", retryError);
+          handleError(retryError);
+        }
+      }
       console.error("[useApi] fetchUserInfo error:", error);
       handleError(error);
     }
@@ -261,6 +440,9 @@ export const useApi = () => {
 
   const uploadFile = async (file: File): Promise<any> => {
     try {
+      // Ensure authentication before making request
+      await ensureAuth();
+      
       const formData = new FormData();
       formData.append("file", file);
 
@@ -269,7 +451,24 @@ export const useApi = () => {
         headers: buildHeaders(),
         body: formData,
       });
-    } catch (error) {
+    } catch (error: any) {
+      // Handle 401 errors by re-authenticating and retrying once
+      if (error?.response?.status === 401 || error?.statusCode === 401) {
+        console.log("[useApi] 401 error, clearing token and re-authenticating");
+        clearToken();
+        try {
+          await ensureAuth();
+          const formData = new FormData();
+          formData.append("file", file);
+          return await $fetch(`${API_BASE_URL}files`, {
+            method: "POST",
+            headers: buildHeaders(),
+            body: formData,
+          });
+        } catch (retryError) {
+          handleError(retryError);
+        }
+      }
       handleError(error);
     }
   };
@@ -783,6 +982,7 @@ export const useApi = () => {
     getToken,
     setToken,
     clearToken,
+    ensureAuth,
     AjaxError,
     // OSGO specific methods
     getVehicle,

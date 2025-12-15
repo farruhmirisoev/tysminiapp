@@ -123,6 +123,9 @@ export default defineNuxtConfig({
       apiBase:
         process.env.NUXT_PUBLIC_API_BASE || "https://port.tys.uz/rest/v2/",
       telegramBotToken: process.env.NUXT_PUBLIC_TELEGRAM_BOT_TOKEN || "",
+      // Temporary auth credentials (exposed to client - these are temp credentials for open access)
+      tempAuthUsername: process.env.TEMP_AUTH_USERNAME || "998935286407",
+      tempAuthPassword: process.env.TEMP_AUTH_PASSWORD || "1642845",
     },
   },
 

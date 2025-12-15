@@ -151,6 +151,41 @@ export function capitalize(text: string): string {
 }
 
 /**
+ * Convert uppercase text to capital case (title case)
+ * Each word's first letter is capitalized, rest is lowercase
+ * Handles special characters and preserves spacing
+ * Removes text after comma (e.g., "O'zr, Руз" becomes "O'zr")
+ * @param text - Text in uppercase to convert
+ * @returns Text in capital case
+ * @example
+ * toCapitalCase("TOShKENT ShAXRI") // "Toshkent Shaxri"
+ * toCapitalCase("O`zR TOShKENT VILOYaTI") // "O`zr Toshkent Viloyati"
+ * toCapitalCase("O`zR, Руз") // "O`zr"
+ * toCapitalCase("O`zR, TOShKENT") // "O`zr"
+ */
+export function toCapitalCase(text: string): string {
+  if (!text) return ''
+  
+  // Remove everything after comma (including the comma itself)
+  const textBeforeComma = text.split(',')[0].trim()
+  
+  // Split by spaces and process each word
+  return textBeforeComma
+    .split(/\s+/)
+    .map(word => {
+      if (!word) return word
+      
+      // Handle words with special characters (like O`zR, TOShKENT)
+      // Capitalize first letter, lowercase the rest
+      const firstChar = word.charAt(0).toUpperCase()
+      const rest = word.slice(1).toLowerCase()
+      
+      return firstChar + rest
+    })
+    .join(' ')
+}
+
+/**
  * Format full name from individual parts
  * @param lastName - Last name
  * @param firstName - First name

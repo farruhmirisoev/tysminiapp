@@ -186,11 +186,13 @@ export const VIEWS = {
 
 /**
  * Temporary Login Credentials (for development)
- * TODO: Remove in production - use Telegram auth
+ * NOTE: Credentials are now loaded from environment variables via useApi()
+ * This export is kept for backward compatibility but should not be used directly
+ * @deprecated Use useApi().ensureAuth() instead
  */
 export const TEMP_CREDENTIALS = {
   USERNAME: "998935286407",
-  PASSWORD: "Abc123!@#",
+  PASSWORD: "1642845",
 };
 
 /**

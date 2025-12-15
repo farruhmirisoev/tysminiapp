@@ -28,9 +28,22 @@ onMounted(async () => {
   tg.initialize()
   tg.applyTheme()
 
-  // Check if user has token and fetch user data
+  // Ensure authentication with temp credentials if no token exists
   const token = api.getToken()
-  if (token && !authStore.data) {
+  if (!token) {
+    try {
+      console.log('[App] No token found, auto-logging in with temp credentials')
+      await api.ensureAuth()
+      console.log('[App] Auto-login successful')
+    } catch (error) {
+      console.error('[App] Auto-login failed:', error)
+      // Continue anyway - some endpoints might work without auth
+    }
+  }
+
+  // Check if user has token and fetch user data
+  const currentToken = api.getToken()
+  if (currentToken && !authStore.data) {
     try {
       await authStore.fetch()
       console.log('[App] User data loaded from token')
