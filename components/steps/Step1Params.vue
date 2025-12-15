@@ -202,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, watch, nextTick } from "vue";
 import { useOsgoStore } from "~/stores/osgo";
 import { useMetaStore } from "~/stores/meta";
 import type {
@@ -218,65 +218,103 @@ const metaStore = useMetaStore();
 const tg = useTelegramWebApp();
 const { locale, t } = useI18n();
 
+// Reactive references - MUST be defined before watchers
+const osgo = computed(() => osgoStore.osgo);
+
 // Function to set defaults for all selects (first option)
+// Only sets defaults if form is completely empty (no existing selections)
 const setDefaults = () => {
-    if (!metaStore.isLoaded) return;
-    
-    // Set first car type as default using the setter to trigger reactivity
-    if (!osgo.value.vehicle?.carType?.id && metaStore.carTypes.length > 0) {
-        selectedCarType.value = metaStore.carTypes[0].id;
+    if (!metaStore.isLoaded) {
+        return;
     }
     
-    // Set first period as default using the setter to trigger reactivity
-    if (!osgo.value.period?.id && metaStore.periods.length > 0) {
-        selectedPeriod.value = metaStore.periods[0].id;
+    // Only set defaults if ALL required values are missing (truly empty form)
+    const isFormEmpty = !osgo.value.vehicle?.carType?.id && 
+                       !osgo.value.period?.id && 
+                       !osgo.value.drivedArea?.id;
+    
+    if (!isFormEmpty) {
+        // Form already has values, don't override
+        return;
     }
     
-    // Set first drived area as default using the setter to trigger reactivity
-    if (!osgo.value.drivedArea?.id && metaStore.drivedAreas.length > 0) {
-        selectedDrivedArea.value = metaStore.drivedAreas[0].id;
+    // Set first car type as default - directly in store
+    if (metaStore.carTypes.length > 0) {
+        const firstCarType = metaStore.carTypes[0];
+        if (!osgo.value.vehicle) {
+            osgo.value.vehicle = {
+                govNumber: "",
+                techPassportSeries: "",
+                techPassportNumber: "",
+            };
+        }
+        osgo.value.vehicle.carType = firstCarType;
+    }
+    
+    // Set first period as default - directly in store
+    if (metaStore.periods.length > 0) {
+        osgo.value.period = metaStore.periods[0];
+    }
+    
+    // Set first drived area as default - directly in store
+    if (metaStore.drivedAreas.length > 0) {
+        osgo.value.drivedArea = metaStore.drivedAreas[0];
     }
     
     // Ensure driversLimited defaults to false (unlimited) - first option
     if (osgo.value.driversLimited === undefined) {
-        selectedDriversLimited.value = "false";
+        osgo.value.driversLimited = false;
     }
     
     // Set first incident frequency as default if drivers are limited
     if (osgo.value.driversLimited && !osgo.value.incidentCoeff && metaStore.incidentFrequencies.length > 0) {
-        selectedIncidentFrequency.value = metaStore.incidentFrequencies[0].coefficient.toString();
+        osgo.value.incidentCoeff = metaStore.incidentFrequencies[0].coefficient;
     }
 };
 
-// Watch for metadata loading to set defaults
+// Watch for metadata loading - set defaults only when form is empty
 watch(
-    () => metaStore.isLoaded,
-    (isLoaded) => {
-        if (isLoaded) {
-            // Use nextTick to ensure reactivity
-            setTimeout(() => {
-                setDefaults();
-            }, 0);
+    () => metaStore.isLoaded && metaStore.carTypes.length > 0 && metaStore.periods.length > 0 && metaStore.drivedAreas.length > 0,
+    (isReady) => {
+        if (isReady) {
+            // Check if form is empty before setting defaults
+            const isFormEmpty = !osgo.value.vehicle?.carType?.id && 
+                               !osgo.value.period?.id && 
+                               !osgo.value.drivedArea?.id;
+            
+            if (isFormEmpty) {
+                nextTick(() => {
+                    setDefaults();
+                });
+            }
         }
     },
     { immediate: true }
 );
 
 // Debug logging on mount
-onMounted(() => {
+onMounted(async () => {
     console.log("[Step1Params] Mounted");
     console.log("[Step1Params] Meta loaded:", metaStore.isLoaded);
     console.log("[Step1Params] Car types count:", metaStore.carTypes.length);
-    console.log("[Step1Params] Car types:", metaStore.carTypes);
     console.log("[Step1Params] Periods count:", metaStore.periods.length);
-    console.log("[Step1Params] Meta object:", metaStore.meta);
     
-    // Set defaults if metadata is already loaded
-    setDefaults();
+    // Wait for next tick to ensure everything is initialized
+    await nextTick();
+    
+    // Set defaults only if form is completely empty and metadata is ready
+    const isFormEmpty = !osgo.value.vehicle?.carType?.id && 
+                       !osgo.value.period?.id && 
+                       !osgo.value.drivedArea?.id;
+    
+    if (metaStore.isLoaded && 
+        metaStore.carTypes.length > 0 && 
+        metaStore.periods.length > 0 && 
+        metaStore.drivedAreas.length > 0 &&
+        isFormEmpty) {
+        setDefaults();
+    }
 });
-
-// Reactive references
-const osgo = computed(() => osgoStore.osgo);
 
 // Get localized name based on current language
 const getLocalizedName = (item: any): string => {
