@@ -48,9 +48,6 @@
                             class="input"
                             :disabled="!osgoStore.isEditable"
                         >
-                            <option value="" disabled>
-                                {{ t('step1.vehicleTypePlaceholder') }}
-                            </option>
                             <option
                                 v-for="carType in metaStore.carTypes"
                                 :key="carType.id"
@@ -74,9 +71,6 @@
                             class="input"
                             :disabled="!osgoStore.isEditable"
                         >
-                            <option value="" disabled>
-                                {{ t('step1.periodPlaceholder') }}
-                            </option>
                             <option
                                 v-for="period in metaStore.periods"
                                 :key="period.id"
@@ -123,9 +117,6 @@
                                 class="input"
                                 :disabled="!osgoStore.isEditable"
                             >
-                                <option value="" disabled>
-                                    {{ t('step1.incidentFrequencyPlaceholder') }}
-                                </option>
                                 <option
                                     v-for="frequency in metaStore.incidentFrequencies"
                                     :key="frequency.id"
@@ -150,9 +141,6 @@
                             class="input"
                             :disabled="!osgoStore.isEditable"
                         >
-                            <option value="" disabled>
-                                {{ t('step1.usageTerritoryPlaceholder') }}
-                            </option>
                             <option
                                 v-for="area in metaStore.drivedAreas"
                                 :key="area.id"
@@ -214,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, watch } from "vue";
 import { useOsgoStore } from "~/stores/osgo";
 import { useMetaStore } from "~/stores/meta";
 import type {
@@ -230,6 +218,50 @@ const metaStore = useMetaStore();
 const tg = useTelegramWebApp();
 const { locale, t } = useI18n();
 
+// Function to set defaults for all selects (first option)
+const setDefaults = () => {
+    if (!metaStore.isLoaded) return;
+    
+    // Set first car type as default using the setter to trigger reactivity
+    if (!osgo.value.vehicle?.carType?.id && metaStore.carTypes.length > 0) {
+        selectedCarType.value = metaStore.carTypes[0].id;
+    }
+    
+    // Set first period as default using the setter to trigger reactivity
+    if (!osgo.value.period?.id && metaStore.periods.length > 0) {
+        selectedPeriod.value = metaStore.periods[0].id;
+    }
+    
+    // Set first drived area as default using the setter to trigger reactivity
+    if (!osgo.value.drivedArea?.id && metaStore.drivedAreas.length > 0) {
+        selectedDrivedArea.value = metaStore.drivedAreas[0].id;
+    }
+    
+    // Ensure driversLimited defaults to false (unlimited) - first option
+    if (osgo.value.driversLimited === undefined) {
+        selectedDriversLimited.value = "false";
+    }
+    
+    // Set first incident frequency as default if drivers are limited
+    if (osgo.value.driversLimited && !osgo.value.incidentCoeff && metaStore.incidentFrequencies.length > 0) {
+        selectedIncidentFrequency.value = metaStore.incidentFrequencies[0].coefficient.toString();
+    }
+};
+
+// Watch for metadata loading to set defaults
+watch(
+    () => metaStore.isLoaded,
+    (isLoaded) => {
+        if (isLoaded) {
+            // Use nextTick to ensure reactivity
+            setTimeout(() => {
+                setDefaults();
+            }, 0);
+        }
+    },
+    { immediate: true }
+);
+
 // Debug logging on mount
 onMounted(() => {
     console.log("[Step1Params] Mounted");
@@ -239,10 +271,8 @@ onMounted(() => {
     console.log("[Step1Params] Periods count:", metaStore.periods.length);
     console.log("[Step1Params] Meta object:", metaStore.meta);
     
-    // Ensure driversLimited defaults to false (unlimited)
-    if (osgo.value.driversLimited === undefined) {
-        osgo.value.driversLimited = false;
-    }
+    // Set defaults if metadata is already loaded
+    setDefaults();
 });
 
 // Reactive references
@@ -255,7 +285,9 @@ const getLocalizedName = (item: any): string => {
 
 // Selected car type (for v-model on select)
 const selectedCarType = computed({
-    get: () => osgo.value.vehicle?.carType?.id || "",
+    get: () => {
+        return osgo.value.vehicle?.carType?.id || "";
+    },
     set: (id: string) => {
         if (!osgoStore.isEditable) return;
         
@@ -280,7 +312,9 @@ const selectedCarType = computed({
 
 // Selected period (for v-model on select)
 const selectedPeriod = computed({
-    get: () => osgo.value.period?.id || "",
+    get: () => {
+        return osgo.value.period?.id || "";
+    },
     set: (id: string) => {
         if (!osgoStore.isEditable) return;
         
@@ -325,7 +359,9 @@ const selectedDriversLimited = computed({
 
 // Selected incident frequency (for v-model on select)
 const selectedIncidentFrequency = computed({
-    get: () => osgo.value.incidentCoeff?.toString() || "",
+    get: () => {
+        return osgo.value.incidentCoeff?.toString() || "";
+    },
     set: (value: string) => {
         if (!osgoStore.isEditable) return;
         
@@ -343,7 +379,9 @@ const selectedIncidentFrequency = computed({
 
 // Selected drived area (for v-model on select)
 const selectedDrivedArea = computed({
-    get: () => osgo.value.drivedArea?.id || "",
+    get: () => {
+        return osgo.value.drivedArea?.id || "";
+    },
     set: (id: string) => {
         const area = metaStore.findDrivedArea(id);
         if (area) {
