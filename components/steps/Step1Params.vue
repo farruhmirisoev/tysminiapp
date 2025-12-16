@@ -157,7 +157,7 @@
 
                 <!-- Premium Summary Card -->
                 <div
-                    v-if="osgoStore.calculatedPremium > 0"
+                    v-if="premiumDisplay > 0"
                     class="premium-card"
                 >
                     <div class="premium-card-content">
@@ -166,7 +166,7 @@
                             <span>{{ t('step1.premium') }}</span>
                         </div>
                         <div class="premium-amount">
-                            {{ formatPrice(osgoStore.calculatedPremium) }}
+                            {{ formatPrice(premiumDisplay) }}
                         </div>
                     </div>
                     <!-- <div class="premium-details">
@@ -238,27 +238,33 @@ const setDefaults = () => {
         return;
     }
     
-    // Set first car type as default - directly in store
+    // Set first car type as default - create vehicle object if it doesn't exist
     if (metaStore.carTypes.length > 0 && !osgo.value.vehicle?.carType?.id) {
         const firstCarType = metaStore.carTypes[0];
         if (!osgo.value.vehicle) {
+            // Create new vehicle object with carType - this triggers reactivity
             osgo.value.vehicle = {
                 govNumber: "",
                 techPassportSeries: "",
                 techPassportNumber: "",
+                carType: firstCarType,
             };
+        } else {
+            // Vehicle exists but no carType - set it directly
+            osgo.value.vehicle.carType = firstCarType;
         }
-        osgo.value.vehicle.carType = firstCarType;
     }
     
-    // Set first period as default - directly in store
+    // Set first period as default - directly assign to trigger reactivity
     if (metaStore.periods.length > 0 && !osgo.value.period?.id) {
-        osgo.value.period = metaStore.periods[0];
+        const firstPeriod = metaStore.periods[0];
+        osgo.value.period = firstPeriod;
     }
     
-    // Set first drived area as default - directly in store
+    // Set first drived area as default - directly assign to trigger reactivity
     if (metaStore.drivedAreas.length > 0 && !osgo.value.drivedArea?.id) {
-        osgo.value.drivedArea = metaStore.drivedAreas[0];
+        const firstArea = metaStore.drivedAreas[0];
+        osgo.value.drivedArea = firstArea;
     }
     
     // Ensure driversLimited defaults to false (unlimited) - first option
@@ -271,10 +277,12 @@ const setDefaults = () => {
         osgo.value.incidentCoeff = metaStore.incidentFrequencies[0].coefficient;
     }
     
-    // Force premium recalculation by accessing calculatedPremium
-    // This ensures the watcher in osgo store triggers and updates premium
+    // Manually trigger premium calculation immediately
+    osgo.value.premium = osgoStore.calculatedPremium;
+    
+    // Force validation recomputation by triggering reactivity
     nextTick(() => {
-        const _ = osgoStore.calculatedPremium;
+        osgoStore.canProceedToNextStep;
     });
 };
 
@@ -298,7 +306,6 @@ watch(
     { immediate: true }
 );
 
-// Debug logging on mount
 onMounted(async () => {
     console.log("[Step1Params] Mounted");
     console.log("[Step1Params] Meta loaded:", metaStore.isLoaded);
@@ -327,6 +334,11 @@ const getLocalizedName = (item: any): string => {
     const name = metaStore.getLocalizedName(item, locale.value || 'uz');
     return toCapitalCase(name);
 };
+
+// Computed property for premium display to ensure reactivity
+const premiumDisplay = computed(() => {
+    return osgoStore.calculatedPremium;
+});
 
 // Selected car type (for v-model on select)
 const selectedCarType = computed({
@@ -477,13 +489,16 @@ watch(
             const carType = metaStore.carTypes.find(ct => ct.id === carTypeId);
             if (carType) {
                 if (!osgo.value.vehicle) {
+                    // Create vehicle with carType immediately to ensure reactivity
                     osgo.value.vehicle = {
                         govNumber: "",
                         techPassportSeries: "",
                         techPassportNumber: "",
+                        carType: carType,
                     };
+                } else {
+                    osgo.value.vehicle.carType = carType;
                 }
-                osgo.value.vehicle.carType = carType;
                 needsUpdate = true;
             }
         }

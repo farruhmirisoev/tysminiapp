@@ -94,17 +94,19 @@ const tg = useTelegramWebApp();
 onMounted(async () => {
     console.log("[IndexPage] Mounted");
 
-    // Ensure metadata is loaded
+    // Ensure metadata is loaded FIRST
     await metaStore.lazyFetch();
 
-    // Initialize OSGO store
-    osgoStore.initialize();
-
-    // Try to restore from session storage
+    // Try to restore from session storage BEFORE initializing
+    // This ensures we don't overwrite restored data
     const restored = osgoStore.loadFromSession();
     if (restored) {
         console.log("[IndexPage] Restored data from session");
     }
+
+    // Initialize OSGO store (only if no data exists)
+    // This will skip reset if values are already set (e.g., from session or defaults)
+    osgoStore.initialize();
 
     // Setup Telegram back button
     if (tg.isTelegramWebApp.value) {
@@ -126,22 +128,18 @@ onMounted(async () => {
         { deep: true },
     );
 
-    // Cleanup watcher on unmount
+    // Cleanup watcher and save state on unmount
     onUnmounted(() => {
         stopWatch();
+        // Save current state
+        osgoStore.saveToSession();
+
+        // Hide Telegram buttons
+        if (tg.isTelegramWebApp.value) {
+            tg.hideBackButton();
+            tg.hideMainButton();
+        }
     });
-});
-
-// Cleanup on unmount
-onUnmounted(() => {
-    // Save current state
-    osgoStore.saveToSession();
-
-    // Hide Telegram buttons
-    if (tg.isTelegramWebApp.value) {
-        tg.hideBackButton();
-        tg.hideMainButton();
-    }
 });
 
 // Setup head

@@ -69,7 +69,9 @@ const totalSteps = computed(() => osgoStore.totalSteps)
 const displayStepNumber = computed(() => osgoStore.displayStepNumber)
 const isFirstStep = computed(() => currentStep.value === 0)
 const isLastStep = computed(() => currentStep.value === STEPS.PAYMENT)
-const canProceed = computed(() => osgoStore.canProceedToNextStep)
+const canProceed = computed(() => {
+  return osgoStore.canProceedToNextStep
+})
 const loading = computed(() => osgoStore.saving || osgoStore.fetching || sendingPayment.value)
 
 // Handle previous button

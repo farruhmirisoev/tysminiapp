@@ -129,8 +129,36 @@ export const useOsgoStore = defineStore('osgo', () => {
 
   /**
    * Initialize OSGO with default values
+   * Only initializes if store is truly empty (no existing data)
    */
   const initialize = () => {
+    // Check if store already has meaningful data - if so, don't reset
+    const hasExistingData = osgo.value.vehicle?.carType || 
+                            osgo.value.period || 
+                            osgo.value.drivedArea ||
+                            osgo.value.premium > 0
+    
+    if (hasExistingData) {
+      // Only set defaults for fields that are missing, don't reset everything
+      if (!osgo.value.status) {
+        osgo.value.status = 'DRAFT' as BaseContractStatus
+      }
+      if (!osgo.value.contractStartDate) {
+        osgo.value.contractStartDate = dayjs().format('YYYY-MM-DD')
+      }
+      if (osgo.value.applicantIsOwner === undefined) {
+        osgo.value.applicantIsOwner = true
+      }
+      if (osgo.value.driversLimited === undefined) {
+        osgo.value.driversLimited = false
+      }
+      if (!osgo.value.drivers) {
+        osgo.value.drivers = []
+      }
+      return // Don't reset existing values
+    }
+    
+    // Only reset if store is truly empty
     osgo.value = {
       status: 'DRAFT' as BaseContractStatus,
       vehicle: {
@@ -221,16 +249,45 @@ export const useOsgoStore = defineStore('osgo', () => {
    */
   watch(
     () => [
-      osgo.value.vehicle?.carType,
-      osgo.value.period,
+      osgo.value.vehicle?.carType?.id,
+      osgo.value.vehicle?.carType?.tariffCompany,
+      osgo.value.period?.id,
+      osgo.value.period?.coefficient,
       osgo.value.driversLimited,
       osgo.value.incidentCoeff,
-      osgo.value.drivedArea,
+      osgo.value.drivedArea?.id,
+      osgo.value.drivedArea?.coefficient,
     ],
+    (newVals, oldVals) => {
+      // Always update premium when dependencies change
+      osgo.value.premium = calculatedPremium.value
+    },
+    { immediate: true }
+  )
+  
+  // Also watch the entire objects to catch any deep changes
+  watch(
+    () => osgo.value.vehicle?.carType,
     () => {
       osgo.value.premium = calculatedPremium.value
     },
-    { deep: true }
+    { deep: true, immediate: true }
+  )
+  
+  watch(
+    () => osgo.value.period,
+    () => {
+      osgo.value.premium = calculatedPremium.value
+    },
+    { deep: true, immediate: true }
+  )
+  
+  watch(
+    () => osgo.value.drivedArea,
+    () => {
+      osgo.value.premium = calculatedPremium.value
+    },
+    { deep: true, immediate: true }
   )
 
   /**
@@ -875,7 +932,9 @@ export const useOsgoStore = defineStore('osgo', () => {
 
     try {
       const json = sessionStorage.getItem(STORAGE_KEYS.OSGO_DRAFT)
-      if (!json) return false
+      if (!json) {
+        return false
+      }
 
       const data = JSON.parse(json)
       osgo.value = data.osgo
