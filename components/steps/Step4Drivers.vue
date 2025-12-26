@@ -390,18 +390,18 @@ const updateDriverRelative = (index: number, event: Event) => {
 }
 
 .step-header {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .step-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   color: #1F2937;
   margin-bottom: 8px;
 }
 
 .step-description {
-  font-size: 15px;
+  font-size: 13px;
   color: #6B7280;
   line-height: 1.5;
 }
@@ -409,7 +409,7 @@ const updateDriverRelative = (index: number, event: Event) => {
 .step-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 /* Info card */
@@ -554,10 +554,11 @@ const updateDriverRelative = (index: number, event: Event) => {
 
 .driver-info {
   padding: 16px;
-  background: #ECFDF5;
-  border: 1px solid #D1FAE5;
-  border-radius: 8px;
+  background: linear-gradient(180deg, #ECFDF5 0%, #D1FAE5 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 14px;
   margin-top: 12px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .driver-info-grid {
@@ -630,7 +631,7 @@ const updateDriverRelative = (index: number, event: Event) => {
 
 @media (max-width: 768px) {
   .step-title {
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .actions-row .btn {

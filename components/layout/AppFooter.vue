@@ -9,7 +9,7 @@
         :disabled="loading"
         @click="handlePrevious"
       >
-        <i class="text-lg bx bx-chevron-left"></i>
+        <i class="bx bx-arrow-back"></i>
         <span>{{ $t('common.previous') }}</span>
       </button>
       <!-- Spacer when back button is hidden -->
@@ -17,7 +17,7 @@
 
       <!-- Step Indicator (center) -->
       <div class="flex-1 text-center">
-        <div class="text-sm text-text-light font-medium">
+        <div class="text-xs text-text-light font-medium">
           {{ $t('common.step', { current: displayStepNumber, total: totalSteps }) }}
         </div>
       </div>
@@ -34,14 +34,16 @@
         @click="handleNext"
       >
         <span v-if="loading" class="spinner"></span>
+        <template v-else-if="currentStep === STEPS.SUMMARY && !osgoStore.osgo.id">
+          <span>{{ $t('step5.confirm') }}</span>
+        </template>
+        <template v-else-if="isLastStep && currentStep === STEPS.PAYMENT">
+          <i class="bx bx-credit-card"></i>
+          <span>{{ $t('step5.payment') }}</span>
+        </template>
         <template v-else>
-          <span v-if="currentStep === STEPS.SUMMARY && !osgoStore.osgo.id">{{ $t('step5.confirm') }}</span>
-          <span v-else-if="isLastStep && currentStep === STEPS.PAYMENT">
-            <i class="bx bx-credit-card"></i>
-            <span>{{ $t('step5.payment') }}</span>
-          </span>
-          <span v-else>{{ $t('common.next') }}</span>
-          <i v-if="!isLastStep && currentStep !== STEPS.SUMMARY" class="text-lg bx bx-chevron-right"></i>
+          <span>{{ $t('common.next') }}</span>
+          <i class="bx bx-arrow-back"></i>
         </template>
       </button>
     </div>
@@ -210,9 +212,55 @@ const handleNext = async () => {
 
 .btn {
   min-height: 44px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   gap: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.btn i {
+  font-size: 16px;
+  line-height: 1;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+  opacity: 1;
+  visibility: visible;
+  color: inherit;
+}
+
+/* Icon before text - add margin-right */
+.btn i:not(:last-child) {
+  margin-right: 6px;
+}
+
+/* Icon after text - add margin-left */
+.btn i:last-child:not(:first-child) {
+  margin-left: 6px;
+  margin-right: 0;
+}
+
+/* Flip arrow-back icon horizontally for forward arrow */
+.btn i.bx-arrow-back:last-child:not(:first-child) {
+  transform: scaleX(-1);
+}
+
+/* Icon before text (credit-card) - add margin-right */
+.btn i.bx-credit-card {
+  margin-right: 6px;
+  margin-left: 0;
+}
+
+.btn span {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
+  vertical-align: middle;
 }
 
 .btn:disabled {
@@ -237,19 +285,15 @@ const handleNext = async () => {
   }
 }
 
-/* Icon styles */
-i {
-  line-height: 1;
-}
 
 /* iOS safe area support is handled globally in main.css */
 
 /* Mobile adjustments */
 @media (max-width: 640px) {
   .btn {
-    font-size: 14px;
-    padding-left: 16px;
-    padding-right: 16px;
+    font-size: 13px;
+    padding-left: 14px;
+    padding-right: 14px;
   }
 }
 </style>

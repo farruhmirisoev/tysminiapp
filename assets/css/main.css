@@ -48,7 +48,8 @@
     input:focus,
     select:focus,
     textarea:focus {
-        @apply outline-none ring-2 ring-primary ring-opacity-50;
+        @apply outline-none;
+        box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.12);
     }
 
     /* Remove default input appearance on iOS */
@@ -65,45 +66,139 @@
 @layer components {
     /* Button Styles */
     .btn {
-        @apply inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+        @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+        min-height: 44px; /* Ensure touch-friendly targets */
+        gap: 8px; /* Spacing between icon and text */
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn i {
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
     }
 
     .btn-primary {
-        @apply bg-primary text-white hover:bg-primary-dark active:scale-[0.98];
+        @apply bg-primary text-white hover:bg-primary-dark;
+        background: linear-gradient(180deg, #2481CC 0%, #1e6ba8 100%);
+        box-shadow: 0 2px 4px rgba(36, 129, 204, 0.2), 0 4px 8px rgba(36, 129, 204, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(180deg, #1e6ba8 0%, #185a8f 100%);
+        box-shadow: 0 4px 8px rgba(36, 129, 204, 0.25), 0 6px 12px rgba(36, 129, 204, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .btn-primary:active:not(:disabled) {
+        transform: translateY(0) scale(0.97);
+        box-shadow: 0 1px 2px rgba(36, 129, 204, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .btn-primary-outlined {
-        @apply border-2 border-primary text-primary hover:bg-primary hover:text-white active:scale-[0.98];
+        @apply border-2 border-primary text-primary hover:bg-primary hover:text-white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-primary-outlined:hover:not(:disabled) {
+        background: linear-gradient(180deg, #2481CC 0%, #1e6ba8 100%);
+        box-shadow: 0 4px 8px rgba(36, 129, 204, 0.25), 0 6px 12px rgba(36, 129, 204, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .btn-primary-outlined:active:not(:disabled) {
+        transform: translateY(0) scale(0.97);
     }
 
     .btn-secondary {
-        @apply bg-secondary text-white hover:bg-secondary-dark active:scale-[0.98];
+        @apply bg-secondary text-white hover:bg-secondary-dark;
+        background: linear-gradient(180deg, #6B7280 0%, #4B5563 100%);
+        box-shadow: 0 2px 4px rgba(107, 114, 128, 0.2), 0 4px 8px rgba(107, 114, 128, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background: linear-gradient(180deg, #4B5563 0%, #374151 100%);
+        box-shadow: 0 4px 8px rgba(107, 114, 128, 0.25), 0 6px 12px rgba(107, 114, 128, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary:active:not(:disabled) {
+        transform: translateY(0) scale(0.97);
+        box-shadow: 0 1px 2px rgba(107, 114, 128, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .btn-danger {
-        @apply bg-error text-white hover:bg-red-600 active:scale-[0.98];
+        @apply bg-error text-white hover:bg-red-600;
+        background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%);
+        box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2), 0 4px 8px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+        background: linear-gradient(180deg, #DC2626 0%, #B91C1C 100%);
+        box-shadow: 0 4px 8px rgba(239, 68, 68, 0.25), 0 6px 12px rgba(239, 68, 68, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .btn-danger:active:not(:disabled) {
+        transform: translateY(0) scale(0.97);
+        box-shadow: 0 1px 2px rgba(239, 68, 68, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .btn-danger-outlined {
-        @apply border-2 border-error text-error hover:bg-error hover:text-white active:scale-[0.98];
+        @apply border-2 border-error text-error hover:bg-error hover:text-white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-danger-outlined:hover:not(:disabled) {
+        background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%);
+        box-shadow: 0 4px 8px rgba(239, 68, 68, 0.25), 0 6px 12px rgba(239, 68, 68, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .btn-danger-outlined:active:not(:disabled) {
+        transform: translateY(0) scale(0.97);
     }
 
     .btn-success {
-        @apply bg-green-600 text-white hover:bg-green-700 active:scale-[0.98];
+        @apply bg-green-600 text-white hover:bg-green-700;
+        background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2), 0 4px 8px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-success:hover:not(:disabled) {
+        background: linear-gradient(180deg, #059669 0%, #047857 100%);
+        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.25), 0 6px 12px rgba(16, 185, 129, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .btn-success:active:not(:disabled) {
+        transform: translateY(0) scale(0.97);
+        box-shadow: 0 1px 2px rgba(16, 185, 129, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     /* Input Styles */
     .input {
-        @apply w-full px-4 py-3 border border-border rounded-lg bg-white text-text placeholder:text-text-lighter focus:border-primary transition-colors;
+        @apply w-full px-3.5 py-2.5 border border-border rounded-lg bg-white text-text placeholder:text-text-lighter focus:border-primary transition-colors;
+    }
+
+    .input:focus {
+        box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.12);
     }
 
     .input-error {
         @apply border-error focus:border-error focus:ring-error;
     }
 
+    .input-error:focus {
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+    }
+
     /* Card Styles */
     .card {
-        @apply bg-white rounded-card shadow-card p-6;
+        @apply bg-white rounded-card p-4;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.06);
     }
 
     /* Checkbox Styles */
@@ -243,11 +338,12 @@
 
 /* Check Button (Radio-style selector) */
 .check-button {
-    @apply relative flex items-center justify-center px-6 py-4 border-2 border-border rounded-lg cursor-pointer transition-all duration-200 hover:border-primary hover:bg-primary/5 active:scale-[0.98];
+    @apply relative flex items-center justify-center px-3.5 py-3 border-2 border-border rounded-lg cursor-pointer transition-all duration-200 hover:border-primary hover:bg-primary/5 active:scale-[0.97];
 }
 
 .check-button.active {
     @apply border-primary bg-primary/10 font-semibold;
+    box-shadow: 0 2px 6px rgba(36, 129, 204, 0.15);
 }
 
 .check-button:disabled {

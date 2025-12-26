@@ -68,9 +68,9 @@ const handleClick = () => {
 .check-button {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
-  padding: 14px 16px;
+  padding: 12px 14px;
   background: white;
   border: 2px solid #E5E7EB;
   border-radius: 12px;
@@ -86,7 +86,7 @@ const handleClick = () => {
   border-color: #2481CC;
   background: rgba(36, 129, 204, 0.02);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .check-button:active:not(.disabled) {
@@ -95,8 +95,8 @@ const handleClick = () => {
 
 .check-button.active {
   border-color: #2481CC;
-  background: rgba(36, 129, 204, 0.08);
-  box-shadow: 0 0 0 1px rgba(36, 129, 204, 0.1);
+  background: linear-gradient(180deg, rgba(36, 129, 204, 0.1) 0%, rgba(36, 129, 204, 0.05) 100%);
+  box-shadow: 0 2px 8px rgba(36, 129, 204, 0.15), 0 4px 12px rgba(36, 129, 204, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .check-button.active::before {
@@ -119,12 +119,12 @@ const handleClick = () => {
 /* Icon */
 .check-icon {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   background: rgba(36, 129, 204, 0.1);
   border-radius: 8px;
 }
@@ -140,7 +140,7 @@ const handleClick = () => {
 }
 
 .check-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   color: #1F2937;
   line-height: 1.4;
@@ -153,7 +153,7 @@ const handleClick = () => {
 }
 
 .check-description {
-  font-size: 13px;
+  font-size: 12px;
   color: #6B7280;
   line-height: 1.4;
   margin-top: 4px;
@@ -213,22 +213,22 @@ const handleClick = () => {
 /* Compact mode for smaller screens */
 @media (max-width: 640px) {
   .check-button {
-    padding: 12px 14px;
-    gap: 10px;
+    padding: 10px 12px;
+    gap: 8px;
   }
 
   .check-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 18px;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
   }
 
   .check-title {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .check-description {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .check-circle {

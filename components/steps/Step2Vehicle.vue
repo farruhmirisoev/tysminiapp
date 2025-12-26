@@ -243,18 +243,18 @@ const handleVerify = async () => {
 }
 
 .step-header {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .step-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   color: #1F2937;
   margin-bottom: 8px;
 }
 
 .step-description {
-  font-size: 15px;
+  font-size: 13px;
   color: #6B7280;
   line-height: 1.5;
 }
@@ -262,61 +262,79 @@ const handleVerify = async () => {
 .step-content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .form-section {
   width: 100%;
 }
 
-/* Alert */
+/* Alert - Apple Style */
 .alert {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  border-radius: 10px;
+  border-radius: 14px;
   font-size: 14px;
   line-height: 1.4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .alert-error {
-  background: #FEE2E2;
+  background: linear-gradient(180deg, #FEE2E2 0%, #FECACA 100%);
   color: #991B1B;
-  border: 1px solid #FCA5A5;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .alert i {
   font-size: 20px;
   flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(239, 68, 68, 0.2));
 }
 
-/* Vehicle Info Card */
+/* Vehicle Info Card - Apple Style */
 .vehicle-info-card {
   background: white;
-  border: 2px solid #10B981;
-  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(16, 185, 129, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px;
-  background: #ECFDF5;
-  border-bottom: 1px solid #D1FAE5;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, #ECFDF5 0%, #D1FAE5 100%);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.15);
   font-weight: 600;
+  font-size: 14px;
   color: #065F46;
 }
 
 .card-header i {
-  font-size: 24px;
+  font-size: 20px;
+  color: #10B981;
+  filter: drop-shadow(0 1px 2px rgba(16, 185, 129, 0.3));
 }
 
 .card-content {
   padding: 16px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
 }
 
 .vehicle-info-grid {
@@ -338,16 +356,20 @@ const handleVerify = async () => {
 }
 
 .vehicle-info-label {
-  font-size: 14px;
+  font-size: 12px;
   color: #6B7280;
   line-height: 1.4;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
 }
 
 .vehicle-info-value {
-  font-size: 14px;
+  font-size: 15px;
   color: #1F2937;
-  font-weight: 700;
-  line-height: 1.4;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .vehicle-info-empty {
@@ -376,7 +398,8 @@ const handleVerify = async () => {
 
 /* Button icon */
 .btn i {
-  font-size: 18px;
+  font-size: 16px;
+  margin-right: 0;
 }
 
 /* Transitions */
@@ -394,11 +417,11 @@ const handleVerify = async () => {
 /* Mobile responsive */
 @media (max-width: 768px) {
   .step-title {
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .step-description {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .vehicle-info-grid {

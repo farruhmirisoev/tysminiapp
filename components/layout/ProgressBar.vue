@@ -106,7 +106,8 @@ const handleStepClick = (index: number) => {
   height: 100%;
   background: linear-gradient(90deg, #2481CC 0%, #3A91DC 100%);
   border-radius: 2px;
-  transition: width 0.3s ease-in-out;
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(36, 129, 204, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* Steps Container */
@@ -148,15 +149,16 @@ const handleStepClick = (index: number) => {
 
 /* Step States */
 .step-active {
-  background-color: #2481CC;
+  background: linear-gradient(180deg, #2481CC 0%, #1e6ba8 100%);
   color: white;
-  box-shadow: 0 0 0 4px rgba(36, 129, 204, 0.2);
+  box-shadow: 0 0 0 4px rgba(36, 129, 204, 0.2), 0 2px 8px rgba(36, 129, 204, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
 
 .step-completed {
-  background-color: #2481CC;
+  background: linear-gradient(180deg, #2481CC 0%, #1e6ba8 100%);
   color: white;
+  box-shadow: 0 2px 4px rgba(36, 129, 204, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .step-pending {

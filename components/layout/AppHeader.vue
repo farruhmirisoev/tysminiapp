@@ -17,8 +17,8 @@
                         />
                     </div>
                     <div>
-                        <div class="text-base font-bold text-text">{{ t('header.appTitle') }}</div>
-                        <div class="text-xs text-text-light">
+                        <div class="text-sm font-bold text-text">{{ t('header.appTitle') }}</div>
+                        <div class="text-[10px] text-text-light">
                             Temiryo'l Sug'urta
                         </div>
                     </div>

@@ -126,7 +126,7 @@
                                 </option>
                             </select>
                             <div class="select-icon">
-                                <i class="bx bx-chevron-down"></i>
+                                <i class="bx bx-chevron-down text-primary"></i>
                             </div>
                         </div>
                     </div>
@@ -552,18 +552,18 @@ watch(
 }
 
 .step-header {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .step-title {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 600;
     color: #1f2937;
     margin-bottom: 8px;
 }
 
 .step-description {
-    font-size: 15px;
+    font-size: 13px;
     color: #6b7280;
     line-height: 1.5;
 }
@@ -571,20 +571,21 @@ watch(
 .step-content {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
 }
 
 .form-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
 }
 
 .section-title {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 13px !important;
+    font-weight: 500;
     color: #1f2937;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    line-height: 1.4;
 }
 
 /* Select wrapper */
@@ -595,32 +596,87 @@ watch(
 .select-wrapper select {
     width: 100%;
     appearance: none;
-    padding-right: 40px;
+    padding: 10px 40px 10px 14px;
     cursor: pointer;
     font-weight: 500;
+    font-size: 15px;
+    color: #1F2937;
+    background: white;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.select-wrapper select:hover:not(:disabled) {
+    border-color: #D1D5DB;
+}
+
+.select-wrapper select:focus {
+    border-color: #2481CC;
+    box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.12), 0 2px 4px rgba(36, 129, 204, 0.08);
+    transform: translateY(-1px);
+}
+
+.select-wrapper select:disabled {
+    background: #F9FAFB;
+    color: #9CA3AF;
+    cursor: not-allowed;
 }
 
 .select-icon {
     position: absolute;
-    right: 12px;
+    right: 14px;
     top: 50%;
     transform: translateY(-50%);
     pointer-events: none;
-    color: #6b7280;
-    font-size: 20px;
+    color: #2481CC;
+    font-size: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+    z-index: 1;
 }
 
-/* Premium Card */
+.select-icon i {
+    color: inherit;
+}
+
+.select-wrapper:focus-within .select-icon {
+    transform: translateY(-50%) rotate(180deg);
+    color: #2481CC;
+}
+
+.select-wrapper:hover .select-icon {
+    color: #2481CC;
+}
+
+.select-wrapper:has(select:disabled) .select-icon {
+    color: #9CA3AF;
+}
+
+/* Premium Card - Apple Style */
 .premium-card {
     background: linear-gradient(135deg, #2481cc 0%, #3a91dc 100%);
-    border-radius: 16px;
-    padding: 20px;
+    border-radius: 18px;
+    padding: 18px;
     color: white;
-    box-shadow: 0 4px 12px rgba(36, 129, 204, 0.3);
+    box-shadow: 0 4px 20px rgba(36, 129, 204, 0.25), 0 8px 32px rgba(36, 129, 204, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.premium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
 }
 
 .premium-card-content {
@@ -642,11 +698,12 @@ watch(
 }
 
 .premium-label i {
-    font-size: 20px;
+    font-size: 18px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 .premium-amount {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -700,7 +757,7 @@ watch(
     }
 
     .section-title {
-        font-size: 16px;
+        font-size: 13px !important;
     }
 
     .premium-card {

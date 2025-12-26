@@ -333,10 +333,11 @@ defineExpose({
 /* Label */
 .input-label {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   color: #1F2937;
   margin-bottom: 2px;
+  line-height: 1.4;
 }
 
 /* Input wrapper */
@@ -348,17 +349,18 @@ defineExpose({
 /* Input */
 .input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 10px 14px;
   font-size: 15px;
   color: #1F2937;
   background: white;
-  border: 2px solid #E5E7EB;
-  border-radius: 10px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .input::placeholder {
@@ -371,7 +373,9 @@ defineExpose({
 
 .input:focus {
   border-color: #2481CC;
-  box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.1);
+  box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.12), 0 2px 4px rgba(36, 129, 204, 0.08);
+  transform: translateY(-1px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .input:disabled {
@@ -387,11 +391,11 @@ defineExpose({
 
 /* Input with icons */
 .input-with-icon-left {
-  padding-left: 44px;
+  padding-left: 40px;
 }
 
 .input-with-icon-right {
-  padding-right: 44px;
+  padding-right: 40px;
 }
 
 /* Icons */
@@ -402,11 +406,17 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   color: #6B7280;
-  font-size: 18px;
+  font-size: 16px;
   pointer-events: none;
+  transition: color 0.2s ease;
+  z-index: 1;
+}
+
+.input-icon i {
+  color: inherit;
 }
 
 .input-icon-left {
@@ -415,6 +425,21 @@ defineExpose({
 
 .input-icon-right {
   right: 2px;
+}
+
+/* Ensure icons stay visible when input is focused */
+.input-wrapper:focus-within .input-icon:not(.input-clear) {
+  color: #2481CC;
+}
+
+/* Ensure icons stay visible when input is hovered */
+.input-wrapper:hover .input-icon:not(.input-clear) {
+  color: #4B5563;
+}
+
+/* Ensure icons stay visible when input is disabled */
+.input-wrapper:has(.input:disabled) .input-icon:not(.input-clear) {
+  color: #9CA3AF;
 }
 
 .input-clear {
@@ -442,7 +467,7 @@ defineExpose({
 
 .input-error:focus {
   border-color: #EF4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
 }
 
 .has-error .input-label {
@@ -492,20 +517,20 @@ defineExpose({
 /* Mobile optimizations */
 @media (max-width: 640px) {
   .input {
-    padding: 11px 14px;
+    padding: 10px 12px;
     font-size: 16px; /* Prevent zoom on iOS */
   }
 
   .input-with-icon-left {
-    padding-left: 42px;
+    padding-left: 38px;
   }
 
   .input-with-icon-right {
-    padding-right: 42px;
+    padding-right: 38px;
   }
 
   .input-label {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .input-message {
@@ -545,6 +570,19 @@ defineExpose({
 
   .input-icon {
     color: #9CA3AF;
+  }
+
+  /* Ensure icons stay visible in dark mode when focused */
+  .input-wrapper:focus-within .input-icon:not(.input-clear) {
+    color: #3A91DC;
+  }
+
+  .input-wrapper:hover .input-icon:not(.input-clear) {
+    color: #D1D5DB;
+  }
+
+  .input-wrapper:has(.input:disabled) .input-icon:not(.input-clear) {
+    color: #6B7280;
   }
 
   .helper-text {

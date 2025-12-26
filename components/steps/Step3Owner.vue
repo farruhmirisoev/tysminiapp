@@ -320,18 +320,18 @@ const verifyApplicant = async () => {
 }
 
 .step-header {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .step-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   color: #1F2937;
   margin-bottom: 8px;
 }
 
 .step-description {
-  font-size: 15px;
+  font-size: 13px;
   color: #6B7280;
   line-height: 1.5;
 }
@@ -339,7 +339,7 @@ const verifyApplicant = async () => {
 .step-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .subsection {
@@ -352,8 +352,8 @@ const verifyApplicant = async () => {
 }
 
 .subsection-title {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
   color: #1F2937;
   margin-bottom: 4px;
 }
@@ -381,32 +381,49 @@ const verifyApplicant = async () => {
 
 .info-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .info-card.success {
-  border: 2px solid #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(16, 185, 129, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .card-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px;
-  background: #ECFDF5;
-  border-bottom: 1px solid #D1FAE5;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, #ECFDF5 0%, #D1FAE5 100%);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.15);
   font-weight: 600;
+  font-size: 14px;
   color: #065F46;
 }
 
 .card-header i {
-  font-size: 24px;
+  font-size: 20px;
+  color: #10B981;
+  filter: drop-shadow(0 1px 2px rgba(16, 185, 129, 0.3));
 }
 
 .card-content {
   padding: 16px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -429,16 +446,20 @@ const verifyApplicant = async () => {
 }
 
 .info-label {
-  font-size: 13px;
+  font-size: 12px;
   color: #6B7280;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
 }
 
 .info-value {
-  font-size: 14px;
+  font-size: 15px;
   color: #1F2937;
   font-weight: 600;
   word-break: break-word;
+  line-height: 1.5;
 }
 
 /* Legacy info-row styles for backward compatibility */
@@ -500,7 +521,7 @@ const verifyApplicant = async () => {
 
 @media (max-width: 768px) {
   .step-title {
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .subsection {

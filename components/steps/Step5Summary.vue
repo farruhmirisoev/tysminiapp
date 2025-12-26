@@ -10,11 +10,6 @@
     <div class="step-content">
       <!-- Policy Summary -->
       <div class="summary-section">
-        <h3 class="section-title">
-          <i class="bx bx-file-blank"></i>
-          <span>{{ t('step5.policyInfo') }}</span>
-        </h3>
-
         <!-- Owner Info -->
         <div class="summary-card">
           <div class="card-title">{{ t('step3.owner') }}</div>
@@ -84,22 +79,31 @@
 
       <!-- Contact Information -->
       <div class="summary-section">
-        <h3 class="section-title">
-          <i class="bx bx-phone"></i>
-          <span>{{ t('step5.contactInfo') }}</span>
-        </h3>
-
-        <div class="form-section">
-          <InputField
-            v-model="phone"
-            :label="t('step5.phone')"
-            :placeholder="t('step5.phonePlaceholder')"
-            type="tel"
-            icon="bx bx-phone"
-            input-mode="tel"
-            :disabled="!osgoStore.isEditable"
-            required
-          />
+        <div class="form-section phone-input-wrapper">
+          <label v-if="t('step5.phone')" class="input-label" for="phone-input">
+            {{ t('step5.phone') }}
+            <span class="text-error">*</span>
+          </label>
+          <div class="phone-input-container">
+            <div class="phone-prefix">+998</div>
+            <input
+              id="phone-input"
+              :value="phoneDisplay"
+              type="tel"
+              inputmode="tel"
+              class="input phone-input"
+              :class="{ 'input-error': false }"
+              :placeholder="'90 123 45 67'"
+              :disabled="!osgoStore.isEditable"
+              maxlength="12"
+              @input="handlePhoneInput"
+              @focus="handlePhoneFocus"
+              @blur="handlePhoneBlur"
+            />
+            <div class="input-icon input-icon-left phone-icon">
+              <i class="bx bx-phone"></i>
+            </div>
+          </div>
         </div>
 
         <div class="form-section">
@@ -146,7 +150,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import { useOsgoStore } from '~/stores/osgo'
 import { useMetaStore } from '~/stores/meta'
 import { formatPrice, formatPassport } from '~/utils/formatting'
@@ -168,22 +172,133 @@ const applicant = computed(() => osgoStore.applicant)
 const fundData = computed(() => osgoStore.fundData)
 const saving = ref(false)
 
-// Phone number with two-way binding
+// Phone number storage
+// Stored format: 998XXXXXXXXX (12 digits, no +, no spaces, no formatting)
+// Example: "998935286407"
 const phone = computed({
   get: () => {
     const party = osgo.value.applicantIsOwner ? owner.value : applicant.value
     return party.phone || ''
   },
   set: (value: string) => {
+    // Remove all non-digit characters: +, spaces, parentheses, dashes
+    const cleaned = value.replace(/\D/g, '')
+    
+    // Ensure phone starts with 998 and is exactly 12 digits
+    let phoneValue = ''
+    if (cleaned.startsWith('998')) {
+      // Already has 998 prefix, take first 12 digits
+      phoneValue = cleaned.slice(0, 12)
+    } else if (cleaned.length > 0) {
+      // No 998 prefix, add it and limit to 12 digits total
+      phoneValue = `998${cleaned.slice(0, 9)}`
+    }
+    // If cleaned is empty, phoneValue remains empty string
+    
+    // Store phone without any formatting, spaces, or + sign
+    // Format: 998XXXXXXXXX (12 digits total)
     if (osgo.value.applicantIsOwner) {
-      owner.value.phone = value
+      owner.value.phone = phoneValue
       osgo.value.party = owner.value
     } else {
-      applicant.value.phone = value
+      applicant.value.phone = phoneValue
       osgo.value.party = applicant.value
     }
   }
 })
+
+// Phone display value (only the 9 digits after +998)
+const phoneDisplay = ref('')
+let isInternalUpdate = false
+
+// Initialize display value from stored phone (only when phone changes externally)
+watch(() => phone.value, (newValue) => {
+  // Skip update if change came from user input
+  if (isInternalUpdate) {
+    return
+  }
+  
+  if (newValue) {
+    // Stored phone is already clean (no +, no spaces, no formatting)
+    // Format: 998XXXXXXXXX (12 digits)
+    const cleaned = newValue.replace(/\D/g, '') // Extra safety: remove any non-digits
+    
+    if (cleaned.startsWith('998') && cleaned.length === 12) {
+      // Perfect format: extract the 9 digits after 998
+      phoneDisplay.value = cleaned.slice(3) // Remove "998" prefix -> "935286407"
+    } else if (cleaned.startsWith('998') && cleaned.length > 12) {
+      // Too long: take first 12 digits, then extract 9 after 998
+      phoneDisplay.value = cleaned.slice(0, 12).slice(3)
+    } else if (cleaned.length >= 9) {
+      // No 998 prefix or wrong format: take last 9 digits
+      phoneDisplay.value = cleaned.slice(-9)
+    } else if (cleaned.length > 0) {
+      // Less than 9 digits: show as-is
+      phoneDisplay.value = cleaned
+    } else {
+      phoneDisplay.value = ''
+    }
+  } else {
+    phoneDisplay.value = ''
+  }
+}, { immediate: true })
+
+// Handle phone input - only allow digits, max 9 (the part after +998)
+const handlePhoneInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const cursorPosition = target.selectionStart || 0
+  
+  // Get raw input value
+  const rawValue = target.value
+  
+  // Remove all non-digit characters
+  let digitsOnly = rawValue.replace(/\D/g, '')
+  
+  // Limit to exactly 9 digits (the part after +998)
+  digitsOnly = digitsOnly.slice(0, 9)
+  
+  // Prevent watch from interfering during user input
+  isInternalUpdate = true
+  
+  // Update display (digits only, no formatting during input)
+  phoneDisplay.value = digitsOnly
+  
+  // Update stored phone (with 998 prefix, without +, spaces, or formatting)
+  // Stored format: 998XXXXXXXXX (12 digits total, no formatting)
+  const fullPhone = digitsOnly.length > 0 ? `998${digitsOnly}` : ''
+  phone.value = fullPhone // This will be stored as pure digits: 998935286407
+  
+  // Reset flag and restore cursor position after Vue updates
+  nextTick(() => {
+    isInternalUpdate = false
+    // Restore cursor position - place at end of current digits
+    if (target && document.activeElement === target) {
+      const newPosition = digitsOnly.length
+      target.setSelectionRange(newPosition, newPosition)
+    }
+  })
+}
+
+// Format phone display on blur - format as "90 123 45 67" (12 chars with spaces)
+const handlePhoneBlur = () => {
+  if (phoneDisplay.value) {
+    const digits = phoneDisplay.value.replace(/\D/g, '')
+    if (digits.length === 9) {
+      // Format as: 90 123 45 67 (12 characters total including spaces)
+      phoneDisplay.value = `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 7)} ${digits.slice(7, 9)}`
+    } else if (digits.length > 0) {
+      // Partial input - keep as digits only, don't format incomplete numbers
+      phoneDisplay.value = digits
+    }
+  }
+}
+
+// Clear formatting on focus
+const handlePhoneFocus = () => {
+  if (phoneDisplay.value) {
+    phoneDisplay.value = phoneDisplay.value.replace(/\D/g, '')
+  }
+}
 
 // Helper methods
 const { locale, t } = useI18n()
@@ -223,18 +338,18 @@ const getAreaName = (): string => {
 }
 
 .step-header {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .step-title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   color: #1F2937;
   margin-bottom: 8px;
 }
 
 .step-description {
-  font-size: 15px;
+  font-size: 13px;
   color: #6B7280;
   line-height: 1.5;
 }
@@ -242,7 +357,7 @@ const getAreaName = (): string => {
 .step-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .summary-section {
@@ -254,31 +369,38 @@ const getAreaName = (): string => {
 .section-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 18px;
-  font-weight: 600;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
   color: #1F2937;
   margin-bottom: 4px;
 }
 
 .section-title i {
-  font-size: 22px;
+  font-size: 18px;
   color: #2481CC;
 }
 
 .summary-card {
   background: white;
-  border: 2px solid #E5E7EB;
-  border-radius: 12px;
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.summary-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .card-title {
-  padding: 12px 16px;
-  background: #F9FAFB;
-  border-bottom: 1px solid #E5E7EB;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   color: #1F2937;
 }
 
@@ -287,14 +409,21 @@ const getAreaName = (): string => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
 }
 
 .info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
+  padding: 10px 0;
   font-size: 14px;
+  transition: padding 0.2s ease;
+}
+
+.info-row:hover {
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 .info-label {
@@ -317,6 +446,124 @@ const getAreaName = (): string => {
 
 .form-section {
   width: 100%;
+}
+
+/* Phone Input Glowing Animation - LED Charging Effect */
+.phone-input-wrapper .phone-input:not(:focus):not(:disabled) {
+  animation: phoneGlow 3s ease-in-out infinite;
+}
+
+@keyframes phoneGlow {
+  0%, 100% {
+    border-color: #2481CC;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                0 0 0 0 rgba(36, 129, 204, 0);
+  }
+  50% {
+    border-color: #3A91DC;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                0 0 0 3px rgba(36, 129, 204, 0.15),
+                0 0 12px rgba(36, 129, 204, 0.2);
+  }
+}
+
+/* Phone Input with Prefix */
+.phone-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.phone-prefix {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6B7280;
+  font-size: 15px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 2;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.phone-input-container:focus-within .phone-prefix {
+  color: #2481CC;
+}
+
+.phone-input {
+  padding-left: 90px !important;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  color: #1F2937;
+  background: white;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.phone-input:hover:not(:disabled) {
+  border-color: #D1D5DB;
+}
+
+.phone-input:focus {
+  border-color: #2481CC;
+  box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.12), 0 2px 4px rgba(36, 129, 204, 0.08);
+  transform: translateY(-1px);
+}
+
+.phone-input:disabled {
+  background: #F9FAFB;
+  color: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.phone-input::placeholder {
+  color: #9CA3AF;
+}
+
+.phone-icon {
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: #6B7280;
+  font-size: 16px;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.phone-input-container:focus-within .phone-icon {
+  color: #2481CC;
+}
+
+.input-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1F2937;
+  margin-bottom: 2px;
+  line-height: 1.4;
+}
+
+.text-error {
+  color: #EF4444;
 }
 
 /* Premium Section */
@@ -376,7 +623,7 @@ const getAreaName = (): string => {
 /* Mobile responsive */
 @media (max-width: 768px) {
   .step-title {
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .premium-amount-large {
