@@ -51,6 +51,11 @@ export const useOsgoStore = defineStore('osgo', () => {
   // Payment method selection
   const selectedPaymentMethod = ref<'payme' | 'click' | 'uzum' | null>(null)
 
+  // Kasko IDs (from EAutoService, separate from OSGO IDs)
+  const kaskoVehicleId = ref<string | null>(null)
+  const kaskoIndividualId = ref<string | null>(null)
+  const kaskoContractStatus = ref<'success' | 'failed' | null>(null)
+
   // Verification states
   const vehicleVerifying = ref(false)
   const vehicleVerified = ref(false)
@@ -342,6 +347,78 @@ export const useOsgoStore = defineStore('osgo', () => {
 
       vehicleVerified.value = true
       console.log('[OsgoStore] Vehicle verified:', vehicleData)
+
+      // Call Kasko vehicle API to get vehicle ID for Kasko contract
+      // Replicate exact flow from KackoForm.vue reference implementation
+      try {
+        // First call: getVehicle with vehicleType
+        const kaskoResponse = await api.getKaskoVehicle({
+          govNumber: osgo.value.vehicle.govNumber,
+          techPassportSeries: osgo.value.vehicle.techPassportSeries,
+          techPassportNumber: osgo.value.vehicle.techPassportNumber,
+        })
+        
+        if (kaskoResponse.success && kaskoResponse.id && kaskoResponse.data) {
+          const vehicleData = kaskoResponse.data
+          const vehicleId = kaskoResponse.id  // Store vehicle.id from first call (like reference)
+          
+          // Determine modelId from response
+          let modelId: string | null = null
+          
+          if (vehicleData.modelId) {
+            modelId = vehicleData.modelId
+          } else if (vehicleData.model && typeof vehicleData.model === 'object' && vehicleData.model.id) {
+            modelId = vehicleData.model.id
+          } else if (vehicleData.model && typeof vehicleData.model === 'string') {
+            // If model is a string ID, use it directly
+            modelId = vehicleData.model
+          }
+          
+          // If no model found in response, get default manufacturer and model
+          if (!modelId) {
+            try {
+              console.log('[OsgoStore] No model found in vehicle data, fetching default manufacturer and model')
+              const manufacturersResponse = await api.getKaskoManufacturers()
+              if (manufacturersResponse.success && manufacturersResponse.firstId) {
+                const manufacturerId = manufacturersResponse.firstId
+                const modelsResponse = await api.getKaskoModels(manufacturerId)
+                if (modelsResponse.success && modelsResponse.firstId) {
+                  modelId = modelsResponse.firstId
+                  console.log('[OsgoStore] Using default model ID:', modelId)
+                }
+              }
+            } catch (defaultError: any) {
+              console.warn('[OsgoStore] Failed to get default manufacturer/model:', defaultError)
+            }
+          }
+          
+          // ALWAYS call getVehicle2 if modelId is available (replicate reference behavior)
+          // Reference always calls getVehicle2 even if model was in first response
+          if (modelId) {
+            try {
+              // Second call: getVehicle2 with id and model (using vehicle.id from first call)
+              const kaskoResponse2 = await api.getKaskoVehicle2(vehicleId, modelId)
+              if (kaskoResponse2.success && kaskoResponse2.id) {
+                // Final vehicleId MUST come from getVehicle2 response (no fallback to first ID)
+                kaskoVehicleId.value = kaskoResponse2.id
+                console.log('[OsgoStore] Kasko vehicle ID obtained (final from getVehicle2):', kaskoResponse2.id)
+              } else {
+                // Error - don't use first ID as fallback (replicate reference behavior)
+                console.warn('[OsgoStore] getVehicle2 failed, cannot create Kasko contract')
+              }
+            } catch (vehicle2Error: any) {
+              // Error - don't use first ID as fallback (replicate reference behavior)
+              console.warn('[OsgoStore] getVehicle2 error, cannot create Kasko contract:', vehicle2Error)
+            }
+          } else {
+            // No model available - cannot proceed with Kasko (replicate reference behavior)
+            console.warn('[OsgoStore] No model available for Kasko vehicle, cannot create contract')
+          }
+        }
+      } catch (kaskoError: any) {
+        // Log error but don't fail OSGO verification - Kasko is optional bonus
+        console.warn('[OsgoStore] Failed to get Kasko vehicle ID:', kaskoError)
+      }
     } catch (error: any) {
       vehicleVerifyError.value = error.message || 'Failed to verify vehicle'
       console.error('[OsgoStore] Vehicle verification failed:', error)
@@ -396,6 +473,34 @@ export const useOsgoStore = defineStore('osgo', () => {
       ownerVerified.value = true
       console.log('[OsgoStore] Owner after assignment:', owner.value)
       console.log('[OsgoStore] Owner has id?', !!owner.value.id)
+
+      // Call Kasko individual API to get individual ID for Kasko contract
+      try {
+        // Convert birthDate to DD-MM-YYYY format if needed
+        let birthDateFormatted = owner.value.birthDate
+        if (birthDateFormatted && birthDateFormatted.includes('-')) {
+          // If already in DD-MM-YYYY format, use as is
+          // If in YYYY-MM-DD format, convert to DD-MM-YYYY
+          const parts = birthDateFormatted.split('-')
+          if (parts.length === 3 && parts[0].length === 4) {
+            // YYYY-MM-DD format, convert to DD-MM-YYYY
+            birthDateFormatted = `${parts[2]}-${parts[1]}-${parts[0]}`
+          }
+        }
+
+        const kaskoResponse = await api.getKaskoIndividual({
+          passportSeries: owner.value.passportSeries?.toUpperCase() || '',
+          passportNumber: owner.value.passportNumber,
+          birthDate: birthDateFormatted,
+        })
+        if (kaskoResponse.success && kaskoResponse.id) {
+          kaskoIndividualId.value = kaskoResponse.id
+          console.log('[OsgoStore] Kasko individual ID obtained:', kaskoResponse.id)
+        }
+      } catch (kaskoError: any) {
+        // Log error but don't fail OSGO verification - Kasko is optional bonus
+        console.warn('[OsgoStore] Failed to get Kasko individual ID:', kaskoError)
+      }
     } catch (error: any) {
       ownerVerifyError.value = error.message || 'Failed to verify owner'
       console.error('[OsgoStore] Owner verification failed:', error)
@@ -436,6 +541,36 @@ export const useOsgoStore = defineStore('osgo', () => {
 
       applicantVerified.value = true
       console.log('[OsgoStore] Applicant after assignment:', applicant.value)
+
+      // Call Kasko individual API to get individual ID for Kasko contract (if applicant is different from owner)
+      if (!osgo.value.applicantIsOwner) {
+        try {
+          // Convert birthDate to DD-MM-YYYY format if needed
+          let birthDateFormatted = applicant.value.birthDate
+          if (birthDateFormatted && birthDateFormatted.includes('-')) {
+            // If already in DD-MM-YYYY format, use as is
+            // If in YYYY-MM-DD format, convert to DD-MM-YYYY
+            const parts = birthDateFormatted.split('-')
+            if (parts.length === 3 && parts[0].length === 4) {
+              // YYYY-MM-DD format, convert to DD-MM-YYYY
+              birthDateFormatted = `${parts[2]}-${parts[1]}-${parts[0]}`
+            }
+          }
+
+          const kaskoResponse = await api.getKaskoIndividual({
+            passportSeries: applicant.value.passportSeries?.toUpperCase() || '',
+            passportNumber: applicant.value.passportNumber,
+            birthDate: birthDateFormatted,
+          })
+          if (kaskoResponse.success && kaskoResponse.id) {
+            kaskoIndividualId.value = kaskoResponse.id
+            console.log('[OsgoStore] Kasko applicant ID obtained:', kaskoResponse.id)
+          }
+        } catch (kaskoError: any) {
+          // Log error but don't fail OSGO verification - Kasko is optional bonus
+          console.warn('[OsgoStore] Failed to get Kasko applicant ID:', kaskoError)
+        }
+      }
     } catch (error: any) {
       applicantVerifyError.value = error.message || 'Failed to verify applicant'
       console.error('[OsgoStore] Applicant verification failed:', error)
@@ -787,6 +922,46 @@ export const useOsgoStore = defineStore('osgo', () => {
       }
 
       console.log('[OsgoStore] Policy created:', policyId)
+
+      // Create Kasko contract as gift bonus after OSGO contract is created
+      try {
+        const vehicleId = kaskoVehicleId.value
+        const individualId = kaskoIndividualId.value
+        const partyPhone = osgo.value.party?.phone || (osgo.value.applicantIsOwner ? owner.value.phone : applicant.value.phone) || ''
+        const formattedPhone = partyPhone.replace(/[+()-]/g, '').replace(/^998/, '998')
+        
+        if (vehicleId && individualId && formattedPhone && formattedPhone.startsWith('998')) {
+          // Use default payment method PAYME for Kasko (payment method selection happens later)
+          try {
+            const result = await api.createKaskoContract(vehicleId, individualId, formattedPhone, 'PAYME')
+            // Only set success if result.success is explicitly true
+            if (result && result.success === true) {
+              kaskoContractStatus.value = 'success'
+              console.log('[OsgoStore] Kasko contract created successfully as gift bonus')
+            } else {
+              // If result doesn't have success=true, treat as failed
+              kaskoContractStatus.value = 'failed'
+              console.warn('[OsgoStore] Kasko contract creation returned non-success result:', result)
+            }
+          } catch (contractError: any) {
+            // Error thrown from createKaskoContract - set status to failed
+            kaskoContractStatus.value = 'failed'
+            console.error('[OsgoStore] Failed to create Kasko contract:', contractError)
+          }
+        } else {
+          console.warn('[OsgoStore] Kasko IDs or phone not available, skipping Kasko contract creation', {
+            vehicleId,
+            individualId,
+            formattedPhone
+          })
+          kaskoContractStatus.value = 'failed'
+        }
+      } catch (kaskoError: any) {
+        // Log error but don't fail OSGO creation - gift bonus is optional
+        kaskoContractStatus.value = 'failed'
+        console.error('[OsgoStore] Failed to create Kasko contract (outer catch):', kaskoError)
+      }
+
       return policyId
     } catch (error: any) {
       saveError.value = error.message || 'Failed to create policy'
@@ -915,6 +1090,8 @@ export const useOsgoStore = defineStore('osgo', () => {
         owner: owner.value,
         applicant: applicant.value,
         currentStep: currentStep.value,
+        kaskoVehicleId: kaskoVehicleId.value,
+        kaskoIndividualId: kaskoIndividualId.value,
       }
 
       sessionStorage.setItem(STORAGE_KEYS.OSGO_DRAFT, JSON.stringify(data))
@@ -941,6 +1118,14 @@ export const useOsgoStore = defineStore('osgo', () => {
       owner.value = data.owner
       applicant.value = data.applicant
       currentStep.value = data.currentStep || 0
+      
+      // Restore Kasko IDs if available
+      if (data.kaskoVehicleId !== undefined) {
+        kaskoVehicleId.value = data.kaskoVehicleId
+      }
+      if (data.kaskoIndividualId !== undefined) {
+        kaskoIndividualId.value = data.kaskoIndividualId
+      }
 
       console.log('[OsgoStore] Loaded from session')
       return true
@@ -971,6 +1156,9 @@ export const useOsgoStore = defineStore('osgo', () => {
     fundData.value = null
     saveError.value = null
     fetchError.value = null
+    kaskoVehicleId.value = null
+    kaskoIndividualId.value = null
+    kaskoContractStatus.value = null
   }
 
   return {
@@ -987,6 +1175,9 @@ export const useOsgoStore = defineStore('osgo', () => {
     fundError,
     fetchingFundData,
     selectedPaymentMethod,
+    kaskoVehicleId,
+    kaskoIndividualId,
+    kaskoContractStatus,
 
     // Verification
     vehicleVerifying,

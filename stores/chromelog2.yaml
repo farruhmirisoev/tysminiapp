@@ -1,0 +1,301 @@
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_set_header_color Object
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_set_bottom_bar_color Object
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_request_theme 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_request_viewport 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_request_safe_area 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_request_content_safe_area 
+i18n-setup.client.ts:19 [i18n-setup] i18n not available - will retry on app:mounted
+setup @ i18n-setup.client.ts:19
+i18n.client.ts:44 [i18n-client] Translations available for locale: uz
+runtime-core.esm-bundler.js?v=de8080b6:7119 <Suspense> is an experimental feature and its API will likely change.
+shared.mjs?v=de8080b6:8 [intlify] Not found 'header.appTitle' key in 'uz' locale messages.
+warn @ shared.mjs?v=de8080b6:8
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_ready 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_expand 
+useTelegramWebApp.ts:154 Telegram WebApp initialized Object
+Step1Params.vue:310 [Step1Params] Mounted
+Step1Params.vue:311 [Step1Params] Meta loaded: false
+Step1Params.vue:312 [Step1Params] Car types count: 0
+Step1Params.vue:313 [Step1Params] Periods count: 0
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_ready 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_expand 
+useTelegramWebApp.ts:154 Telegram WebApp initialized Object
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_ready 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_expand 
+useTelegramWebApp.ts:154 Telegram WebApp initialized Object
+index.vue:95 [IndexPage] Mounted
+meta.ts:128 [MetaStore] Starting fetchMeta...
+meta.ts:136 [MetaStore] Calling getOsgoDataVersion...
+useApi.ts:47 [useApi] No token found, auto-logging in with temp credentials
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_ready 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_expand 
+useTelegramWebApp.ts:154 Telegram WebApp initialized Object
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_ready 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_expand 
+useTelegramWebApp.ts:154 Telegram WebApp initialized Object
+app.vue:35 [App] No token found, auto-logging in with temp credentials
+useApi.ts:47 [useApi] No token found, auto-logging in with temp credentials
+i18n-setup.client.ts:61 [i18n-setup] Messages loaded and available for locale: uz
+useApi.ts:49 [useApi] Auto-login successful
+useApi.ts:49 [useApi] Auto-login successful
+app.vue:37 [App] Auto-login successful
+useApi.ts:166 [useApi] invokeService response: Object
+meta.ts:141 [MetaStore] Version response: 1164
+meta.ts:142 [MetaStore] Version response type: string
+meta.ts:143 [MetaStore] Version response keys: Array(4)
+meta.ts:150 [MetaStore] Version response: 1164
+meta.ts:151 [MetaStore] Version response type: string
+meta.ts:163 [MetaStore] Direct response, converting to number
+meta.ts:172 [MetaStore] Extracted version: 1164
+meta.ts:173 [MetaStore] Cached version: undefined
+meta.ts:176 [MetaStore] Version mismatch, fetching new data...
+app.vue:49 [App] User data loaded from token
+meta.ts:128 [MetaStore] Starting fetchMeta...
+meta.ts:136 [MetaStore] Calling getOsgoDataVersion...
+useApi.ts:166 [useApi] invokeService response: Object
+meta.ts:141 [MetaStore] Version response: 1164
+meta.ts:142 [MetaStore] Version response type: string
+meta.ts:143 [MetaStore] Version response keys: Array(4)
+meta.ts:150 [MetaStore] Version response: 1164
+meta.ts:151 [MetaStore] Version response type: string
+meta.ts:163 [MetaStore] Direct response, converting to number
+meta.ts:172 [MetaStore] Extracted version: 1164
+meta.ts:173 [MetaStore] Cached version: undefined
+meta.ts:176 [MetaStore] Version mismatch, fetching new data...
+useApi.ts:166 [useApi] invokeService response: Object
+meta.ts:182 [MetaStore] Data response: Object
+meta.ts:194 [MetaStore] Direct data response
+meta.ts:198 [MetaStore] Extracted meta data version: 1164
+meta.ts:214 [MetaStore] Processed data: Object
+meta.ts:225 [MetaStore] Saved to localStorage
+meta.ts:243 [MetaStore] Fetch complete. Meta loaded: true
+telegram-web-app.js:960 [Telegram.WebApp] BackButton is not supported in version 6.0
+buttonCheckVersion @ telegram-web-app.js:960
+telegram-web-app.js:960 [Telegram.WebApp] BackButton is not supported in version 6.0
+buttonCheckVersion @ telegram-web-app.js:960
+runtime-core.esm-bundler.js?v=de8080b6:50 [Vue warn]: onUnmounted is called when there is no active component instance to be associated with. Lifecycle injection APIs can only be used during execution of setup(). If you are using async setup(), make sure to register lifecycle hooks before the first await statement.
+warn$1 @ runtime-core.esm-bundler.js?v=de8080b6:50
+useApi.ts:166 [useApi] invokeService response: Object
+meta.ts:182 [MetaStore] Data response: Object
+meta.ts:194 [MetaStore] Direct data response
+meta.ts:198 [MetaStore] Extracted meta data version: 1164
+meta.ts:214 [MetaStore] Processed data: Object
+meta.ts:225 [MetaStore] Saved to localStorage
+meta.ts:243 [MetaStore] Fetch complete. Meta loaded: true
+app.vue:60 [App] Metadata loaded successfully
+app.vue:66 [App] Initialized Object
+telegram-web-app.js:1431 [Telegram.WebApp] HapticFeedback is not supported in version 6.0
+triggerFeedback @ telegram-web-app.js:1431
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_setup_main_button Object
+telegram-web-app.js:960 [Telegram.WebApp] BackButton is not supported in version 6.0
+buttonCheckVersion @ telegram-web-app.js:960
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_ready 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_expand 
+useTelegramWebApp.ts:154 Telegram WebApp initialized Object
+osgo.ts:1177 [OsgoStore] Saved to session
+osgo.ts:1177 [OsgoStore] Saved to session
+osgo.ts:1177 [OsgoStore] Saved to session
+osgo.ts:1177 [OsgoStore] Saved to session
+osgo.ts:1177 [OsgoStore] Saved to session
+osgo.ts:1177 [OsgoStore] Saved to session
+useApi.ts:166 [useApi] invokeService response: {service: 'OsgoService', method: 'getVehicle', response: {…}}
+osgo.ts:349 [OsgoStore] Vehicle verified: {_entityName: 'osgo_Vehicle', id: '1c1f2d57-f923-982c-f0ad-082d73eb9709', pinfl: '32610770210029', bodyNumber: 'XWB4A11ADAA283456', createdYear: 2010, …}
+osgo.ts:1177 [OsgoStore] Saved to session
+useApi.ts:166 [useApi] invokeService response: {service: 'EAutoService', method: 'getVehicle', response: '{"result":"0","date":"22-08-2020","number":"207767…ab-f892-d1d073f3129e","body":"XWB4A11ADAA283456"}'}
+useApi.ts:869 [useApi] getKaskoVehicle raw response: {"result":"0","date":"22-08-2020","number":"2077674","engine":"481251","series":"AAF","id":"16839302-967d-a9ab-f892-d1d073f3129e","body":"XWB4A11ADAA283456"}
+osgo.ts:399 [OsgoStore] No model found in vehicle data, fetching default manufacturer and model
+useApi.ts:166 [useApi] invokeService response: {service: 'EAutoService', method: 'getManufacturer', response: '[{"name":"BYD","id":1},{"name":"Chery","id":2},{"n…:"Toyota","id":10},{"name":"Volkswagen","id":11}]'}
+useApi.ts:1036 [useApi] getKaskoManufacturers raw response: [{"name":"BYD","id":1},{"name":"Chery","id":2},{"name":"CHEVROLET","id":3},{"name":"HYUNDAI","id":4},{"name":"KIA","id":5},{"name":"LADA","id":6},{"name":"Renault","id":7},{"name":"Skoda","id":8},{"name":"SsangYong","id":9},{"name":"Toyota","id":10},{"name":"Volkswagen","id":11}]
+useApi.ts:166 [useApi] invokeService response: {service: 'EAutoService', method: 'getModel', response: '[{"name":"HAN AWD Flagship 610 km","id":1,"manufac…:"Chazor 120km Comfort","id":7,"manufacturer":1}]'}
+useApi.ts:1096 [useApi] getKaskoModels raw response: [{"name":"HAN AWD Flagship 610 km","id":1,"manufacturer":1},{"name":"HAN Flagship 715 km","id":2,"manufacturer":1},{"name":"Song Plus DM-I AWD 110km Flagship","id":3,"manufacturer":1},{"name":"Song Plus DM-I 110km Flagship","id":4,"manufacturer":1},{"name":"Song Plus DM-I 110km Comfort","id":5,"manufacturer":1},{"name":"Chazor 120km Flagship","id":6,"manufacturer":1},{"name":"Chazor 120km Comfort","id":7,"manufacturer":1}]
+osgo.ts:412 [OsgoStore] Using default model ID: 1
+useApi.ts:166 [useApi] invokeService response: {service: 'EAutoService', method: 'getVehicle', response: '{"date":"22-08-2020","modelId":1,"liability":19669… km","id":"16839302-967d-a9ab-f892-d1d073f3129e"}'}
+useApi.ts:1157 [useApi] getKaskoVehicle2 raw response: {"date":"22-08-2020","modelId":1,"liability":196690000,"manufacturerId":1,"body":"XWB4A11ADAA283456","manufacturer":"BYD","result":"0","number":"2077674","premium":7210000,"engine":"481251","series":"AAF","price":655634000,"model":"HAN AWD Flagship 610 km","id":"16839302-967d-a9ab-f892-d1d073f3129e"}
+osgo.ts:435 [OsgoStore] Kasko vehicle ID obtained (final): 16839302-967d-a9ab-f892-d1d073f3129e
+Step2Vehicle.vue:214 [Step2Vehicle] Vehicle after verification: Proxy(Object) {govNumber: '01W273FA', techPassportSeries: 'AAF', techPassportNumber: '2077674', carType: {…}, _entityName: 'osgo_Vehicle', …}
+Step2Vehicle.vue:215 [Step2Vehicle] Vehicle keys: (14) ['govNumber', 'techPassportSeries', 'techPassportNumber', 'carType', '_entityName', 'id', 'pinfl', 'bodyNumber', 'createdYear', 'engineNumber', 'modelName', 'numberOfSeats', 'techPassportIssueDate', 'isForign']
+telegram-web-app.js:1431 [Telegram.WebApp] HapticFeedback is not supported in version 6.0
+triggerFeedback @ telegram-web-app.js:1431
+hapticFeedback.notificationOccurred @ telegram-web-app.js:1464
+hapticNotification @ useTelegramWebApp.ts:343
+handleVerify @ Step2Vehicle.vue:218
+await in handleVerify
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+telegram-web-app.js:1431 [Telegram.WebApp] HapticFeedback is not supported in version 6.0
+triggerFeedback @ telegram-web-app.js:1431
+hapticFeedback.impactOccurred @ telegram-web-app.js:1461
+hapticImpact @ useTelegramWebApp.ts:334
+handleNext @ AppFooter.vue:102
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+telegram-web-app.js:960 [Telegram.WebApp] BackButton is not supported in version 6.0
+buttonCheckVersion @ telegram-web-app.js:960
+setParams @ telegram-web-app.js:977
+backButton.hide @ telegram-web-app.js:1003
+(anonymous) @ useTelegramWebApp.ts:413
+(anonymous) @ runtime-core.esm-bundler.js?v=de8080b6:2902
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+hook.__weh.hook.__weh @ runtime-core.esm-bundler.js?v=de8080b6:2882
+flushPostFlushCbs @ runtime-core.esm-bundler.js?v=de8080b6:382
+flushJobs @ runtime-core.esm-bundler.js?v=de8080b6:424
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=de8080b6:319
+queueJob @ runtime-core.esm-bundler.js?v=de8080b6:314
+effect2.scheduler @ runtime-core.esm-bundler.js?v=de8080b6:5543
+trigger @ reactivity.esm-bundler.js?v=de8080b6:235
+endBatch @ reactivity.esm-bundler.js?v=de8080b6:293
+notify @ reactivity.esm-bundler.js?v=de8080b6:568
+trigger @ reactivity.esm-bundler.js?v=de8080b6:542
+set value @ reactivity.esm-bundler.js?v=de8080b6:1421
+nextStep @ osgo.ts:858
+wrappedAction @ pinia.js?v=de8080b6:1067
+store.<computed> @ pinia.js?v=de8080b6:745
+handleNext @ AppFooter.vue:192
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_ready 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_expand 
+useTelegramWebApp.ts:154 Telegram WebApp initialized {version: '6.0', platform: 'unknown', colorScheme: 'light', user: undefined}
+useApi.ts:166 [useApi] invokeService response: {service: 'PartyService', method: 'getIndividualByPassport', response: {…}}
+osgo.ts:499 [OsgoStore] API result: {_entityName: 'base$Individual', id: 'fd1a58e7-07fa-8151-e5d9-88a4791615af', country: {…}, contactInfo: Array(0), createTs: '2025-12-24 16:12:25.890', …}
+osgo.ts:500 [OsgoStore] Result has id? true
+osgo.ts:527 [OsgoStore] Owner after assignment: Proxy(Object) {passportSeries: 'AD', passportNumber: '9230161', birthDate: '1977-10-26', _entityName: 'base$Individual', id: 'fd1a58e7-07fa-8151-e5d9-88a4791615af', …}
+osgo.ts:528 [OsgoStore] Owner has id? true
+osgo.ts:1177 [OsgoStore] Saved to session
+telegram-web-app.js:1431 [Telegram.WebApp] HapticFeedback is not supported in version 6.0
+triggerFeedback @ telegram-web-app.js:1431
+hapticFeedback.impactOccurred @ telegram-web-app.js:1461
+hapticImpact @ useTelegramWebApp.ts:334
+handleNext @ AppFooter.vue:102
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+telegram-web-app.js:960 [Telegram.WebApp] BackButton is not supported in version 6.0
+buttonCheckVersion @ telegram-web-app.js:960
+setParams @ telegram-web-app.js:977
+backButton.hide @ telegram-web-app.js:1003
+(anonymous) @ useTelegramWebApp.ts:413
+(anonymous) @ runtime-core.esm-bundler.js?v=de8080b6:2902
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+hook.__weh.hook.__weh @ runtime-core.esm-bundler.js?v=de8080b6:2882
+flushPostFlushCbs @ runtime-core.esm-bundler.js?v=de8080b6:382
+flushJobs @ runtime-core.esm-bundler.js?v=de8080b6:424
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=de8080b6:319
+queueJob @ runtime-core.esm-bundler.js?v=de8080b6:314
+effect2.scheduler @ runtime-core.esm-bundler.js?v=de8080b6:5543
+trigger @ reactivity.esm-bundler.js?v=de8080b6:235
+endBatch @ reactivity.esm-bundler.js?v=de8080b6:293
+notify @ reactivity.esm-bundler.js?v=de8080b6:568
+trigger @ reactivity.esm-bundler.js?v=de8080b6:542
+set value @ reactivity.esm-bundler.js?v=de8080b6:1421
+nextStep @ osgo.ts:856
+wrappedAction @ pinia.js?v=de8080b6:1067
+store.<computed> @ pinia.js?v=de8080b6:745
+handleNext @ AppFooter.vue:192
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+useApi.ts:166 [useApi] invokeService response: {service: 'EAutoService', method: 'getIndividual', response: '{"result":"0","firstName":"RUSTAM","lastName":"KUR…-e36a-0ccb-afe1acb75e3d","birtDate":"26-10-1977"}'}
+useApi.ts:960 [useApi] getKaskoIndividual raw response: {"result":"0","firstName":"RUSTAM","lastName":"KURBANOV","middleName":"ULMASOVICH","id":"b3bce52e-1ad3-e36a-0ccb-afe1acb75e3d","birtDate":"26-10-1977"}
+osgo.ts:554 [OsgoStore] Kasko individual ID obtained: b3bce52e-1ad3-e36a-0ccb-afe1acb75e3d
+telegram-web-app.js:1431 [Telegram.WebApp] HapticFeedback is not supported in version 6.0
+triggerFeedback @ telegram-web-app.js:1431
+hapticFeedback.notificationOccurred @ telegram-web-app.js:1464
+hapticNotification @ useTelegramWebApp.ts:343
+verifyOwner @ Step3Owner.vue:282
+await in verifyOwner
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_ready 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_expand 
+useTelegramWebApp.ts:154 Telegram WebApp initialized {version: '6.0', platform: 'unknown', colorScheme: 'light', user: undefined}
+osgo.ts:1177 [OsgoStore] Saved to session
+telegram-web-app.js:1431 [Telegram.WebApp] HapticFeedback is not supported in version 6.0
+triggerFeedback @ telegram-web-app.js:1431
+hapticFeedback.impactOccurred @ telegram-web-app.js:1461
+hapticImpact @ useTelegramWebApp.ts:334
+handleNext @ AppFooter.vue:102
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+osgo.ts:895 [OsgoStore] User info fetched: {id: '4bae208e-0f7f-af10-87ec-6d1b57d02038', login: '998935286407', name: null, firstName: null, middleName: null, …}
+osgo.ts:972 [OsgoStore] Creating policy with payload structure: {user: {…}, osgo: {…}}
+useApi.ts:166 [useApi] invokeService response: {service: 'OsgoService', method: 'createOsgoApplication', response: {…}}
+osgo.ts:1003 [OsgoStore] Policy created: d139efc9-df76-b719-1bb7-687e06f297c0
+osgo.ts:1177 [OsgoStore] Saved to session
+useApi.ts:166 [useApi] invokeService response: {service: 'EAutoService', method: 'createContract', response: '{"result":"6","message":"Ошибка при создании Контракта."}'}
+useApi.ts:1321 [useApi] createKaskoContract error: Error: Ошибка при создании Контракта.
+    at Object.createKaskoContract (useApi.ts:1310:17)
+    at async Proxy.createPolicy (osgo.ts:1018:11)
+    at async handleNext (AppFooter.vue:119:9)
+createKaskoContract @ useApi.ts:1321
+await in createKaskoContract
+createPolicy @ osgo.ts:1018
+await in createPolicy
+wrappedAction @ pinia.js?v=de8080b6:1067
+store.<computed> @ pinia.js?v=de8080b6:745
+handleNext @ AppFooter.vue:119
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+osgo.ts:1038 [OsgoStore] Failed to create Kasko contract: Error: Ошибка при создании Контракта.
+    at Object.createKaskoContract (useApi.ts:1310:17)
+    at async Proxy.createPolicy (osgo.ts:1018:11)
+    at async handleNext (AppFooter.vue:119:9)
+createPolicy @ osgo.ts:1038
+await in createPolicy
+wrappedAction @ pinia.js?v=de8080b6:1067
+store.<computed> @ pinia.js?v=de8080b6:745
+handleNext @ AppFooter.vue:119
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+AppFooter.vue:120 [AppFooter] Policy created: d139efc9-df76-b719-1bb7-687e06f297c0
+telegram-web-app.js:1431 [Telegram.WebApp] HapticFeedback is not supported in version 6.0
+triggerFeedback @ telegram-web-app.js:1431
+hapticFeedback.notificationOccurred @ telegram-web-app.js:1464
+hapticNotification @ useTelegramWebApp.ts:343
+handleNext @ AppFooter.vue:123
+await in handleNext
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+telegram-web-app.js:960 [Telegram.WebApp] BackButton is not supported in version 6.0
+buttonCheckVersion @ telegram-web-app.js:960
+setParams @ telegram-web-app.js:977
+backButton.hide @ telegram-web-app.js:1003
+(anonymous) @ useTelegramWebApp.ts:413
+(anonymous) @ runtime-core.esm-bundler.js?v=de8080b6:2902
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+hook.__weh.hook.__weh @ runtime-core.esm-bundler.js?v=de8080b6:2882
+flushPostFlushCbs @ runtime-core.esm-bundler.js?v=de8080b6:382
+flushJobs @ runtime-core.esm-bundler.js?v=de8080b6:424
+Promise.then
+queueFlush @ runtime-core.esm-bundler.js?v=de8080b6:319
+queueJob @ runtime-core.esm-bundler.js?v=de8080b6:314
+effect2.scheduler @ runtime-core.esm-bundler.js?v=de8080b6:5543
+trigger @ reactivity.esm-bundler.js?v=de8080b6:235
+endBatch @ reactivity.esm-bundler.js?v=de8080b6:293
+notify @ reactivity.esm-bundler.js?v=de8080b6:568
+trigger @ reactivity.esm-bundler.js?v=de8080b6:542
+set value @ reactivity.esm-bundler.js?v=de8080b6:1421
+nextStep @ osgo.ts:858
+wrappedAction @ pinia.js?v=de8080b6:1067
+store.<computed> @ pinia.js?v=de8080b6:745
+handleNext @ AppFooter.vue:192
+await in handleNext
+callWithErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:197
+callWithAsyncErrorHandling @ runtime-core.esm-bundler.js?v=de8080b6:204
+invoker @ runtime-dom.esm-bundler.js?v=de8080b6:721
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_ready 
+telegram-web-app.js:135 [Telegram.WebView] > postEvent web_app_expand 
+useTelegramWebApp.ts:154 Telegram WebApp initialized {version: '6.0', platform: 'unknown', colorScheme: 'light', user: undefined}

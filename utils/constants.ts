@@ -142,6 +142,7 @@ export const SERVICES = {
   OSGO: "OsgoService",
   PARTY: "PartyService",
   BILLING: "BillingService",
+  EAUTO: "EAutoService",
 } as const;
 
 /**
@@ -164,6 +165,9 @@ export const API_METHODS = {
   CREATE_PAYME_PAYMENT: "createPaymePayment",
   CREATE_CLICK_PAYMENT: "createClickPayment",
   CREATE_UZUM_PAYMENT: "createUzumPayment",
+
+  // EAutoService
+  CREATE_KASKO_CONTRACT: "createContract",
 } as const;
 
 /**

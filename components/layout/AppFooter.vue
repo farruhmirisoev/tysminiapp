@@ -142,8 +142,7 @@ const handleNext = async () => {
 
       const apiMethod = methodMap[osgoStore.selectedPaymentMethod]
       const contractId = osgoStore.osgo.id
-      const party = osgoStore.osgo.applicantIsOwner ? osgoStore.owner : osgoStore.applicant
-      const phone = party.phone || ''
+      const phone = osgoStore.osgo.party?.phone || ''
       const amount = osgoStore.calculatedPremium
 
       if (!contractId || !phone || !amount) {

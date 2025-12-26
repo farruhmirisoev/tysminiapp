@@ -8,6 +8,35 @@
     </div>
 
     <div class="step-content">
+      <!-- Gift Message Section -->
+      <div class="gift-section">
+        <div class="gift-card" :class="{ 'gift-card-success': osgoStore.kaskoContractStatus === 'success', 'gift-card-failed': osgoStore.kaskoContractStatus === 'failed' }">
+          <div class="gift-icon">
+            <i class="bx bx-gift"></i>
+          </div>
+          <div class="gift-message">
+            <h3 class="gift-title">{{ t('step5.giftMessage') }}</h3>
+            <div v-if="osgoStore.kaskoContractStatus === 'success'" class="gift-status success">
+              <i class="bx bx-check-circle"></i>
+              <span>{{ t('step5.kaskoSuccess') }}</span>
+            </div>
+            <div v-else-if="osgoStore.kaskoContractStatus === 'failed'" class="gift-status failed">
+              <i class="bx bx-x-circle"></i>
+              <span>{{ t('step5.kaskoFailed') }}</span>
+            </div>
+            <a
+              href="https://tys.uz/products/kasko-dostupnoe"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="gift-link"
+            >
+              <i class="bx bx-link-external"></i>
+              <span>{{ t('step5.giftLinkText') }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       <!-- Premium Display -->
       <div class="premium-section">
         <div class="premium-card-large">
@@ -315,6 +344,89 @@ onBeforeUnmount(() => {
 }
 
 /* Premium Section */
+.gift-section {
+  margin-bottom: 24px;
+}
+
+.gift-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.gift-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  color: white;
+}
+
+.gift-message {
+  color: white;
+}
+
+.gift-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: white;
+}
+
+.gift-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.2s ease;
+  margin-top: 8px;
+}
+
+.gift-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: white;
+}
+
+.gift-link i {
+  font-size: 16px;
+}
+
+.gift-card-success {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+}
+
+.gift-card-failed {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+}
+
+.gift-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.gift-status.success {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.gift-status.failed {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.gift-status i {
+  font-size: 18px;
+}
+
 .premium-section {
   margin: 8px 0;
 }
@@ -621,4 +733,3 @@ onBeforeUnmount(() => {
   }
 }
 </style>
-

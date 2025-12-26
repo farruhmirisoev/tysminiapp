@@ -843,6 +843,421 @@ export const useApi = () => {
   };
 
   /**
+   * Get Kasko vehicle ID from EAutoService
+   * Used to get vehicle ID for Kasko contract creation
+   */
+  const getKaskoVehicle = async (params: {
+    govNumber: string;
+    techPassportSeries: string;
+    techPassportNumber: string;
+  }) => {
+    try {
+      const response = await invokeService("EAutoService", "getVehicle", {
+        method: "POST",
+        body: {
+          vehicleType: {
+            govNumber: params.govNumber.toUpperCase(),
+            techPassportNumber: params.techPassportNumber,
+            techPassportSeria: params.techPassportSeries,
+          },
+        },
+      });
+
+      console.log("[useApi] getKaskoVehicle raw response:", response);
+
+      // Parse response if it's a string
+      let parsedResponse: any = response;
+      if (typeof response === "string") {
+        try {
+          parsedResponse = JSON.parse(response);
+        } catch (parseError) {
+          console.error("[useApi] Failed to parse getKaskoVehicle response:", parseError);
+          throw new Error("Invalid JSON response from getKaskoVehicle");
+        }
+      }
+
+      // Handle different response formats
+      // Format 1: response.data.result === "0" (axios-like wrapper)
+      if (parsedResponse && typeof parsedResponse === "object" && "data" in parsedResponse) {
+        const data = parsedResponse.data;
+        if (data && typeof data === "object") {
+          if (data.result === "0") {
+            return { success: true, id: data.id, data: data };
+          } else if (data.result !== undefined) {
+            const errorMsg = data.message || "Failed to get Kasko vehicle";
+            throw new Error(errorMsg);
+          }
+        }
+      }
+
+      // Format 2: response.result === "0" (direct response)
+      if (parsedResponse && typeof parsedResponse === "object" && "result" in parsedResponse) {
+        if (parsedResponse.result === "0") {
+          return { success: true, id: parsedResponse.id, data: parsedResponse };
+        } else {
+          const errorMsg = parsedResponse.message || "Failed to get Kasko vehicle";
+          throw new Error(errorMsg);
+        }
+      }
+
+      // Format 3: response is the data directly (if $fetch unwraps it)
+      if (parsedResponse && typeof parsedResponse === "object" && "id" in parsedResponse) {
+        // If it has an id, assume it's successful (some APIs don't return result field on success)
+        return { success: true, id: parsedResponse.id, data: parsedResponse };
+      }
+
+      console.error("[useApi] getKaskoVehicle unexpected response format:", JSON.stringify(parsedResponse, null, 2));
+      throw new Error("Invalid response format from getKaskoVehicle");
+    } catch (error) {
+      console.error("[useApi] getKaskoVehicle error:", error);
+      throw error;
+    }
+  };
+
+  /**
+   * Get Kasko individual ID from EAutoService
+   * Used to get individual ID for Kasko contract creation
+   */
+  const getKaskoIndividual = async (params: {
+    passportSeries: string;
+    passportNumber: string;
+    birthDate: string; // Format: DD-MM-YYYY
+  }) => {
+    try {
+      const response = await invokeService("EAutoService", "getIndividual", {
+        method: "POST",
+        body: {
+          passport: {
+            birthDate: params.birthDate,
+            passportSeries: params.passportSeries.toUpperCase(),
+            passportNumber: params.passportNumber,
+            isConsent: "Y",
+          },
+        },
+      });
+
+      console.log("[useApi] getKaskoIndividual raw response:", response);
+
+      // Parse response if it's a string
+      let parsedResponse: any = response;
+      if (typeof response === "string") {
+        try {
+          parsedResponse = JSON.parse(response);
+        } catch (parseError) {
+          console.error("[useApi] Failed to parse getKaskoIndividual response:", parseError);
+          throw new Error("Invalid JSON response from getKaskoIndividual");
+        }
+      }
+
+      // Handle different response formats
+      // Format 1: response.data.result === "0" (axios-like wrapper)
+      if (parsedResponse && typeof parsedResponse === "object" && "data" in parsedResponse) {
+        const data = parsedResponse.data;
+        if (data && typeof data === "object") {
+          if (data.result === "0") {
+            return { success: true, id: data.id, data: data };
+          } else if (data.result !== undefined) {
+            const errorMsg = data.message || "Failed to get Kasko individual";
+            throw new Error(errorMsg);
+          }
+        }
+      }
+
+      // Format 2: response.result === "0" (direct response)
+      if (parsedResponse && typeof parsedResponse === "object" && "result" in parsedResponse) {
+        if (parsedResponse.result === "0") {
+          return { success: true, id: parsedResponse.id, data: parsedResponse };
+        } else {
+          const errorMsg = parsedResponse.message || "Failed to get Kasko individual";
+          throw new Error(errorMsg);
+        }
+      }
+
+      // Format 3: response is the data directly (if $fetch unwraps it)
+      if (parsedResponse && typeof parsedResponse === "object" && "id" in parsedResponse) {
+        // If it has an id, assume it's successful (some APIs don't return result field on success)
+        return { success: true, id: parsedResponse.id, data: parsedResponse };
+      }
+
+      console.error("[useApi] getKaskoIndividual unexpected response format:", JSON.stringify(parsedResponse, null, 2));
+      throw new Error("Invalid response format from getKaskoIndividual");
+    } catch (error) {
+      console.error("[useApi] getKaskoIndividual error:", error);
+      throw error;
+    }
+  };
+
+  /**
+   * Get Kasko manufacturers list
+   * Used to get manufacturer IDs for vehicle model selection
+   */
+  const getKaskoManufacturers = async () => {
+    try {
+      const response = await invokeService("EAutoService", "getManufacturer", {
+        method: "GET",
+      });
+
+      console.log("[useApi] getKaskoManufacturers raw response:", response);
+
+      // Parse response if it's a string
+      let parsedResponse: any = response;
+      if (typeof response === "string") {
+        try {
+          parsedResponse = JSON.parse(response);
+        } catch (parseError) {
+          console.error("[useApi] Failed to parse getKaskoManufacturers response:", parseError);
+          throw new Error("Invalid JSON response from getKaskoManufacturers");
+        }
+      }
+
+      // Handle array response (list of manufacturers)
+      if (Array.isArray(parsedResponse)) {
+        if (parsedResponse.length > 0) {
+          return { success: true, manufacturers: parsedResponse, firstId: parsedResponse[0].id };
+        } else {
+          throw new Error("No manufacturers available");
+        }
+      }
+
+      // Handle wrapped response
+      if (parsedResponse && typeof parsedResponse === "object" && "data" in parsedResponse) {
+        const data = parsedResponse.data;
+        if (Array.isArray(data) && data.length > 0) {
+          return { success: true, manufacturers: data, firstId: data[0].id };
+        }
+      }
+
+      console.error("[useApi] getKaskoManufacturers unexpected response format:", JSON.stringify(parsedResponse, null, 2));
+      throw new Error("Invalid response format from getKaskoManufacturers");
+    } catch (error) {
+      console.error("[useApi] getKaskoManufacturers error:", error);
+      throw error;
+    }
+  };
+
+  /**
+   * Get Kasko models list for a manufacturer
+   * Used to get model IDs for vehicle selection
+   */
+  const getKaskoModels = async (manufacturerId: string) => {
+    try {
+      const response = await invokeService("EAutoService", "getModel", {
+        method: "POST",
+        body: {
+          manufacturer: manufacturerId,
+        },
+      });
+
+      console.log("[useApi] getKaskoModels raw response:", response);
+
+      // Parse response if it's a string
+      let parsedResponse: any = response;
+      if (typeof response === "string") {
+        try {
+          parsedResponse = JSON.parse(response);
+        } catch (parseError) {
+          console.error("[useApi] Failed to parse getKaskoModels response:", parseError);
+          throw new Error("Invalid JSON response from getKaskoModels");
+        }
+      }
+
+      // Handle array response (list of models)
+      if (Array.isArray(parsedResponse)) {
+        if (parsedResponse.length > 0) {
+          return { success: true, models: parsedResponse, firstId: parsedResponse[0].id };
+        } else {
+          throw new Error("No models available for this manufacturer");
+        }
+      }
+
+      // Handle wrapped response
+      if (parsedResponse && typeof parsedResponse === "object" && "data" in parsedResponse) {
+        const data = parsedResponse.data;
+        if (Array.isArray(data) && data.length > 0) {
+          return { success: true, models: data, firstId: data[0].id };
+        }
+      }
+
+      console.error("[useApi] getKaskoModels unexpected response format:", JSON.stringify(parsedResponse, null, 2));
+      throw new Error("Invalid response format from getKaskoModels");
+    } catch (error) {
+      console.error("[useApi] getKaskoModels error:", error);
+      throw error;
+    }
+  };
+
+  /**
+   * Get Kasko vehicle (second call with id and model)
+   * This is the final vehicle ID needed for contract creation
+   */
+  const getKaskoVehicle2 = async (vehicleId: string, modelId: string) => {
+    try {
+      const response = await invokeService("EAutoService", "getVehicle", {
+        method: "POST",
+        body: {
+          id: vehicleId,
+          model: modelId,
+        },
+      });
+
+      console.log("[useApi] getKaskoVehicle2 raw response:", response);
+
+      // Parse response if it's a string
+      let parsedResponse: any = response;
+      if (typeof response === "string") {
+        try {
+          parsedResponse = JSON.parse(response);
+        } catch (parseError) {
+          console.error("[useApi] Failed to parse getKaskoVehicle2 response:", parseError);
+          throw new Error("Invalid JSON response from getKaskoVehicle2");
+        }
+      }
+
+      // Handle different response formats
+      // Format 1: response.data.result === "0" (axios-like wrapper)
+      if (parsedResponse && typeof parsedResponse === "object" && "data" in parsedResponse) {
+        const data = parsedResponse.data;
+        if (data && typeof data === "object") {
+          if (data.result === "0") {
+            return { success: true, id: data.id, data: data };
+          } else if (data.result !== undefined) {
+            const errorMsg = data.message || "Failed to get Kasko vehicle (step 2)";
+            throw new Error(errorMsg);
+          }
+        }
+      }
+
+      // Format 2: response.result === "0" (direct response)
+      if (parsedResponse && typeof parsedResponse === "object" && "result" in parsedResponse) {
+        if (parsedResponse.result === "0") {
+          return { success: true, id: parsedResponse.id, data: parsedResponse };
+        } else {
+          const errorMsg = parsedResponse.message || "Failed to get Kasko vehicle (step 2)";
+          throw new Error(errorMsg);
+        }
+      }
+
+      // Format 3: response is the data directly (if $fetch unwraps it)
+      if (parsedResponse && typeof parsedResponse === "object" && "id" in parsedResponse) {
+        // If it has an id, assume it's successful (some APIs don't return result field on success)
+        return { success: true, id: parsedResponse.id, data: parsedResponse };
+      }
+
+      console.error("[useApi] getKaskoVehicle2 unexpected response format:", JSON.stringify(parsedResponse, null, 2));
+      throw new Error("Invalid response format from getKaskoVehicle2");
+    } catch (error) {
+      console.error("[useApi] getKaskoVehicle2 error:", error);
+      throw error;
+    }
+  };
+
+  /**
+   * Create Kasko contract as a gift bonus
+   * Uses OSGO form data to create a Kasko contract
+   */
+  const createKaskoContract = async (
+    vehicleId: string,
+    individualId: string,
+    phone: string,
+    payment: "PAYME" | "CLICK" | "UZUM" | "UPAY" = "PAYME"
+  ) => {
+    try {
+      // Ensure phone is in correct format (998...)
+      const formattedPhone = phone.replace(/[+()-]/g, "").replace(/^998/, "998");
+      if (!formattedPhone.startsWith("998")) {
+        throw new Error("Phone number must start with 998");
+      }
+
+      // Log request payload for debugging
+      const requestPayload = {
+        request: {
+          vehicleId: vehicleId,
+          individualId: individualId,
+          phone: formattedPhone,
+          payment: payment,
+        },
+      };
+      console.log("[useApi] createKaskoContract request payload:", JSON.stringify(requestPayload, null, 2));
+
+      // Make request WITHOUT authentication headers (matching reference implementation)
+      // Reference uses: delete axios.defaults.params['token'] before request
+      // This suggests Kasko endpoints don't require auth or use different auth method
+      const locale = getCurrentLocale();
+      const languageHeader = locale === 'ru' ? 'ru-RU' : 'uz-UZ';
+      
+      const response = await $fetch(
+        `${API_BASE_URL}services/EAutoService/createContract`,
+        {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept-Language': languageHeader,
+            // Explicitly NOT including authorization header (matching reference behavior)
+          },
+          body: requestPayload,
+        }
+      );
+
+      // Log raw response for debugging
+      console.log("[useApi] createKaskoContract raw response:", {
+        type: typeof response,
+        response: response,
+        stringified: typeof response === "string" ? response : JSON.stringify(response, null, 2),
+      });
+
+      // Parse response if it's a string (like other Kasko methods)
+      let parsedResponse: any = response;
+      if (typeof response === "string") {
+        try {
+          parsedResponse = JSON.parse(response);
+        } catch (parseError) {
+          console.error("[useApi] Failed to parse createKaskoContract response:", parseError);
+          throw new Error("Invalid JSON response from createKaskoContract");
+        }
+      }
+      
+      // Log parsed response for debugging
+      console.log("[useApi] createKaskoContract parsed response:", JSON.stringify(parsedResponse, null, 2));
+      
+      // Handle response format matching KackoForm.vue pattern
+      // Success: response.data.result === "0"
+      // Error: response.data.result !== "0" with response.data.message
+      if (parsedResponse && typeof parsedResponse === "object" && "data" in parsedResponse) {
+        const data = parsedResponse.data;
+        console.log("[useApi] createKaskoContract response.data:", JSON.stringify(data, null, 2));
+        if (data && typeof data === "object" && data.result === "0") {
+          return { success: true, message: data.message || "Kasko contract created successfully" };
+        } else if (data && typeof data === "object" && data.result !== undefined) {
+          // Log the error result code for debugging
+          console.error("[useApi] createKaskoContract failed with result:", data.result, "message:", data.message);
+          const errorMsg = data.message || `Failed to create Kasko contract (result: ${data.result})`;
+          throw new Error(errorMsg);
+        }
+      }
+
+      // Check if response has result directly
+      if (parsedResponse && typeof parsedResponse === "object" && "result" in parsedResponse) {
+        console.log("[useApi] createKaskoContract response.result:", parsedResponse.result, "message:", parsedResponse.message);
+        if (parsedResponse.result === "0") {
+          return { success: true, message: parsedResponse.message || "Kasko contract created successfully" };
+        } else {
+          // Log the error result code for debugging
+          console.error("[useApi] createKaskoContract failed with result:", parsedResponse.result, "message:", parsedResponse.message);
+          const errorMsg = parsedResponse.message || `Failed to create Kasko contract (result: ${parsedResponse.result})`;
+          throw new Error(errorMsg);
+        }
+      }
+
+      // If we get here, the response format is unexpected
+      console.error("[useApi] createKaskoContract unexpected response format:", JSON.stringify(parsedResponse, null, 2));
+      throw new Error("Invalid response format from createKaskoContract");
+    } catch (error) {
+      console.error("[useApi] createKaskoContract error:", error);
+      throw error;
+    }
+  };
+
+  /**
    * Create user (sign up)
    */
   const createUser = async (login: string, password: string) => {
@@ -971,6 +1386,12 @@ export const useApi = () => {
     fetchEntities,
     createEntity,
     sendPaymentLink,
+    createKaskoContract,
+    getKaskoVehicle,
+    getKaskoVehicle2,
+    getKaskoIndividual,
+    getKaskoManufacturers,
+    getKaskoModels,
     searchEntities,
     signIn,
     createUser,
