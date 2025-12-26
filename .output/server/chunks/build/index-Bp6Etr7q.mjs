@@ -104,6 +104,9 @@ const useOsgoStore = defineStore("osgo", () => {
   const fundError = ref(null);
   const fetchingFundData = ref(false);
   const selectedPaymentMethod = ref(null);
+  const kaskoVehicleId = ref(null);
+  const kaskoIndividualId = ref(null);
+  const kaskoContractStatus = ref(null);
   const vehicleVerifying = ref(false);
   const vehicleVerified = ref(false);
   const vehicleVerifyError = ref(null);
@@ -315,6 +318,58 @@ const useOsgoStore = defineStore("osgo", () => {
       }
       vehicleVerified.value = true;
       console.log("[OsgoStore] Vehicle verified:", vehicleData);
+      try {
+        const kaskoResponse = await api.getKaskoVehicle({
+          govNumber: osgo.value.vehicle.govNumber,
+          techPassportSeries: osgo.value.vehicle.techPassportSeries,
+          techPassportNumber: osgo.value.vehicle.techPassportNumber
+        });
+        if (kaskoResponse.success && kaskoResponse.id && kaskoResponse.data) {
+          const vehicleData2 = kaskoResponse.data;
+          const vehicleId = kaskoResponse.id;
+          let modelId = null;
+          if (vehicleData2.modelId) {
+            modelId = vehicleData2.modelId;
+          } else if (vehicleData2.model && typeof vehicleData2.model === "object" && vehicleData2.model.id) {
+            modelId = vehicleData2.model.id;
+          } else if (vehicleData2.model && typeof vehicleData2.model === "string") {
+            modelId = vehicleData2.model;
+          }
+          if (!modelId) {
+            try {
+              console.log("[OsgoStore] No model found in vehicle data, fetching default manufacturer and model");
+              const manufacturersResponse = await api.getKaskoManufacturers();
+              if (manufacturersResponse.success && manufacturersResponse.firstId) {
+                const manufacturerId = manufacturersResponse.firstId;
+                const modelsResponse = await api.getKaskoModels(manufacturerId);
+                if (modelsResponse.success && modelsResponse.firstId) {
+                  modelId = modelsResponse.firstId;
+                  console.log("[OsgoStore] Using default model ID:", modelId);
+                }
+              }
+            } catch (defaultError) {
+              console.warn("[OsgoStore] Failed to get default manufacturer/model:", defaultError);
+            }
+          }
+          if (modelId) {
+            try {
+              const kaskoResponse2 = await api.getKaskoVehicle2(vehicleId, modelId);
+              if (kaskoResponse2.success && kaskoResponse2.id) {
+                kaskoVehicleId.value = kaskoResponse2.id;
+                console.log("[OsgoStore] Kasko vehicle ID obtained (final from getVehicle2):", kaskoResponse2.id);
+              } else {
+                console.warn("[OsgoStore] getVehicle2 failed, cannot create Kasko contract");
+              }
+            } catch (vehicle2Error) {
+              console.warn("[OsgoStore] getVehicle2 error, cannot create Kasko contract:", vehicle2Error);
+            }
+          } else {
+            console.warn("[OsgoStore] No model available for Kasko vehicle, cannot create contract");
+          }
+        }
+      } catch (kaskoError) {
+        console.warn("[OsgoStore] Failed to get Kasko vehicle ID:", kaskoError);
+      }
     } catch (error) {
       vehicleVerifyError.value = error.message || "Failed to verify vehicle";
       console.error("[OsgoStore] Vehicle verification failed:", error);
@@ -324,7 +379,7 @@ const useOsgoStore = defineStore("osgo", () => {
     }
   };
   const verifyOwner = async () => {
-    var _a;
+    var _a, _b;
     ownerVerifying.value = true;
     ownerVerifyError.value = null;
     ownerVerified.value = false;
@@ -358,6 +413,26 @@ const useOsgoStore = defineStore("osgo", () => {
       ownerVerified.value = true;
       console.log("[OsgoStore] Owner after assignment:", owner.value);
       console.log("[OsgoStore] Owner has id?", !!owner.value.id);
+      try {
+        let birthDateFormatted = owner.value.birthDate;
+        if (birthDateFormatted && birthDateFormatted.includes("-")) {
+          const parts = birthDateFormatted.split("-");
+          if (parts.length === 3 && parts[0].length === 4) {
+            birthDateFormatted = `${parts[2]}-${parts[1]}-${parts[0]}`;
+          }
+        }
+        const kaskoResponse = await api.getKaskoIndividual({
+          passportSeries: ((_b = owner.value.passportSeries) == null ? void 0 : _b.toUpperCase()) || "",
+          passportNumber: owner.value.passportNumber,
+          birthDate: birthDateFormatted
+        });
+        if (kaskoResponse.success && kaskoResponse.id) {
+          kaskoIndividualId.value = kaskoResponse.id;
+          console.log("[OsgoStore] Kasko individual ID obtained:", kaskoResponse.id);
+        }
+      } catch (kaskoError) {
+        console.warn("[OsgoStore] Failed to get Kasko individual ID:", kaskoError);
+      }
     } catch (error) {
       ownerVerifyError.value = error.message || "Failed to verify owner";
       console.error("[OsgoStore] Owner verification failed:", error);
@@ -367,7 +442,7 @@ const useOsgoStore = defineStore("osgo", () => {
     }
   };
   const verifyApplicant = async () => {
-    var _a;
+    var _a, _b;
     applicantVerifying.value = true;
     applicantVerifyError.value = null;
     applicantVerified.value = false;
@@ -389,6 +464,28 @@ const useOsgoStore = defineStore("osgo", () => {
       }
       applicantVerified.value = true;
       console.log("[OsgoStore] Applicant after assignment:", applicant.value);
+      if (!osgo.value.applicantIsOwner) {
+        try {
+          let birthDateFormatted = applicant.value.birthDate;
+          if (birthDateFormatted && birthDateFormatted.includes("-")) {
+            const parts = birthDateFormatted.split("-");
+            if (parts.length === 3 && parts[0].length === 4) {
+              birthDateFormatted = `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+          }
+          const kaskoResponse = await api.getKaskoIndividual({
+            passportSeries: ((_b = applicant.value.passportSeries) == null ? void 0 : _b.toUpperCase()) || "",
+            passportNumber: applicant.value.passportNumber,
+            birthDate: birthDateFormatted
+          });
+          if (kaskoResponse.success && kaskoResponse.id) {
+            kaskoIndividualId.value = kaskoResponse.id;
+            console.log("[OsgoStore] Kasko applicant ID obtained:", kaskoResponse.id);
+          }
+        } catch (kaskoError) {
+          console.warn("[OsgoStore] Failed to get Kasko applicant ID:", kaskoError);
+        }
+      }
     } catch (error) {
       applicantVerifyError.value = error.message || "Failed to verify applicant";
       console.error("[OsgoStore] Applicant verification failed:", error);
@@ -533,7 +630,7 @@ const useOsgoStore = defineStore("osgo", () => {
     }
   };
   const createPolicy = async () => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _i;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
     saving.value = true;
     saveError.value = null;
     try {
@@ -632,6 +729,37 @@ const useOsgoStore = defineStore("osgo", () => {
         osgo.value.party = applicant.value;
       }
       console.log("[OsgoStore] Policy created:", policyId);
+      try {
+        const vehicleId = kaskoVehicleId.value;
+        const individualId = kaskoIndividualId.value;
+        const partyPhone = ((_j = osgo.value.party) == null ? void 0 : _j.phone) || (osgo.value.applicantIsOwner ? owner.value.phone : applicant.value.phone) || "";
+        const formattedPhone = partyPhone.replace(/[+()-]/g, "").replace(/^998/, "998");
+        if (vehicleId && individualId && formattedPhone && formattedPhone.startsWith("998")) {
+          try {
+            const result = await api.createKaskoContract(vehicleId, individualId, formattedPhone, "PAYME");
+            if (result && result.success === true) {
+              kaskoContractStatus.value = "success";
+              console.log("[OsgoStore] Kasko contract created successfully as gift bonus");
+            } else {
+              kaskoContractStatus.value = "failed";
+              console.warn("[OsgoStore] Kasko contract creation returned non-success result:", result);
+            }
+          } catch (contractError) {
+            kaskoContractStatus.value = "failed";
+            console.error("[OsgoStore] Failed to create Kasko contract:", contractError);
+          }
+        } else {
+          console.warn("[OsgoStore] Kasko IDs or phone not available, skipping Kasko contract creation", {
+            vehicleId,
+            individualId,
+            formattedPhone
+          });
+          kaskoContractStatus.value = "failed";
+        }
+      } catch (kaskoError) {
+        kaskoContractStatus.value = "failed";
+        console.error("[OsgoStore] Failed to create Kasko contract (outer catch):", kaskoError);
+      }
       return policyId;
     } catch (error) {
       saveError.value = error.message || "Failed to create policy";
@@ -739,6 +867,9 @@ const useOsgoStore = defineStore("osgo", () => {
     fundData.value = null;
     saveError.value = null;
     fetchError.value = null;
+    kaskoVehicleId.value = null;
+    kaskoIndividualId.value = null;
+    kaskoContractStatus.value = null;
   };
   return {
     // State
@@ -754,6 +885,9 @@ const useOsgoStore = defineStore("osgo", () => {
     fundError,
     fetchingFundData,
     selectedPaymentMethod,
+    kaskoVehicleId,
+    kaskoIndividualId,
+    kaskoContractStatus,
     // Verification
     vehicleVerifying,
     vehicleVerified,
@@ -930,29 +1064,29 @@ const _sfc_main$7 = /* @__PURE__ */ defineComponent({
     });
     const loading = computed(() => osgoStore.saving || osgoStore.fetching || sendingPayment.value);
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<footer${ssrRenderAttrs(mergeProps({ class: "fixed-footer" }, _attrs))} data-v-c7b96db4><div class="max-w-container mx-auto px-4 h-full flex items-center justify-between gap-4" data-v-c7b96db4>`);
+      _push(`<footer${ssrRenderAttrs(mergeProps({ class: "fixed-footer" }, _attrs))} data-v-803790f7><div class="max-w-container mx-auto px-4 h-full flex items-center justify-between gap-4" data-v-803790f7>`);
       if (!isFirstStep.value) {
-        _push(`<button type="button" class="btn btn-secondary flex-1 max-w-[160px]"${ssrIncludeBooleanAttr(loading.value) ? " disabled" : ""} data-v-c7b96db4><i class="text-lg bx bx-chevron-left" data-v-c7b96db4></i><span data-v-c7b96db4>${ssrInterpolate(_ctx.$t("common.previous"))}</span></button>`);
+        _push(`<button type="button" class="btn btn-secondary flex-1 max-w-[160px]"${ssrIncludeBooleanAttr(loading.value) ? " disabled" : ""} data-v-803790f7><i class="text-lg bx bx-chevron-left" data-v-803790f7></i><span data-v-803790f7>${ssrInterpolate(_ctx.$t("common.previous"))}</span></button>`);
       } else {
-        _push(`<div class="flex-1 max-w-[160px]" data-v-c7b96db4></div>`);
+        _push(`<div class="flex-1 max-w-[160px]" data-v-803790f7></div>`);
       }
-      _push(`<div class="flex-1 text-center" data-v-c7b96db4><div class="text-sm text-text-light font-medium" data-v-c7b96db4>${ssrInterpolate(_ctx.$t("common.step", { current: displayStepNumber.value, total: totalSteps.value }))}</div></div><button type="button" class="${ssrRenderClass([{
+      _push(`<div class="flex-1 text-center" data-v-803790f7><div class="text-sm text-text-light font-medium" data-v-803790f7>${ssrInterpolate(_ctx.$t("common.step", { current: displayStepNumber.value, total: totalSteps.value }))}</div></div><button type="button" class="${ssrRenderClass([{
         "btn-primary": !isLastStep.value || currentStep.value !== unref(STEPS).PAYMENT,
         "btn-success": isLastStep.value && currentStep.value === unref(STEPS).PAYMENT
-      }, "btn flex-1 max-w-[160px]"])}"${ssrIncludeBooleanAttr(!canProceed.value || loading.value) ? " disabled" : ""} data-v-c7b96db4>`);
+      }, "btn flex-1 max-w-[160px]"])}"${ssrIncludeBooleanAttr(!canProceed.value || loading.value) ? " disabled" : ""} data-v-803790f7>`);
       if (loading.value) {
-        _push(`<span class="spinner" data-v-c7b96db4></span>`);
+        _push(`<span class="spinner" data-v-803790f7></span>`);
       } else {
         _push(`<!--[-->`);
         if (currentStep.value === unref(STEPS).SUMMARY && !unref(osgoStore).osgo.id) {
-          _push(`<span data-v-c7b96db4>${ssrInterpolate(_ctx.$t("step5.confirm"))}</span>`);
+          _push(`<span data-v-803790f7>${ssrInterpolate(_ctx.$t("step5.confirm"))}</span>`);
         } else if (isLastStep.value && currentStep.value === unref(STEPS).PAYMENT) {
-          _push(`<span data-v-c7b96db4><i class="bx bx-credit-card" data-v-c7b96db4></i><span data-v-c7b96db4>${ssrInterpolate(_ctx.$t("step5.payment"))}</span></span>`);
+          _push(`<span data-v-803790f7><i class="bx bx-credit-card" data-v-803790f7></i><span data-v-803790f7>${ssrInterpolate(_ctx.$t("step5.payment"))}</span></span>`);
         } else {
-          _push(`<span data-v-c7b96db4>${ssrInterpolate(_ctx.$t("common.next"))}</span>`);
+          _push(`<span data-v-803790f7>${ssrInterpolate(_ctx.$t("common.next"))}</span>`);
         }
         if (!isLastStep.value && currentStep.value !== unref(STEPS).SUMMARY) {
-          _push(`<i class="text-lg bx bx-chevron-right" data-v-c7b96db4></i>`);
+          _push(`<i class="text-lg bx bx-chevron-right" data-v-803790f7></i>`);
         } else {
           _push(`<!---->`);
         }
@@ -968,7 +1102,7 @@ _sfc_main$7.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/layout/AppFooter.vue");
   return _sfc_setup$7 ? _sfc_setup$7(props, ctx) : void 0;
 };
-const AppFooter = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-c7b96db4"]]);
+const AppFooter = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["__scopeId", "data-v-803790f7"]]);
 const _sfc_main$6 = /* @__PURE__ */ defineComponent({
   __name: "Step1Params",
   __ssrInlineRender: true,
@@ -1841,44 +1975,52 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
       return "bx bx-info-circle";
     });
     return (_ctx, _push, _parent, _attrs) => {
-      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-0cbe2eac><div class="step-header" data-v-0cbe2eac><h2 class="step-title" data-v-0cbe2eac>${ssrInterpolate(unref(t)("step5.payment"))}</h2><p class="step-description" data-v-0cbe2eac>${ssrInterpolate(unref(t)("step5.paymentDescription"))}</p></div><div class="step-content" data-v-0cbe2eac><div class="premium-section" data-v-0cbe2eac><div class="premium-card-large" data-v-0cbe2eac><div class="premium-header" data-v-0cbe2eac><i class="bx bx-shield-alt-2" data-v-0cbe2eac></i><span data-v-0cbe2eac>${ssrInterpolate(unref(t)("step5.premium"))}</span></div><div class="premium-amount-large" data-v-0cbe2eac>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))}</div></div></div><div class="payment-section" data-v-0cbe2eac><h3 class="section-title" data-v-0cbe2eac><i class="bx bx-credit-card" data-v-0cbe2eac></i><span data-v-0cbe2eac>${ssrInterpolate(unref(t)("step5.paymentMethod"))}</span></h3><div class="payment-buttons" data-v-0cbe2eac><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "payme" }, "payment-btn payme"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-0cbe2eac><div class="payment-icon" data-v-0cbe2eac>\u{1F4B3}</div><div class="payment-name" data-v-0cbe2eac>Payme</div>`);
+      _push(`<div${ssrRenderAttrs(mergeProps({ class: "step-container" }, _attrs))} data-v-812641f7><div class="step-header" data-v-812641f7><h2 class="step-title" data-v-812641f7>${ssrInterpolate(unref(t)("step5.payment"))}</h2><p class="step-description" data-v-812641f7>${ssrInterpolate(unref(t)("step5.paymentDescription"))}</p></div><div class="step-content" data-v-812641f7><div class="gift-section" data-v-812641f7><div class="${ssrRenderClass([{ "gift-card-success": unref(osgoStore).kaskoContractStatus === "success", "gift-card-failed": unref(osgoStore).kaskoContractStatus === "failed" }, "gift-card"])}" data-v-812641f7><div class="gift-icon" data-v-812641f7><i class="bx bx-gift" data-v-812641f7></i></div><div class="gift-message" data-v-812641f7><h3 class="gift-title" data-v-812641f7>${ssrInterpolate(unref(t)("step5.giftMessage"))}</h3>`);
+      if (unref(osgoStore).kaskoContractStatus === "success") {
+        _push(`<div class="gift-status success" data-v-812641f7><i class="bx bx-check-circle" data-v-812641f7></i><span data-v-812641f7>${ssrInterpolate(unref(t)("step5.kaskoSuccess"))}</span></div>`);
+      } else if (unref(osgoStore).kaskoContractStatus === "failed") {
+        _push(`<div class="gift-status failed" data-v-812641f7><i class="bx bx-x-circle" data-v-812641f7></i><span data-v-812641f7>${ssrInterpolate(unref(t)("step5.kaskoFailed"))}</span></div>`);
+      } else {
+        _push(`<!---->`);
+      }
+      _push(`<a href="https://tys.uz/products/kasko-dostupnoe" target="_blank" rel="noopener noreferrer" class="gift-link" data-v-812641f7><i class="bx bx-link-external" data-v-812641f7></i><span data-v-812641f7>${ssrInterpolate(unref(t)("step5.giftLinkText"))}</span></a></div></div></div><div class="premium-section" data-v-812641f7><div class="premium-card-large" data-v-812641f7><div class="premium-header" data-v-812641f7><i class="bx bx-shield-alt-2" data-v-812641f7></i><span data-v-812641f7>${ssrInterpolate(unref(t)("step5.premium"))}</span></div><div class="premium-amount-large" data-v-812641f7>${ssrInterpolate(unref(formatPrice)(unref(osgoStore).calculatedPremium))}</div></div></div><div class="payment-section" data-v-812641f7><h3 class="section-title" data-v-812641f7><i class="bx bx-credit-card" data-v-812641f7></i><span data-v-812641f7>${ssrInterpolate(unref(t)("step5.paymentMethod"))}</span></h3><div class="payment-buttons" data-v-812641f7><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "payme" }, "payment-btn payme"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-812641f7><div class="payment-icon" data-v-812641f7>\u{1F4B3}</div><div class="payment-name" data-v-812641f7>Payme</div>`);
       if (selectedPaymentMethod.value === "payme") {
-        _push(`<div class="payment-selected-indicator" data-v-0cbe2eac><i class="bx bx-check-circle" data-v-0cbe2eac></i></div>`);
+        _push(`<div class="payment-selected-indicator" data-v-812641f7><i class="bx bx-check-circle" data-v-812641f7></i></div>`);
       } else {
         _push(`<!---->`);
       }
-      _push(`</button><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "click" }, "payment-btn click"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-0cbe2eac><div class="payment-icon" data-v-0cbe2eac>\u{1F535}</div><div class="payment-name" data-v-0cbe2eac>Click</div>`);
+      _push(`</button><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "click" }, "payment-btn click"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-812641f7><div class="payment-icon" data-v-812641f7>\u{1F535}</div><div class="payment-name" data-v-812641f7>Click</div>`);
       if (selectedPaymentMethod.value === "click") {
-        _push(`<div class="payment-selected-indicator" data-v-0cbe2eac><i class="bx bx-check-circle" data-v-0cbe2eac></i></div>`);
+        _push(`<div class="payment-selected-indicator" data-v-812641f7><i class="bx bx-check-circle" data-v-812641f7></i></div>`);
       } else {
         _push(`<!---->`);
       }
-      _push(`</button><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "uzum" }, "payment-btn uzum"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-0cbe2eac><div class="payment-icon" data-v-0cbe2eac>\u{1F7E3}</div><div class="payment-name" data-v-0cbe2eac>Uzum</div>`);
+      _push(`</button><button type="button" class="${ssrRenderClass([{ "payment-btn-selected": selectedPaymentMethod.value === "uzum" }, "payment-btn uzum"])}"${ssrIncludeBooleanAttr(checkingStatus.value) ? " disabled" : ""} data-v-812641f7><div class="payment-icon" data-v-812641f7>\u{1F7E3}</div><div class="payment-name" data-v-812641f7>Uzum</div>`);
       if (selectedPaymentMethod.value === "uzum") {
-        _push(`<div class="payment-selected-indicator" data-v-0cbe2eac><i class="bx bx-check-circle" data-v-0cbe2eac></i></div>`);
+        _push(`<div class="payment-selected-indicator" data-v-812641f7><i class="bx bx-check-circle" data-v-812641f7></i></div>`);
       } else {
         _push(`<!---->`);
       }
-      _push(`</button></div></div><div class="status-section" data-v-0cbe2eac><button type="button" class="btn btn-primary-outlined w-full"${ssrIncludeBooleanAttr(!!statusCheckSeconds.value || checkingStatus.value || !osgo.value.id) ? " disabled" : ""} data-v-0cbe2eac><i class="bx bx-refresh" data-v-0cbe2eac></i><span data-v-0cbe2eac>${ssrInterpolate(unref(t)("step5.checkStatus"))}</span>`);
+      _push(`</button></div></div><div class="status-section" data-v-812641f7><button type="button" class="btn btn-primary-outlined w-full"${ssrIncludeBooleanAttr(!!statusCheckSeconds.value || checkingStatus.value || !osgo.value.id) ? " disabled" : ""} data-v-812641f7><i class="bx bx-refresh" data-v-812641f7></i><span data-v-812641f7>${ssrInterpolate(unref(t)("step5.checkStatus"))}</span>`);
       if (statusCheckSeconds.value) {
-        _push(`<span class="ml-1" data-v-0cbe2eac>(${ssrInterpolate(statusCheckSeconds.value)})</span>`);
+        _push(`<span class="ml-1" data-v-812641f7>(${ssrInterpolate(statusCheckSeconds.value)})</span>`);
       } else {
         _push(`<!---->`);
       }
       _push(`</button>`);
       if (statusError.value) {
-        _push(`<div class="error-message mt-2" data-v-0cbe2eac><i class="bx bx-error-circle" data-v-0cbe2eac></i><span data-v-0cbe2eac>${ssrInterpolate(statusError.value)}</span></div>`);
+        _push(`<div class="error-message mt-2" data-v-812641f7><i class="bx bx-error-circle" data-v-812641f7></i><span data-v-812641f7>${ssrInterpolate(statusError.value)}</span></div>`);
       } else {
         _push(`<!---->`);
       }
       if (paymentStatusText.value) {
-        _push(`<div class="${ssrRenderClass([statusClass.value, "status-text"])}" data-v-0cbe2eac><i class="${ssrRenderClass(statusIcon.value)}" data-v-0cbe2eac></i><span data-v-0cbe2eac>${ssrInterpolate(paymentStatusText.value)}</span></div>`);
+        _push(`<div class="${ssrRenderClass([statusClass.value, "status-text"])}" data-v-812641f7><i class="${ssrRenderClass(statusIcon.value)}" data-v-812641f7></i><span data-v-812641f7>${ssrInterpolate(paymentStatusText.value)}</span></div>`);
       } else {
         _push(`<!---->`);
       }
       _push(`</div>`);
       if (osgo.value.id && fundData.value && fundData.value.seria) {
-        _push(`<div class="success-card" data-v-0cbe2eac><div class="success-icon" data-v-0cbe2eac><i class="bx bx-check-circle" data-v-0cbe2eac></i></div><h3 class="success-title" data-v-0cbe2eac>${ssrInterpolate(unref(t)("step5.success"))}</h3><p class="success-description" data-v-0cbe2eac>${ssrInterpolate(unref(t)("step5.policyIssued"))}</p><div class="policy-details" data-v-0cbe2eac><div class="policy-row" data-v-0cbe2eac><span class="policy-label" data-v-0cbe2eac>${ssrInterpolate(unref(t)("step5.policySeries"))}:</span><span class="policy-value" data-v-0cbe2eac>${ssrInterpolate(fundData.value.seria)}</span></div><div class="policy-row" data-v-0cbe2eac><span class="policy-label" data-v-0cbe2eac>${ssrInterpolate(unref(t)("step5.policyNumber"))}:</span><span class="policy-value" data-v-0cbe2eac>${ssrInterpolate(fundData.value.number)}</span></div></div></div>`);
+        _push(`<div class="success-card" data-v-812641f7><div class="success-icon" data-v-812641f7><i class="bx bx-check-circle" data-v-812641f7></i></div><h3 class="success-title" data-v-812641f7>${ssrInterpolate(unref(t)("step5.success"))}</h3><p class="success-description" data-v-812641f7>${ssrInterpolate(unref(t)("step5.policyIssued"))}</p><div class="policy-details" data-v-812641f7><div class="policy-row" data-v-812641f7><span class="policy-label" data-v-812641f7>${ssrInterpolate(unref(t)("step5.policySeries"))}:</span><span class="policy-value" data-v-812641f7>${ssrInterpolate(fundData.value.seria)}</span></div><div class="policy-row" data-v-812641f7><span class="policy-label" data-v-812641f7>${ssrInterpolate(unref(t)("step5.policyNumber"))}:</span><span class="policy-value" data-v-812641f7>${ssrInterpolate(fundData.value.number)}</span></div></div></div>`);
       } else {
         _push(`<!---->`);
       }
@@ -1892,7 +2034,7 @@ _sfc_main$1.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("components/steps/Step6Payment.vue");
   return _sfc_setup$1 ? _sfc_setup$1(props, ctx) : void 0;
 };
-const Step6Payment = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-0cbe2eac"]]);
+const Step6Payment = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-812641f7"]]);
 const _sfc_main = /* @__PURE__ */ defineComponent({
   __name: "index",
   __ssrInlineRender: true,
@@ -1951,4 +2093,4 @@ _sfc_main.setup = (props, ctx) => {
 const index = /* @__PURE__ */ _export_sfc(_sfc_main, [["__scopeId", "data-v-ce2fc33a"]]);
 
 export { index as default };
-//# sourceMappingURL=index-DW5IUcbl.mjs.map
+//# sourceMappingURL=index-Bp6Etr7q.mjs.map
