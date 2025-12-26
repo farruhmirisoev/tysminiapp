@@ -11,6 +11,10 @@
       <!-- Gift Message Section -->
       <div class="gift-section">
         <div class="gift-card" :class="{ 'gift-card-success': osgoStore.kaskoContractStatus === 'success', 'gift-card-failed': osgoStore.kaskoContractStatus === 'failed' }">
+          <!-- Confetti Animation -->
+          <div v-if="osgoStore.kaskoContractStatus === 'success'" class="confetti-container">
+            <div class="confetti" v-for="i in 50" :key="i" :style="getConfettiStyle(i)"></div>
+          </div>
           <div class="gift-icon">
             <i class="bx bx-gift"></i>
           </div>
@@ -290,6 +294,26 @@ const createKaskoContract = async () => {
   }
 }
 
+// Confetti animation styles generator
+const getConfettiStyle = (index: number) => {
+  const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE']
+  const color = colors[index % colors.length]
+  const left = `${(index * 2) % 100}%`
+  const delay = `${(index * 0.1) % 2}s`
+  const duration = `${2 + (index % 3)}s`
+  const size = `${6 + (index % 8)}px`
+  const rotation = `${index * 36}deg`
+  
+  return {
+    '--confetti-color': color,
+    '--confetti-left': left,
+    '--confetti-delay': delay,
+    '--confetti-duration': duration,
+    '--confetti-size': size,
+    '--confetti-rotation': rotation,
+  }
+}
+
 // Select payment method (just selection, sending happens in footer)
 const selectPaymentMethod = (method: 'payme' | 'click' | 'uzum') => {
   // Toggle selection - if already selected, deselect
@@ -444,6 +468,8 @@ onBeforeUnmount(() => {
   margin-bottom: 12px;
   color: white;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  position: relative;
+  z-index: 2;
 }
 
 .gift-icon i {
@@ -462,6 +488,8 @@ onBeforeUnmount(() => {
 
 .gift-message {
   color: white;
+  position: relative;
+  z-index: 2;
 }
 
 .gift-title {
@@ -491,6 +519,50 @@ onBeforeUnmount(() => {
 
 .gift-card-success {
   background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Confetti Animation */
+.confetti-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.confetti {
+  position: absolute;
+  width: var(--confetti-size, 8px);
+  height: var(--confetti-size, 8px);
+  background-color: var(--confetti-color, #FFD700);
+  left: var(--confetti-left, 50%);
+  top: -10px;
+  opacity: 0;
+  animation: confetti-fall var(--confetti-duration, 3s) var(--confetti-delay, 0s) ease-in forwards;
+  transform: rotate(var(--confetti-rotation, 0deg));
+  border-radius: 2px;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(400px) rotate(var(--confetti-rotation, 360deg)) scale(0.5);
+  }
 }
 
 .gift-card-failed {
