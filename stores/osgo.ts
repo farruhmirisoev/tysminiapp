@@ -923,45 +923,6 @@ export const useOsgoStore = defineStore('osgo', () => {
 
       console.log('[OsgoStore] Policy created:', policyId)
 
-      // Create Kasko contract as gift bonus after OSGO contract is created
-      try {
-        const vehicleId = kaskoVehicleId.value
-        const individualId = kaskoIndividualId.value
-        const partyPhone = osgo.value.party?.phone || (osgo.value.applicantIsOwner ? owner.value.phone : applicant.value.phone) || ''
-        const formattedPhone = partyPhone.replace(/[+()-]/g, '').replace(/^998/, '998')
-        
-        if (vehicleId && individualId && formattedPhone && formattedPhone.startsWith('998')) {
-          // Use default payment method PAYME for Kasko (payment method selection happens later)
-          try {
-            const result = await api.createKaskoContract(vehicleId, individualId, formattedPhone, 'PAYME')
-            // Only set success if result.success is explicitly true
-            if (result && result.success === true) {
-              kaskoContractStatus.value = 'success'
-              console.log('[OsgoStore] Kasko contract created successfully as gift bonus')
-            } else {
-              // If result doesn't have success=true, treat as failed
-              kaskoContractStatus.value = 'failed'
-              console.warn('[OsgoStore] Kasko contract creation returned non-success result:', result)
-            }
-          } catch (contractError: any) {
-            // Error thrown from createKaskoContract - set status to failed
-            kaskoContractStatus.value = 'failed'
-            console.error('[OsgoStore] Failed to create Kasko contract:', contractError)
-          }
-        } else {
-          console.warn('[OsgoStore] Kasko IDs or phone not available, skipping Kasko contract creation', {
-            vehicleId,
-            individualId,
-            formattedPhone
-          })
-          kaskoContractStatus.value = 'failed'
-        }
-      } catch (kaskoError: any) {
-        // Log error but don't fail OSGO creation - gift bonus is optional
-        kaskoContractStatus.value = 'failed'
-        console.error('[OsgoStore] Failed to create Kasko contract (outer catch):', kaskoError)
-      }
-
       return policyId
     } catch (error: any) {
       saveError.value = error.message || 'Failed to create policy'

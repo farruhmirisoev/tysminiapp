@@ -167,6 +167,45 @@ const handleNext = async () => {
         paymentSuccess.value = 'Платежная ссылка отправлена на ваш номер телефона'
         console.log('[AppFooter] Payment link sent successfully')
 
+        // Create Kasko contract as gift bonus after payment link is sent
+        try {
+          const vehicleId = osgoStore.kaskoVehicleId
+          const individualId = osgoStore.kaskoIndividualId
+          const partyPhone = osgoStore.osgo.party?.phone || ''
+          const formattedPhone = partyPhone.replace(/[+()-]/g, '').replace(/^998/, '998')
+          
+          if (vehicleId && individualId && formattedPhone && formattedPhone.startsWith('998')) {
+            // Use default payment method PAYME for Kasko (payment method selection happens later)
+            try {
+              const result = await api.createKaskoContract(vehicleId, individualId, formattedPhone, 'PAYME')
+              // Only set success if result.success is explicitly true
+              if (result && result.success === true) {
+                osgoStore.kaskoContractStatus = 'success'
+                console.log('[AppFooter] Kasko contract created successfully as gift bonus')
+              } else {
+                // If result doesn't have success=true, treat as failed
+                osgoStore.kaskoContractStatus = 'failed'
+                console.warn('[AppFooter] Kasko contract creation returned non-success result:', result)
+              }
+            } catch (contractError: any) {
+              // Error thrown from createKaskoContract - set status to failed
+              osgoStore.kaskoContractStatus = 'failed'
+              console.error('[AppFooter] Failed to create Kasko contract:', contractError)
+            }
+          } else {
+            console.warn('[AppFooter] Kasko IDs or phone not available, skipping Kasko contract creation', {
+              vehicleId,
+              individualId,
+              formattedPhone
+            })
+            osgoStore.kaskoContractStatus = 'failed'
+          }
+        } catch (kaskoError: any) {
+          // Log error but don't fail payment - gift bonus is optional
+          osgoStore.kaskoContractStatus = 'failed'
+          console.error('[AppFooter] Failed to create Kasko contract (outer catch):', kaskoError)
+        }
+
         if (tg.isTelegramWebApp.value) {
           tg.hapticNotification('success')
           await tg.showAlert('Платежная ссылка отправлена на ваш номер телефона')
