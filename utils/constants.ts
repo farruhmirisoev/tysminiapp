@@ -4,7 +4,7 @@
  * Compensation amount for insurance calculation
  * This is the base compensation value used in premium calculations
  */
-export const COMPENSATION = 40000000;
+export const COMPENSATION = 80000000;
 
 /**
  * API Configuration

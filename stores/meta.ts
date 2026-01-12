@@ -117,7 +117,7 @@ export const useMetaStore = defineStore("meta", () => {
   };
 
   /**
-   * Fetch metadata from API - exact copy from website
+   * Fetch metadata from API - ensures fresh coefficients by checking version first
    */
   const fetchMeta = async (): Promise<void> => {
     const api = useApi();
@@ -127,40 +127,23 @@ export const useMetaStore = defineStore("meta", () => {
     try {
       console.log("[MetaStore] Starting fetchMeta...");
 
-      const cached = localStorage.getItem(STORAGE_KEYS.ECCLIVO_META);
-      if (cached) {
-        meta.value = JSON.parse(cached) as EcclivoMeta;
-        console.log("[MetaStore] Loaded from cache:", meta.value?.version);
-      }
-
+      // Always check version from backend FIRST before using cache
       console.log("[MetaStore] Calling getOsgoDataVersion...");
       const versionResponse = await api.invokeService(
         "OsgoService",
         "getOsgoDataVersion",
       );
       console.log("[MetaStore] Version response:", versionResponse);
-      console.log("[MetaStore] Version response type:", typeof versionResponse);
-      console.log(
-        "[MetaStore] Version response keys:",
-        versionResponse ? Object.keys(versionResponse) : "null",
-      );
 
       // Handle different response formats - just coerce to number
       let versionData: number;
-      console.log("[MetaStore] Version response:", versionResponse);
-      console.log("[MetaStore] Version response type:", typeof versionResponse);
-
-      // Check if it has a .data property (wrapped response)
       if (
         versionResponse &&
         typeof versionResponse === "object" &&
         "data" in versionResponse
       ) {
-        console.log("[MetaStore] Wrapped response, extracting .data");
         versionData = Number((versionResponse as any).data);
       } else {
-        // Direct response - just convert to number
-        console.log("[MetaStore] Direct response, converting to number");
         versionData = Number(versionResponse);
       }
 
@@ -170,10 +153,23 @@ export const useMetaStore = defineStore("meta", () => {
       }
 
       console.log("[MetaStore] Extracted version:", versionData);
-      console.log("[MetaStore] Cached version:", meta.value?.version);
 
-      if (versionData !== meta.value?.version) {
-        console.log("[MetaStore] Version mismatch, fetching new data...");
+      // Get cached version for comparison (don't load into meta yet)
+      let cachedVersion: number | undefined;
+      const cached = localStorage.getItem(STORAGE_KEYS.ECCLIVO_META);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached) as EcclivoMeta;
+          cachedVersion = parsed.version;
+          console.log("[MetaStore] Cached version:", cachedVersion);
+        } catch (e) {
+          console.warn("[MetaStore] Failed to parse cached data");
+        }
+      }
+
+      // Only fetch new data if version differs, otherwise use cache
+      if (versionData !== cachedVersion) {
+        console.log("[MetaStore] Version mismatch, fetching fresh data...");
 
         const dataResponse = await api.invokeService(
           "OsgoService",
@@ -188,17 +184,10 @@ export const useMetaStore = defineStore("meta", () => {
           typeof dataResponse === "object" &&
           "data" in dataResponse
         ) {
-          console.log("[MetaStore] Wrapped data response");
           metaData = (dataResponse as any).data;
         } else {
-          console.log("[MetaStore] Direct data response");
           metaData = dataResponse;
         }
-
-        console.log(
-          "[MetaStore] Extracted meta data version:",
-          metaData?.version,
-        );
 
         const data: EcclivoMeta = {
           version: metaData.version,
@@ -211,7 +200,7 @@ export const useMetaStore = defineStore("meta", () => {
           periodType: sortBy(metaData.periodType, "order"),
         };
 
-        console.log("[MetaStore] Processed data:", {
+        console.log("[MetaStore] Processed fresh data:", {
           version: data.version,
           carTypeCount: data.carType.length,
           periodCount: data.period.length,
@@ -222,24 +211,45 @@ export const useMetaStore = defineStore("meta", () => {
           STORAGE_KEYS.ECCLIVO_META,
           JSON.stringify(meta.value),
         );
-        console.log("[MetaStore] Saved to localStorage");
+        console.log("[MetaStore] Saved fresh data to localStorage");
       } else {
-        console.log("[MetaStore] Version matches, using cached data");
+        // Version matches - load from cache
+        if (cached) {
+          try {
+            meta.value = JSON.parse(cached) as EcclivoMeta;
+            console.log("[MetaStore] Version matches, using cached data");
+          } catch (e) {
+            console.error("[MetaStore] Failed to parse cached data, fetching fresh...");
+            // If cache parse fails, fetch fresh data
+            throw new Error("Cache corrupted");
+          }
+        } else {
+          // No cache but version check passed - fetch data
+          throw new Error("No cache available");
+        }
       }
     } catch (err) {
       console.error("[MetaStore] Error in fetchMeta:", err);
-      console.error("[MetaStore] Error type:", typeof err);
-      console.error("[MetaStore] Error details:", {
-        message: (err as any)?.message,
-        stack: (err as any)?.stack,
-      });
-
-      // Clear cached data
-      localStorage.removeItem(STORAGE_KEYS.ECCLIVO_META);
-      error.value = (err as any).message || "Failed to fetch metadata";
-      throw err;
+      
+      // On error, try to load from cache as fallback
+      const cached = localStorage.getItem(STORAGE_KEYS.ECCLIVO_META);
+      if (cached) {
+        try {
+          meta.value = JSON.parse(cached) as EcclivoMeta;
+          console.log("[MetaStore] Using cached data as fallback due to error");
+        } catch (e) {
+          // Clear corrupted cache
+          localStorage.removeItem(STORAGE_KEYS.ECCLIVO_META);
+          error.value = (err as any).message || "Failed to fetch metadata";
+          throw err;
+        }
+      } else {
+        error.value = (err as any).message || "Failed to fetch metadata";
+        throw err;
+      }
     } finally {
       fetching.value = false;
+      lastFetchTime.value = Date.now();
       console.log(
         "[MetaStore] Fetch complete. Meta loaded:",
         meta.value !== null,
