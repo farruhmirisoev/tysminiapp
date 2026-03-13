@@ -120,7 +120,7 @@
                                 <option
                                     v-for="frequency in metaStore.incidentFrequencies"
                                     :key="frequency.id"
-                                    :value="frequency.coefficient"
+                                    :value="frequency.coefficientNew ?? frequency.coefficient"
                                 >
                                     {{ getLocalizedName(frequency) }}
                                 </option>
@@ -274,7 +274,8 @@ const setDefaults = () => {
     
     // Set first incident frequency as default if drivers are limited
     if (osgo.value.driversLimited && !osgo.value.incidentCoeff && metaStore.incidentFrequencies.length > 0) {
-        osgo.value.incidentCoeff = metaStore.incidentFrequencies[0].coefficient;
+        const first = metaStore.incidentFrequencies[0];
+        osgo.value.incidentCoeff = first.coefficientNew ?? first.coefficient;
     }
     
     // Manually trigger premium calculation immediately

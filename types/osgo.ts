@@ -20,6 +20,7 @@ export interface CarType {
   nameUz: string
   order: number
   tariffCompany?: number
+  tariffCompanyNew?: number
   coefficient?: number
 }
 
@@ -30,6 +31,7 @@ export interface Period {
   order: number
   periodType: OsgoPeriodType
   coefficient: number
+  coefficientNew?: number
   months?: number
   days?: number
 }
@@ -40,6 +42,7 @@ export interface IncidentFrequency {
   nameUz: string
   order: number
   coefficient: number
+  coefficientNew?: number
 }
 
 export interface DrivedArea {
@@ -48,6 +51,7 @@ export interface DrivedArea {
   nameUz: string
   order: number
   coefficient: number
+  coefficientNew?: number
   vehicleRegionCode?: number
 }
 

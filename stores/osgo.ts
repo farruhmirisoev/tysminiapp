@@ -106,11 +106,11 @@ export const useOsgoStore = defineStore('osgo', () => {
       return 0
     }
 
-    const baseCoefficient = osgo.value.vehicle.carType.tariffCompany || 0
-    const periodCoefficient = osgo.value.period.coefficient || 0
-    const areaCoefficient = osgo.value.drivedArea.coefficient || 0
+    const baseCoefficient = osgo.value.vehicle.carType.tariffCompanyNew ?? osgo.value.vehicle.carType.tariffCompany ?? 0
+    const periodCoefficient = osgo.value.period.coefficientNew ?? osgo.value.period.coefficient ?? 0
+    const areaCoefficient = osgo.value.drivedArea.coefficientNew ?? osgo.value.drivedArea.coefficient ?? 0
 
-    let driverCoefficient = 3 // Default for unlimited drivers
+    let driverCoefficient = 2 // Default for unlimited drivers
 
     if (osgo.value.driversLimited && osgo.value.incidentCoeff) {
       driverCoefficient = osgo.value.incidentCoeff
@@ -255,12 +255,15 @@ export const useOsgoStore = defineStore('osgo', () => {
   watch(
     () => [
       osgo.value.vehicle?.carType?.id,
+      osgo.value.vehicle?.carType?.tariffCompanyNew,
       osgo.value.vehicle?.carType?.tariffCompany,
       osgo.value.period?.id,
+      osgo.value.period?.coefficientNew,
       osgo.value.period?.coefficient,
       osgo.value.driversLimited,
       osgo.value.incidentCoeff,
       osgo.value.drivedArea?.id,
+      osgo.value.drivedArea?.coefficientNew,
       osgo.value.drivedArea?.coefficient,
     ],
     (newVals, oldVals) => {
@@ -1003,7 +1006,7 @@ export const useOsgoStore = defineStore('osgo', () => {
       if (osgo.value.driversLimited && osgo.value.drivers.length > 0) {
         const maxCoeff = Math.max(
           ...osgo.value.drivers
-            .map(d => d.incidentFrequency?.coefficient || 0)
+            .map(d => d.incidentFrequency?.coefficientNew ?? d.incidentFrequency?.coefficient ?? 0)
         )
         osgo.value.incidentCoeff = maxCoeff
       }

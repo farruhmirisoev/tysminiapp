@@ -280,12 +280,14 @@ export const useMetaStore = defineStore("meta", () => {
   };
 
   /**
-   * Find incident frequency by coefficient
+   * Find incident frequency by coefficient (supports both coefficientNew and coefficient)
    */
   const findIncidentFrequency = (
     coefficient: number,
   ): IncidentFrequency | undefined => {
-    return incidentFrequencies.value.find((f) => f.coefficient === coefficient);
+    return incidentFrequencies.value.find(
+      (f) => f.coefficientNew === coefficient || f.coefficient === coefficient,
+    );
   };
 
   /**
